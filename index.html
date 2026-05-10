@@ -65,12 +65,10 @@
       display: grid;
       place-items: center;
       border-radius: 12px;
-      color: #fff;
-      background: linear-gradient(145deg, #062866, #086bff);
-      box-shadow: 0 10px 22px rgba(4, 76, 216, .22);
+      overflow: hidden;
     }
 
-    .mark svg { width: 32px; height: 32px; }
+    .mark img { width: 100%; height: 100%; object-fit: cover; border-radius: 12px; }
     .brand strong {
       display: block;
       color: var(--navy);
@@ -888,7 +886,7 @@
     <div class="container nav">
       <a class="brand" href="#inicio" aria-label="Swipy inicio">
         <span class="mark" aria-hidden="true">
-          <svg viewBox="0 0 48 48" fill="none"><rect x="8" y="8" width="25" height="25" rx="4" stroke="currentColor" stroke-width="3"/><path d="M14 18h13M14 24h8M34 20h5v12h-5zM15 38h18" stroke="currentColor" stroke-width="3" stroke-linecap="round"/><circle cx="36.5" cy="26" r="1.7" fill="currentColor"/></svg>
+          <img src="Swipy2.png" alt="Swipy">
         </span>
         <span><strong>swipy</strong><span>Punto de venta</span></span>
       </a>
@@ -941,7 +939,7 @@
               </div>
             </div>
           </div>
-          <div class="phone"><div class="phone-screen"><div><span class="mark"><svg viewBox="0 0 48 48" fill="none"><rect x="8" y="8" width="25" height="25" rx="4" stroke="currentColor" stroke-width="3"/><path d="M14 18h13M14 24h8M34 20h5v12h-5zM15 38h18" stroke="currentColor" stroke-width="3" stroke-linecap="round"/></svg></span><strong>swipy</strong><span>Punto de venta</span></div></div></div>
+          <div class="phone"><div class="phone-screen"><div><span class="mark"><img src="Swipy2.png" alt="Swipy"></span><strong>swipy</strong><span>Punto de venta</span></div></div></div>
           <div class="basket"><div class="product bag"></div><div class="product can"></div><div class="product bottle"></div><div class="basket-body"><i class="slot"></i><i class="slot"></i><i class="slot"></i><i class="slot"></i></div></div>
         </div>
       </div>
@@ -994,7 +992,7 @@
   <footer class="footer" id="soporte">
     <div class="container">
       <div class="footer-grid">
-        <div><div class="brand"><span class="mark"><svg viewBox="0 0 48 48" fill="none"><rect x="8" y="8" width="25" height="25" rx="4" stroke="currentColor" stroke-width="3"/><path d="M14 18h13M14 24h8M34 20h5v12h-5zM15 38h18" stroke="currentColor" stroke-width="3" stroke-linecap="round"/></svg></span><span><strong>swipy</strong><span>Punto de venta</span></span></div><p>El sistema de punto de venta hecho para tiendas de abarrotes y pequeños negocios.</p></div>
+        <div><div class="brand"><span class="mark"><img src="Swipy2.png" alt="Swipy"></span><span><strong>swipy</strong><span>Punto de venta</span></span></div><p>El sistema de punto de venta hecho para tiendas de abarrotes y pequeños negocios.</p></div>
         <div><h3>Enlaces</h3><a href="#inicio">Inicio</a><a href="#caracteristicas">Características</a><a href="#pantallas">Pantallas</a><a href="#precios">Precios</a><a href="#soporte">Soporte</a></div>
         <div><h3>Recursos</h3><a href="#descarga">Descargar</a><a href="#pantallas">Manual de usuario</a><a href="#caracteristicas">Preguntas frecuentes</a><a href="#soporte">Contacto</a></div>
         <div><h3>Soporte</h3><p>¿Tienes dudas?<br>Estamos para ayudarte.</p><p>+52 000 000 0000</p><p>soporte@swipy.com</p></div>

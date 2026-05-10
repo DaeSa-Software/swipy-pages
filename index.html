@@ -557,10 +557,45 @@
     .screens { padding: 22px 0 58px; }
     .screen-grid {
       display: grid;
-      grid-template-columns: repeat(3, 1fr);
+      grid-template-columns: repeat(2, 1fr);
       gap: 28px;
       margin-top: 22px;
     }
+
+    /* Mockups realistas de la app */
+    .app-wrap { height: 100%; display: flex; overflow: hidden; border-radius: 5px; border: 1px solid #bcd3f2; }
+    .app-side { width: 76px; background: #181c23; padding: 8px 6px; display: flex; flex-direction: column; gap: 2px; flex-shrink: 0; }
+    .app-logo { color: #fff; font-size: 7px; font-weight: 900; letter-spacing: .4px; margin-bottom: 7px; padding: 0 2px; }
+    .app-item { padding: 4px 5px; border-radius: 3px; color: rgba(255,255,255,.5); font-size: 5.5px; font-weight: 700; }
+    .app-item.on { background: #0a63f6; color: #fff; }
+    .app-main { flex: 1; background: #fff; display: flex; flex-direction: column; overflow: hidden; min-width: 0; }
+    .app-head { padding: 7px 9px 4px; border-bottom: 1px solid #f0f4fa; }
+    .app-title { font-size: 9px; font-weight: 900; color: #172748; line-height: 1; }
+    .app-sub { font-size: 5px; color: #90a0b4; margin-top: 1px; }
+    .app-search { display: flex; gap: 4px; padding: 5px 9px; }
+    .app-inp { flex: 1; height: 13px; border: 1px solid #dde6f3; border-radius: 3px; background: #f7faff; }
+    .app-inp-num { width: 22px; height: 13px; border: 1px solid #dde6f3; border-radius: 3px; background: #f7faff; }
+    .app-btn { height: 13px; padding: 0 7px; background: #0a63f6; border-radius: 3px; color: #fff; font-size: 5px; font-weight: 700; display: flex; align-items: center; white-space: nowrap; }
+    .app-cols { flex: 1; display: grid; grid-template-columns: 1fr .72fr; gap: 5px; padding: 0 9px 5px; overflow: hidden; }
+    .app-panel { border: 1px solid #e3eaf5; border-radius: 4px; padding: 5px 6px; overflow: hidden; }
+    .app-ptitle { font-size: 6px; font-weight: 800; color: #182847; margin-bottom: 3px; }
+    .app-th { display: flex; gap: 4px; border-bottom: 1px solid #eef3fb; padding-bottom: 2px; margin-bottom: 2px; }
+    .app-th span { font-size: 4.5px; color: #8899b0; font-weight: 700; flex: 1; }
+    .app-th span:first-child { flex: 2; }
+    .app-foot { padding: 4px 9px; border-top: 1px solid #eef3fb; display: flex; justify-content: space-between; align-items: center; flex-shrink: 0; }
+    .app-total { font-size: 12px; font-weight: 900; color: #071936; }
+    .app-pays { display: flex; gap: 3px; }
+    .app-pay { height: 12px; padding: 0 5px; border-radius: 3px; background: #eef5ff; color: #52637b; font-size: 4.5px; font-weight: 700; display: flex; align-items: center; }
+    .app-pay.b { background: #0a63f6; color: #fff; }
+    /* Catálogo */
+    .app-filters { padding: 4px 9px; border-bottom: 1px solid #f0f4fa; display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 4px; }
+    .app-field label { display: block; font-size: 4.5px; color: #8899b0; margin-bottom: 1px; }
+    .app-field input-mock { display: block; height: 10px; border: 1px solid #dde6f3; border-radius: 3px; background: #f7faff; }
+    .app-tbl { flex: 1; padding: 4px 9px; overflow: hidden; }
+    .app-thead { display: grid; grid-template-columns: 18px 1fr 52px 38px 32px 32px; gap: 2px; border-bottom: 1px solid #e3eaf5; padding-bottom: 2px; margin-bottom: 1px; }
+    .app-thead span { font-size: 4.5px; color: #8899b0; font-weight: 700; }
+    .app-trow { display: grid; grid-template-columns: 18px 1fr 52px 38px 32px 32px; gap: 2px; padding: 2.5px 0; border-bottom: 1px solid #f5f8fd; }
+    .app-trow span { font-size: 4.5px; color: #172748; }
     .screen-card {
       overflow: hidden;
       border: 1px solid var(--line);
@@ -911,7 +946,7 @@
           <p class="lead">Swipy es un sistema fácil, rápido e intuitivo para administrar ventas, inventario y más. Ideal para tiendas de abarrotes y negocios que quieren llevar el control de su negocio sin complicaciones.</p>
           <div class="hero-actions">
             <a class="btn primary" href="#descarga"><svg class="icon" viewBox="0 0 24 24"><path d="M12 3v12"/><path d="m7 10 5 5 5-5"/><path d="M5 21h14"/></svg>Descargar Swipy</a>
-            <a class="btn secondary" href="#pantallas"><svg class="icon" viewBox="0 0 24 24"><path d="m8 5 11 7-11 7z"/></svg>Ver cómo funciona</a>
+            <a class="btn secondary" href="demo.html"><svg class="icon" viewBox="0 0 24 24"><path d="m8 5 11 7-11 7z"/></svg>Probar demo</a>
           </div>
           <div class="proof">
             <div><svg class="icon" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M8 14s1.5 2 4 2 4-2 4-2"/><path d="M9 9h.01M15 9h.01"/></svg>Fácil de usar</div>
@@ -963,9 +998,90 @@
         <h2 class="section-title">Conoce Swipy por dentro</h2>
         <p class="section-subtitle">Un sistema diseñado para que todo sea más fácil.</p>
         <div class="screen-grid">
-          <article class="screen-card"><div class="mini-screen"><div class="mini-ui"><div class="mini-side"><i></i><i></i><i></i><i></i><i></i></div><div class="mini-main"><em></em><div class="mini-cols"><div class="mini-panel"><i></i><i></i><i></i><i></i></div><div class="mini-panel"><i></i><i></i><i></i></div></div><div class="mini-total">$0.00</div></div></div></div><div class="screen-body"><h3>Panel de control</h3><p>Visualiza tus ventas del día y el rendimiento de tu negocio.</p></div></article>
-          <article class="screen-card"><div class="mini-screen"><div class="mini-ui"><div class="mini-side"><i></i><i></i><i></i><i></i><i></i></div><div class="mini-main"><em></em><div class="mini-cols"><div class="mini-panel"><i></i><i></i><i></i></div><div class="mini-panel"><i></i><i></i></div></div><div class="mini-total">$0.00</div></div></div></div><div class="screen-body"><h3>Punto de venta</h3><p>Vende rápido con búsqueda de productos, control de tickets y cobros.</p></div></article>
-          <article class="screen-card"><div class="mini-screen"><div class="mini-ui"><div class="mini-side"><i></i><i></i><i></i><i></i><i></i></div><div class="mini-main"><em></em><div class="mini-panel"><i></i><i></i><i></i><i></i><i></i><i></i></div></div></div></div><div class="screen-body"><h3>Inventario</h3><p>Lleva el control de tus productos, precios y existencias en tiempo real.</p></div></article>
+
+          <!-- Punto de venta -->
+          <article class="screen-card">
+            <div class="mini-screen">
+              <div class="app-wrap">
+                <div class="app-side">
+                  <div class="app-logo">SWIPY</div>
+                  <div class="app-item on">Venta</div>
+                  <div class="app-item">Catalogo</div>
+                  <div class="app-item">Ventas del dia</div>
+                  <div class="app-item">Tickets</div>
+                  <div class="app-item">Usuarios</div>
+                </div>
+                <div class="app-main">
+                  <div class="app-head">
+                    <div class="app-title">Punto de venta</div>
+                    <div class="app-sub">Venta lista para capturar productos.</div>
+                  </div>
+                  <div class="app-search">
+                    <div class="app-inp"></div>
+                    <div class="app-inp-num"></div>
+                    <div class="app-btn">Agregar / Buscar</div>
+                  </div>
+                  <div class="app-cols">
+                    <div class="app-panel">
+                      <div class="app-ptitle">Venta actual</div>
+                      <div class="app-th"><span>Producto</span><span>Cant.</span><span>Precio</span><span>Total</span></div>
+                    </div>
+                    <div class="app-panel">
+                      <div class="app-ptitle">Resultados</div>
+                      <div class="app-th"><span>SKU</span><span>Producto</span><span>Precio</span></div>
+                    </div>
+                  </div>
+                  <div class="app-foot">
+                    <div class="app-total">$0.00</div>
+                    <div class="app-pays">
+                      <div class="app-pay">Tarjeta</div>
+                      <div class="app-pay">Pendiente</div>
+                      <div class="app-pay">Cancelar</div>
+                      <div class="app-pay b">Cobrar</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="screen-body"><h3>Punto de venta</h3><p>Vende rápido con búsqueda de productos, control de tickets y cobros en efectivo o tarjeta.</p></div>
+          </article>
+
+          <!-- Catálogo -->
+          <article class="screen-card">
+            <div class="mini-screen">
+              <div class="app-wrap">
+                <div class="app-side">
+                  <div class="app-logo">SWIPY</div>
+                  <div class="app-item">Venta</div>
+                  <div class="app-item on">Catalogo</div>
+                  <div class="app-item">Ventas del dia</div>
+                  <div class="app-item">Tickets</div>
+                  <div class="app-item">Usuarios</div>
+                </div>
+                <div class="app-main">
+                  <div class="app-head">
+                    <div class="app-title">Catalogo de productos</div>
+                    <div class="app-sub">50 productos encontrados.</div>
+                  </div>
+                  <div class="app-filters">
+                    <div class="app-field"><label>Producto</label><input-mock></input-mock></div>
+                    <div class="app-field"><label>Codigo</label><input-mock></input-mock></div>
+                    <div class="app-field"><label>Proveedor</label><input-mock></input-mock></div>
+                  </div>
+                  <div class="app-tbl">
+                    <div class="app-thead"><span>SKU</span><span>Nombre</span><span>Codigo</span><span>Proveedor</span><span>Costo</span><span>Precio</span></div>
+                    <div class="app-trow"><span>1</span><span>Coca Cola 2.5L</span><span>750105531...</span><span>ArcaCont.</span><span>35.00</span><span>40.00</span></div>
+                    <div class="app-trow"><span>3</span><span>Coca Cola 1.5L</span><span>750105530...</span><span>ArcaCont.</span><span>23.62</span><span>27.00</span></div>
+                    <div class="app-trow"><span>4</span><span>Gansito 50g</span><span>750100015...</span><span>Marinela</span><span>12.30</span><span>18.00</span></div>
+                    <div class="app-trow"><span>1008</span><span>Power de Mora 600ml</span><span>750105531...</span><span>ArcaCont.</span><span>21.16</span><span>26.00</span></div>
+                    <div class="app-trow"><span>1015</span><span>Huevo 1Kg</span><span>0</span><span>Abarrotes</span><span>46.00</span><span>56.00</span></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="screen-body"><h3>Catálogo e Inventario</h3><p>Administra tus productos, precios, costos y existencias con filtros de búsqueda avanzada.</p></div>
+          </article>
+
         </div>
         <div class="center"><a class="btn secondary" href="#descarga">Ver todas las pantallas</a></div>
       </div>

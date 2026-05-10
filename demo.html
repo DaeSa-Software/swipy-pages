@@ -1,0 +1,1224 @@
+<!doctype html>
+<html lang="es-MX">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Swipy – Demo interactivo</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --side-bg: #181c23;
+      --side-w: 160px;
+      --blue: #0a63f6;
+      --blue-dark: #0850d0;
+      --navy: #071936;
+      --ink: #172748;
+      --muted: #8899b0;
+      --line: #e3eaf5;
+      --soft: #f7faff;
+      --white: #fff;
+      --green: #16a34a;
+      --red: #dc2626;
+    }
+
+    html, body { height: 100%; overflow: hidden; }
+
+    body {
+      font-family: 'Segoe UI', Inter, Arial, sans-serif;
+      font-size: 13px;
+      color: var(--ink);
+      background: #111;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* ── Top bar ── */
+    .topbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 18px;
+      height: 36px;
+      background: #0d1117;
+      color: rgba(255,255,255,.7);
+      font-size: 11px;
+      flex-shrink: 0;
+      gap: 12px;
+    }
+    .topbar strong { color: #fff; font-size: 12px; }
+    .topbar-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      padding: 2px 10px;
+      border-radius: 999px;
+      background: rgba(10,99,246,.25);
+      color: #6fb3ff;
+      font-size: 10px;
+      font-weight: 700;
+    }
+    .topbar-badge::before {
+      content: '';
+      width: 6px; height: 6px;
+      border-radius: 50%;
+      background: #4ade80;
+      display: block;
+    }
+    .back-link {
+      color: rgba(255,255,255,.55);
+      font-size: 11px;
+      text-decoration: none;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+    .back-link:hover { color: #fff; }
+
+    /* ── App shell ── */
+    .app {
+      flex: 1;
+      display: flex;
+      overflow: hidden;
+    }
+
+    /* ── Sidebar ── */
+    .sidebar {
+      width: var(--side-w);
+      background: var(--side-bg);
+      display: flex;
+      flex-direction: column;
+      padding: 18px 10px;
+      flex-shrink: 0;
+      user-select: none;
+    }
+    .sidebar-logo {
+      color: #fff;
+      font-size: 18px;
+      font-weight: 900;
+      letter-spacing: .5px;
+      padding: 0 6px;
+      margin-bottom: 20px;
+    }
+    .nav-item {
+      padding: 9px 10px;
+      border-radius: 6px;
+      color: rgba(255,255,255,.52);
+      font-size: 12px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background .15s, color .15s;
+      margin-bottom: 2px;
+    }
+    .nav-item:hover { background: rgba(255,255,255,.06); color: rgba(255,255,255,.85); }
+    .nav-item.active { background: var(--blue); color: #fff; }
+    .sidebar-bottom { margin-top: auto; }
+    .sidebar-bottom .nav-item { font-size: 11px; }
+    .premium-btn {
+      display: block;
+      margin-top: 6px;
+      padding: 8px 10px;
+      border-radius: 6px;
+      background: linear-gradient(135deg, #f59e0b, #d97706);
+      color: #fff;
+      font-size: 11px;
+      font-weight: 800;
+      text-align: center;
+      cursor: default;
+    }
+
+    /* ── Main content ── */
+    .main {
+      flex: 1;
+      background: var(--white);
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+
+    /* ── Views ── */
+    .view { display: none; flex: 1; flex-direction: column; overflow: hidden; }
+    .view.active { display: flex; }
+
+    /* ── Shared header ── */
+    .view-head {
+      padding: 16px 22px 10px;
+      border-bottom: 1px solid var(--line);
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      flex-shrink: 0;
+    }
+    .view-title { font-size: 20px; font-weight: 900; color: var(--navy); line-height: 1; }
+    .view-sub { font-size: 11px; color: var(--muted); margin-top: 3px; }
+    .view-meta { display: flex; gap: 14px; }
+    .meta-chip {
+      text-align: right;
+      font-size: 11px;
+      color: var(--muted);
+      font-weight: 600;
+      line-height: 1.3;
+    }
+    .meta-chip strong { display: block; font-size: 15px; color: var(--navy); font-weight: 900; }
+
+    /* ── Venta view ── */
+    #v-venta .search-bar {
+      display: flex;
+      gap: 8px;
+      padding: 10px 22px;
+      border-bottom: 1px solid var(--line);
+      flex-shrink: 0;
+    }
+    .search-input {
+      flex: 1;
+      height: 36px;
+      padding: 0 12px;
+      border: 1px solid var(--line);
+      border-radius: 6px;
+      background: var(--soft);
+      font-size: 13px;
+      color: var(--ink);
+      outline: none;
+    }
+    .search-input:focus { border-color: var(--blue); }
+    .qty-input {
+      width: 56px;
+      height: 36px;
+      padding: 0 10px;
+      border: 1px solid var(--line);
+      border-radius: 6px;
+      background: var(--soft);
+      font-size: 13px;
+      text-align: center;
+      outline: none;
+    }
+    .qty-input:focus { border-color: var(--blue); }
+    .search-btn {
+      height: 36px;
+      padding: 0 18px;
+      background: var(--blue);
+      color: #fff;
+      border: none;
+      border-radius: 6px;
+      font-size: 13px;
+      font-weight: 700;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      white-space: nowrap;
+    }
+    .search-btn:hover { background: var(--blue-dark); }
+
+    .venta-body {
+      flex: 1;
+      display: grid;
+      grid-template-columns: 1fr 320px;
+      overflow: hidden;
+    }
+
+    /* Left: current sale */
+    .sale-panel {
+      display: flex;
+      flex-direction: column;
+      border-right: 1px solid var(--line);
+      overflow: hidden;
+    }
+    .panel-title {
+      padding: 10px 16px 8px;
+      font-size: 12px;
+      font-weight: 800;
+      color: var(--navy);
+      border-bottom: 1px solid var(--line);
+      flex-shrink: 0;
+    }
+    .sale-table-head {
+      display: grid;
+      grid-template-columns: 1fr 56px 70px 70px 36px;
+      gap: 6px;
+      padding: 6px 16px;
+      background: var(--soft);
+      border-bottom: 1px solid var(--line);
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--muted);
+      flex-shrink: 0;
+    }
+    .sale-items {
+      flex: 1;
+      overflow-y: auto;
+    }
+    .sale-row {
+      display: grid;
+      grid-template-columns: 1fr 56px 70px 70px 36px;
+      gap: 6px;
+      padding: 8px 16px;
+      border-bottom: 1px solid var(--line);
+      align-items: center;
+      font-size: 12px;
+    }
+    .sale-row:last-child { border-bottom: none; }
+    .sale-row .prod-name { font-weight: 600; color: var(--navy); }
+    .sale-row .qty-cell {
+      width: 44px;
+      height: 26px;
+      text-align: center;
+      border: 1px solid var(--line);
+      border-radius: 4px;
+      font-size: 12px;
+      outline: none;
+      background: var(--soft);
+    }
+    .sale-row .price-cell { color: var(--muted); }
+    .sale-row .total-cell { font-weight: 700; color: var(--ink); }
+    .remove-btn {
+      width: 26px; height: 26px;
+      border: none;
+      background: #fee2e2;
+      color: var(--red);
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 14px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .remove-btn:hover { background: #fecaca; }
+    .sale-empty {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--muted);
+      font-size: 13px;
+      flex-direction: column;
+      gap: 8px;
+    }
+    .sale-empty svg { opacity: .3; }
+
+    .sale-footer {
+      padding: 12px 16px;
+      border-top: 1px solid var(--line);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-shrink: 0;
+      gap: 10px;
+    }
+    .total-display { font-size: 28px; font-weight: 900; color: var(--navy); }
+    .pay-btns { display: flex; gap: 6px; }
+    .pay-btn {
+      height: 36px;
+      padding: 0 14px;
+      border: 1px solid var(--line);
+      border-radius: 6px;
+      background: var(--soft);
+      color: var(--muted);
+      font-size: 12px;
+      font-weight: 700;
+      cursor: pointer;
+    }
+    .pay-btn:hover { background: var(--line); }
+    .pay-btn.cobrar {
+      background: var(--blue);
+      color: #fff;
+      border-color: var(--blue);
+    }
+    .pay-btn.cobrar:hover { background: var(--blue-dark); }
+    .pay-btn.cancelar { color: var(--red); border-color: #fecaca; background: #fff; }
+    .pay-btn.cancelar:hover { background: #fee2e2; }
+
+    /* Right: search results */
+    .results-panel {
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+    .results-list {
+      flex: 1;
+      overflow-y: auto;
+      padding: 6px 0;
+    }
+    .result-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 8px 14px;
+      cursor: pointer;
+      border-bottom: 1px solid var(--line);
+      gap: 8px;
+    }
+    .result-row:hover { background: var(--soft); }
+    .result-row:last-child { border-bottom: none; }
+    .result-name { font-size: 12px; font-weight: 600; color: var(--navy); }
+    .result-sku { font-size: 10px; color: var(--muted); }
+    .result-price { font-size: 13px; font-weight: 800; color: var(--blue); white-space: nowrap; }
+    .add-chip {
+      width: 24px; height: 24px;
+      background: var(--blue);
+      color: #fff;
+      border-radius: 4px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 16px;
+      flex-shrink: 0;
+    }
+
+    /* ── Catálogo view ── */
+    .cat-filters {
+      padding: 10px 22px;
+      border-bottom: 1px solid var(--line);
+      display: grid;
+      grid-template-columns: 1fr 140px 140px 90px 90px auto;
+      gap: 8px;
+      align-items: end;
+      flex-shrink: 0;
+    }
+    .field-label { font-size: 10px; color: var(--muted); font-weight: 700; margin-bottom: 3px; }
+    .field-input {
+      height: 32px;
+      padding: 0 10px;
+      border: 1px solid var(--line);
+      border-radius: 5px;
+      background: var(--soft);
+      font-size: 12px;
+      outline: none;
+      width: 100%;
+    }
+    .field-input:focus { border-color: var(--blue); }
+    .filter-btn {
+      height: 32px;
+      padding: 0 16px;
+      background: var(--blue);
+      color: #fff;
+      border: none;
+      border-radius: 5px;
+      font-size: 12px;
+      font-weight: 700;
+      cursor: pointer;
+      align-self: end;
+    }
+    .filter-btn:hover { background: var(--blue-dark); }
+
+    .cat-body {
+      flex: 1;
+      display: grid;
+      grid-template-columns: 1fr 240px;
+      overflow: hidden;
+    }
+    .cat-table-wrap { overflow-y: auto; }
+    .cat-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 12px;
+    }
+    .cat-table thead th {
+      position: sticky;
+      top: 0;
+      background: var(--soft);
+      padding: 8px 12px;
+      text-align: left;
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--muted);
+      border-bottom: 1px solid var(--line);
+      white-space: nowrap;
+    }
+    .cat-table tbody tr {
+      border-bottom: 1px solid var(--line);
+      cursor: pointer;
+      transition: background .1s;
+    }
+    .cat-table tbody tr:hover { background: var(--soft); }
+    .cat-table tbody tr.selected { background: #eff6ff; }
+    .cat-table td { padding: 7px 12px; color: var(--ink); }
+    .cat-table td:first-child { color: var(--muted); font-size: 11px; }
+
+    .detail-panel {
+      border-left: 1px solid var(--line);
+      padding: 16px;
+      overflow-y: auto;
+    }
+    .detail-panel h3 { font-size: 13px; font-weight: 800; color: var(--navy); margin-bottom: 14px; }
+    .detail-field { margin-bottom: 12px; }
+    .detail-field label { display: block; font-size: 10px; color: var(--muted); font-weight: 700; margin-bottom: 3px; }
+    .detail-field input {
+      width: 100%;
+      height: 30px;
+      padding: 0 8px;
+      border: 1px solid var(--line);
+      border-radius: 4px;
+      background: var(--soft);
+      font-size: 12px;
+      outline: none;
+    }
+    .detail-actions { display: flex; gap: 6px; margin-top: 14px; }
+    .det-btn {
+      flex: 1;
+      height: 30px;
+      border: 1px solid var(--line);
+      border-radius: 4px;
+      background: var(--soft);
+      color: var(--muted);
+      font-size: 11px;
+      font-weight: 700;
+      cursor: default;
+    }
+
+    /* ── Ventas del día view ── */
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 14px;
+      padding: 16px 22px;
+      flex-shrink: 0;
+    }
+    .stat-card {
+      padding: 14px 16px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: var(--soft);
+    }
+    .stat-label { font-size: 11px; color: var(--muted); font-weight: 700; margin-bottom: 4px; }
+    .stat-value { font-size: 22px; font-weight: 900; color: var(--navy); }
+    .stat-value.green { color: var(--green); }
+    .tickets-list { flex: 1; overflow-y: auto; padding: 0 22px; }
+    .ticket-row {
+      display: grid;
+      grid-template-columns: 80px 1fr 80px 90px;
+      gap: 10px;
+      align-items: center;
+      padding: 10px 0;
+      border-bottom: 1px solid var(--line);
+      font-size: 12px;
+    }
+    .ticket-row:last-child { border-bottom: none; }
+    .ticket-id { font-weight: 800; color: var(--blue); }
+    .ticket-items { color: var(--muted); }
+    .ticket-pay {
+      display: inline-flex;
+      align-items: center;
+      padding: 2px 8px;
+      border-radius: 999px;
+      font-size: 10px;
+      font-weight: 700;
+      background: #dcfce7;
+      color: var(--green);
+    }
+    .ticket-total { font-weight: 800; text-align: right; }
+
+    /* ── Modal de cobro ── */
+    .modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,.5);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 100;
+      backdrop-filter: blur(3px);
+    }
+    .modal-overlay.hidden { display: none; }
+    .modal {
+      background: #fff;
+      border-radius: 12px;
+      width: 380px;
+      padding: 28px;
+      box-shadow: 0 30px 60px rgba(0,0,0,.25);
+    }
+    .modal h2 { font-size: 18px; font-weight: 900; color: var(--navy); margin-bottom: 6px; }
+    .modal p { font-size: 13px; color: var(--muted); margin-bottom: 20px; }
+    .modal-total { font-size: 36px; font-weight: 900; color: var(--navy); text-align: center; margin-bottom: 20px; }
+    .payment-methods { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; margin-bottom: 20px; }
+    .pay-method {
+      padding: 12px 8px;
+      border: 2px solid var(--line);
+      border-radius: 8px;
+      text-align: center;
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--muted);
+      cursor: pointer;
+      transition: all .15s;
+    }
+    .pay-method:hover { border-color: var(--blue); color: var(--blue); }
+    .pay-method.selected { border-color: var(--blue); background: #eff6ff; color: var(--blue); }
+    .pay-method svg { display: block; margin: 0 auto 5px; }
+    .received-row { display: flex; gap: 8px; margin-bottom: 14px; align-items: center; }
+    .received-row label { font-size: 12px; font-weight: 700; white-space: nowrap; }
+    .received-row input {
+      flex: 1;
+      height: 36px;
+      padding: 0 12px;
+      border: 1px solid var(--line);
+      border-radius: 6px;
+      font-size: 15px;
+      font-weight: 700;
+      outline: none;
+    }
+    .received-row input:focus { border-color: var(--blue); }
+    .change-display {
+      text-align: center;
+      font-size: 13px;
+      color: var(--muted);
+      margin-bottom: 16px;
+      min-height: 20px;
+    }
+    .change-display strong { color: var(--green); font-size: 16px; }
+    .quick-amounts { display: flex; gap: 6px; margin-bottom: 18px; }
+    .quick-btn {
+      flex: 1;
+      height: 32px;
+      border: 1px solid var(--line);
+      border-radius: 5px;
+      background: var(--soft);
+      font-size: 12px;
+      font-weight: 700;
+      cursor: pointer;
+    }
+    .quick-btn:hover { background: var(--line); }
+    .modal-actions { display: flex; gap: 8px; }
+    .modal-btn {
+      flex: 1;
+      height: 40px;
+      border: none;
+      border-radius: 7px;
+      font-size: 14px;
+      font-weight: 800;
+      cursor: pointer;
+    }
+    .modal-btn.cancel { background: var(--soft); color: var(--muted); border: 1px solid var(--line); }
+    .modal-btn.confirm { background: var(--blue); color: #fff; }
+    .modal-btn.confirm:hover { background: var(--blue-dark); }
+
+    /* ── Success screen ── */
+    .success-modal {
+      text-align: center;
+      padding: 36px 28px;
+    }
+    .success-icon {
+      width: 64px; height: 64px;
+      background: #dcfce7;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 16px;
+      color: var(--green);
+    }
+    .success-modal h2 { font-size: 20px; font-weight: 900; color: var(--navy); margin-bottom: 6px; }
+    .success-modal p { color: var(--muted); margin-bottom: 20px; }
+    .success-detail { display: flex; justify-content: space-between; font-size: 13px; margin-bottom: 8px; }
+    .success-detail strong { font-weight: 800; }
+    .success-hr { border: none; border-top: 1px solid var(--line); margin: 12px 0; }
+
+    /* ── Responsive ── */
+    @media (max-width: 860px) {
+      :root { --side-w: 46px; }
+      .sidebar-logo { font-size: 10px; letter-spacing: 0; }
+      .nav-item { font-size: 0; padding: 10px 0; text-align: center; }
+      .nav-item::before { font-size: 16px; display: block; }
+      .premium-btn { font-size: 0; padding: 8px 0; }
+      .cat-filters { grid-template-columns: 1fr 1fr auto; }
+      .cat-filters .field:nth-child(n+3) { display: none; }
+      .stats-grid { grid-template-columns: 1fr 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Top bar -->
+  <div class="topbar">
+    <div style="display:flex;align-items:center;gap:14px;">
+      <a class="back-link" href="index.html">
+        <svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M15 18l-6-6 6-6"/></svg>
+        Volver al sitio
+      </a>
+      <strong>Swipy Punto de Venta</strong>
+    </div>
+    <div class="topbar-badge">Demo interactivo — datos de prueba</div>
+    <span style="font-size:11px;">Versión 1.0.0 · Windows</span>
+  </div>
+
+  <!-- App shell -->
+  <div class="app">
+
+    <!-- Sidebar -->
+    <nav class="sidebar">
+      <div class="sidebar-logo">SWIPY</div>
+      <div class="nav-item active" data-view="v-venta">Venta</div>
+      <div class="nav-item" data-view="v-catalogo">Catálogo</div>
+      <div class="nav-item" data-view="v-dia">Ventas del día</div>
+      <div class="nav-item" data-view="v-tickets">Tickets</div>
+      <div class="nav-item" data-view="v-usuarios">Usuarios</div>
+      <div class="sidebar-bottom">
+        <div class="nav-item" style="opacity:.5;cursor:default;">Configuración</div>
+        <div class="premium-btn">Premium</div>
+      </div>
+    </nav>
+
+    <!-- Main -->
+    <div class="main">
+
+      <!-- ── VENTA ── -->
+      <div class="view active" id="v-venta">
+        <div class="view-head">
+          <div>
+            <div class="view-title">Punto de venta</div>
+            <div class="view-sub">Venta lista para capturar productos.</div>
+          </div>
+          <div class="view-meta">
+            <div class="meta-chip">Ticket<strong id="ticket-num">183001</strong></div>
+            <div class="meta-chip">Piezas<strong id="ticket-pzs">0</strong></div>
+            <div class="meta-chip">Pago<strong id="ticket-pago">Efectivo</strong></div>
+          </div>
+        </div>
+
+        <div class="search-bar">
+          <input class="search-input" id="search-inp" type="text" placeholder="Buscar producto por nombre o código…" autocomplete="off">
+          <input class="qty-input" id="qty-inp" type="number" value="1" min="1" max="99">
+          <button class="search-btn" id="search-btn">
+            <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.35-4.35"/></svg>
+            Agregar / Buscar
+          </button>
+        </div>
+
+        <div class="venta-body">
+          <!-- Sale list -->
+          <div class="sale-panel">
+            <div class="panel-title">Venta actual</div>
+            <div class="sale-table-head">
+              <span>Producto</span><span>Cant.</span><span>Precio</span><span>Total</span><span></span>
+            </div>
+            <div class="sale-items" id="sale-items">
+              <div class="sale-empty" id="sale-empty">
+                <svg width="40" height="40" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path d="M3 8h18l-2 12H5L3 8Z"/><path d="M7 8 9 3m8 5-2-5"/></svg>
+                <span>Agrega productos con la barra de búsqueda</span>
+              </div>
+            </div>
+            <div class="sale-footer">
+              <div class="total-display" id="total-display">$0.00</div>
+              <div class="pay-btns">
+                <button class="pay-btn" id="btn-tarjeta">Tarjeta</button>
+                <button class="pay-btn" id="btn-pendiente">Pendiente</button>
+                <button class="pay-btn cancelar" id="btn-cancelar">Cancelar</button>
+                <button class="pay-btn cobrar" id="btn-cobrar">$ Cobrar</button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Results panel -->
+          <div class="results-panel">
+            <div class="panel-title">Resultados</div>
+            <div class="results-list" id="results-list">
+              <!-- populated by JS -->
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── CATÁLOGO ── -->
+      <div class="view" id="v-catalogo">
+        <div class="view-head">
+          <div>
+            <div class="view-title">Catálogo de productos</div>
+            <div class="view-sub" id="cat-count">50 productos encontrados.</div>
+          </div>
+          <button class="search-btn" style="margin-top:4px;cursor:default;opacity:.6;">+ Nuevo producto</button>
+        </div>
+
+        <div class="cat-filters">
+          <div>
+            <div class="field-label">Producto</div>
+            <input class="field-input" id="cat-search" type="text" placeholder="Nombre del producto…">
+          </div>
+          <div>
+            <div class="field-label">Código</div>
+            <input class="field-input" id="cat-code" type="text" placeholder="Código de barras">
+          </div>
+          <div>
+            <div class="field-label">Proveedor</div>
+            <input class="field-input" id="cat-prov" type="text" placeholder="Proveedor">
+          </div>
+          <div>
+            <div class="field-label">Precio mínimo</div>
+            <input class="field-input" id="cat-min" type="number" placeholder="$0">
+          </div>
+          <div>
+            <div class="field-label">Precio máximo</div>
+            <input class="field-input" id="cat-max" type="number" placeholder="$999">
+          </div>
+          <div style="display:flex;gap:6px;align-items:end;">
+            <button class="filter-btn" id="cat-filter-btn">Buscar</button>
+            <button class="filter-btn" id="cat-clear-btn" style="background:var(--soft);color:var(--muted);border:1px solid var(--line);">Limpiar</button>
+          </div>
+        </div>
+
+        <div class="cat-body">
+          <div class="cat-table-wrap">
+            <table class="cat-table">
+              <thead>
+                <tr>
+                  <th>SKU</th><th>Nombre</th><th>Código</th><th>Proveedor</th><th>Presentación</th><th>Costo</th><th>Precio</th>
+                </tr>
+              </thead>
+              <tbody id="cat-tbody"></tbody>
+            </table>
+          </div>
+          <div class="detail-panel">
+            <h3>Detalle</h3>
+            <div class="detail-field"><label>Producto</label><input id="det-nombre" readonly></div>
+            <div class="detail-field"><label>Costo</label><input id="det-costo" readonly></div>
+            <div class="detail-field"><label>Precio</label><input id="det-precio" readonly></div>
+            <div class="detail-field"><label>Cantidad</label><input id="det-cant" readonly></div>
+            <div class="detail-field"><label>Código</label><input id="det-codigo" readonly></div>
+            <div class="detail-field"><label>Proveedor</label><input id="det-prov" readonly></div>
+            <div class="detail-field"><label>Unidad</label><input id="det-unidad" readonly></div>
+            <div class="detail-actions">
+              <button class="det-btn">💾</button>
+              <button class="det-btn">🗑</button>
+              <button class="det-btn">↩</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── VENTAS DEL DÍA ── -->
+      <div class="view" id="v-dia">
+        <div class="view-head">
+          <div>
+            <div class="view-title">Ventas del día</div>
+            <div class="view-sub" id="dia-fecha"></div>
+          </div>
+        </div>
+        <div class="stats-grid">
+          <div class="stat-card"><div class="stat-label">Total del día</div><div class="stat-value green" id="stat-total">$0.00</div></div>
+          <div class="stat-card"><div class="stat-label">Tickets</div><div class="stat-value" id="stat-tickets">0</div></div>
+          <div class="stat-card"><div class="stat-label">Piezas vendidas</div><div class="stat-value" id="stat-pzas">0</div></div>
+          <div class="stat-card"><div class="stat-label">Ticket promedio</div><div class="stat-value" id="stat-prom">$0.00</div></div>
+        </div>
+        <div class="tickets-list" id="tickets-list">
+          <div class="ticket-row" style="font-size:11px;font-weight:700;color:var(--muted);">
+            <span>Ticket</span><span>Productos</span><span>Forma de pago</span><span style="text-align:right;">Total</span>
+          </div>
+          <!-- populated by JS -->
+        </div>
+      </div>
+
+      <!-- ── TICKETS (placeholder) ── -->
+      <div class="view" id="v-tickets">
+        <div class="view-head"><div><div class="view-title">Tickets</div><div class="view-sub">Historial de ventas</div></div></div>
+        <div style="flex:1;display:flex;align-items:center;justify-content:center;color:var(--muted);flex-direction:column;gap:10px;">
+          <svg width="48" height="48" fill="none" stroke="currentColor" stroke-width="1.4" viewBox="0 0 24 24" opacity=".3"><rect x="4" y="2" width="16" height="20" rx="2"/><path d="M8 7h8M8 11h8M8 15h5"/></svg>
+          <span>Sección disponible en la versión completa</span>
+        </div>
+      </div>
+
+      <!-- ── USUARIOS (placeholder) ── -->
+      <div class="view" id="v-usuarios">
+        <div class="view-head"><div><div class="view-title">Usuarios</div><div class="view-sub">Gestión de accesos</div></div></div>
+        <div style="flex:1;display:flex;align-items:center;justify-content:center;color:var(--muted);flex-direction:column;gap:10px;">
+          <svg width="48" height="48" fill="none" stroke="currentColor" stroke-width="1.4" viewBox="0 0 24 24" opacity=".3"><path d="M17 21v-2a4 4 0 0 0-8 0v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+          <span>Sección disponible en la versión completa</span>
+        </div>
+      </div>
+
+    </div><!-- /main -->
+  </div><!-- /app -->
+
+  <!-- Modal cobro -->
+  <div class="modal-overlay hidden" id="modal-overlay">
+    <div class="modal" id="modal-cobro">
+      <h2>Cobrar venta</h2>
+      <p>Selecciona la forma de pago y el monto recibido.</p>
+      <div class="modal-total" id="modal-total-val">$0.00</div>
+      <div class="payment-methods">
+        <div class="pay-method selected" data-method="Efectivo">
+          <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><rect x="2" y="6" width="20" height="12" rx="2"/><circle cx="12" cy="12" r="3"/></svg>
+          Efectivo
+        </div>
+        <div class="pay-method" data-method="Tarjeta">
+          <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><rect x="2" y="5" width="20" height="14" rx="2"/><path d="M2 10h20"/></svg>
+          Tarjeta
+        </div>
+        <div class="pay-method" data-method="Transferencia">
+          <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+          Transf.
+        </div>
+      </div>
+      <div class="received-row" id="received-row">
+        <label>Pago recibido</label>
+        <input type="number" id="received-inp" placeholder="$0.00">
+      </div>
+      <div class="quick-amounts" id="quick-amounts">
+        <button class="quick-btn" data-q="50">$50</button>
+        <button class="quick-btn" data-q="100">$100</button>
+        <button class="quick-btn" data-q="200">$200</button>
+        <button class="quick-btn" data-q="500">$500</button>
+      </div>
+      <div class="change-display" id="change-display"></div>
+      <div class="modal-actions">
+        <button class="modal-btn cancel" id="modal-cancel">Cancelar</button>
+        <button class="modal-btn confirm" id="modal-confirm">$ Cobrar</button>
+      </div>
+    </div>
+
+    <!-- Success -->
+    <div class="modal success-modal hidden" id="modal-success">
+      <div class="success-icon">
+        <svg width="32" height="32" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path d="M20 6 9 17l-5-5"/></svg>
+      </div>
+      <h2>¡Venta registrada!</h2>
+      <p>El cobro se realizó correctamente.</p>
+      <div class="success-detail"><span>Total</span><strong id="s-total"></strong></div>
+      <div class="success-detail"><span>Forma de pago</span><strong id="s-pago"></strong></div>
+      <div class="success-detail" id="s-cambio-row"><span>Cambio</span><strong id="s-cambio" style="color:var(--green)"></strong></div>
+      <div class="success-hr"></div>
+      <div class="success-detail"><span>Ticket #</span><strong id="s-ticket"></strong></div>
+      <button class="modal-btn confirm" id="modal-done" style="margin-top:18px;">Nueva venta</button>
+    </div>
+  </div>
+
+<script>
+const products = [
+  { sku:1,    nombre:'Coca Cola 2.5L',              codigo:'7501055310227', proveedor:'ArcaContinental', presentacion:'Botella',  costo:35.00, precio:40.00, cantidad:24 },
+  { sku:3,    nombre:'Coca Cola 1.5L',              codigo:'7501055300594', proveedor:'ArcaContinental', presentacion:'Botella',  costo:23.62, precio:27.00, cantidad:36 },
+  { sku:4,    nombre:'Gansito 50g',                 codigo:'7501000153107', proveedor:'Marinela',        presentacion:'Pieza',    costo:12.30, precio:18.00, cantidad:48 },
+  { sku:1008, nombre:'Power de Mora Azul 600ml',    codigo:'7501055310777', proveedor:'ArcaContinental', presentacion:'Botella',  costo:21.16, precio:26.00, cantidad:18 },
+  { sku:1012, nombre:'Jugo del Valle Mango 250ml',  codigo:'7501055335961', proveedor:'ArcaContinental', presentacion:'Cajita',   costo:9.87,  precio:13.00, cantidad:60 },
+  { sku:1013, nombre:'Fanta 1.5L desechable',       codigo:'0',             proveedor:'ArcaContinental', presentacion:'Botella',  costo:27.40, precio:31.00, cantidad:20 },
+  { sku:1014, nombre:'Coca Cola Vidrio 500ml',      codigo:'75004699',      proveedor:'ArcaContinental', presentacion:'Botella',  costo:13.12, precio:15.00, cantidad:30 },
+  { sku:1015, nombre:'Huevo 1Kg',                   codigo:'0',             proveedor:'Abarrotes',       presentacion:'Kilo',     costo:46.00, precio:56.00, cantidad:10 },
+  { sku:1017, nombre:'Leche Lala 1L',               codigo:'7501020526066', proveedor:'Lala',            presentacion:'Caja',     costo:31.60, precio:34.00, cantidad:24 },
+  { sku:1018, nombre:'Winis 18.2g',                 codigo:'7541774030027', proveedor:'',                presentacion:'Pieza',    costo:1.72,  precio:5.00,  cantidad:100 },
+  { sku:1019, nombre:'Sabritas Sal Original 45g',   codigo:'7501011101456', proveedor:'Sabritas',        presentacion:'Bolsa',    costo:17.11, precio:20.00, cantidad:36 },
+  { sku:1020, nombre:'Doritos Nacho 61g',           codigo:'7501011123588', proveedor:'Sabritas',        presentacion:'Bolsa',    costo:17.11, precio:20.00, cantidad:36 },
+  { sku:1022, nombre:'Cheetos Torciditos 58g',      codigo:'7501011143586', proveedor:'Sabritas',        presentacion:'Bolsa',    costo:14.54, precio:18.00, cantidad:24 },
+  { sku:1025, nombre:'Pepsi 2L',                    codigo:'7501030500232', proveedor:'PepsiCo',         presentacion:'Botella',  costo:28.00, precio:33.00, cantidad:18 },
+  { sku:1026, nombre:'7Up 2L',                      codigo:'7501030502236', proveedor:'PepsiCo',         presentacion:'Botella',  costo:26.00, precio:31.00, cantidad:12 },
+  { sku:1027, nombre:'Sprite 2L',                   codigo:'7501055305360', proveedor:'ArcaContinental', presentacion:'Botella',  costo:27.00, precio:32.00, cantidad:12 },
+  { sku:1030, nombre:'Pan Bimbo Grande',            codigo:'7501000914614', proveedor:'Bimbo',           presentacion:'Bolsa',    costo:42.00, precio:50.00, cantidad:8  },
+  { sku:1031, nombre:'Galletas Oreo 120g',          codigo:'7622210951106', proveedor:'Mondelez',        presentacion:'Paquete',  costo:18.00, precio:24.00, cantidad:30 },
+  { sku:1032, nombre:'Marinela Pingüinos',          codigo:'7501000147199', proveedor:'Marinela',        presentacion:'Pieza',    costo:10.50, precio:16.00, cantidad:48 },
+  { sku:1033, nombre:'Agua Ciel 1L',                codigo:'7501055362564', proveedor:'ArcaContinental', presentacion:'Botella',  costo:8.00,  precio:12.00, cantidad:48 },
+  { sku:1034, nombre:'Agua Ciel 500ml',             codigo:'7501055362571', proveedor:'ArcaContinental', presentacion:'Botella',  costo:5.00,  precio:8.00,  cantidad:60 },
+  { sku:1035, nombre:'Nescafé Clasico 50g',         codigo:'7501058600259', proveedor:'Nestlé',          presentacion:'Frasco',   costo:45.00, precio:58.00, cantidad:12 },
+  { sku:1036, nombre:'Azúcar Estándar 1Kg',         codigo:'7501008882230', proveedor:'Zucarmex',        presentacion:'Bolsa',    costo:22.00, precio:28.00, cantidad:20 },
+  { sku:1037, nombre:'Arroz SOS 1Kg',               codigo:'7501014600034', proveedor:'Arrocera',        presentacion:'Bolsa',    costo:24.00, precio:30.00, cantidad:15 },
+  { sku:1038, nombre:'Frijol Negro 1Kg',            codigo:'7501011000117', proveedor:'La Sierra',       presentacion:'Bolsa',    costo:28.00, precio:35.00, cantidad:10 },
+];
+
+// ─── State ────────────────────────────────────────
+let cart = [];
+let payMethod = 'Efectivo';
+let ticketCounter = 183001;
+let soldTickets = [];
+let allProducts = [...products];
+let filteredProducts = [...products];
+
+// ─── Helpers ──────────────────────────────────────
+const fmt = n => '$' + n.toFixed(2);
+const cartTotal = () => cart.reduce((s, r) => s + r.precio * r.qty, 0);
+const cartPzas  = () => cart.reduce((s, r) => s + r.qty, 0);
+
+// ─── Navigation ───────────────────────────────────
+document.querySelectorAll('.nav-item[data-view]').forEach(el => {
+  el.addEventListener('click', () => {
+    document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+    document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
+    el.classList.add('active');
+    document.getElementById(el.dataset.view).classList.add('active');
+    if (el.dataset.view === 'v-dia') renderDia();
+  });
+});
+
+// ─── Venta: search & results ───────────────────────
+function renderResults(list) {
+  const el = document.getElementById('results-list');
+  if (!list.length) {
+    el.innerHTML = '<div style="padding:20px;text-align:center;color:var(--muted);font-size:12px;">Sin resultados</div>';
+    return;
+  }
+  el.innerHTML = list.slice(0, 20).map(p => `
+    <div class="result-row" data-sku="${p.sku}">
+      <div>
+        <div class="result-name">${p.nombre}</div>
+        <div class="result-sku">SKU ${p.sku}${p.codigo && p.codigo!=='0' ? ' · '+p.codigo : ''}</div>
+      </div>
+      <div style="display:flex;align-items:center;gap:8px;">
+        <div class="result-price">${fmt(p.precio)}</div>
+        <div class="add-chip">+</div>
+      </div>
+    </div>`).join('');
+  el.querySelectorAll('.result-row').forEach(row => {
+    row.addEventListener('click', () => addToCart(parseInt(row.dataset.sku)));
+  });
+}
+
+// Show all on load
+renderResults(allProducts);
+
+function doSearch() {
+  const q = document.getElementById('search-inp').value.toLowerCase().trim();
+  if (!q) { renderResults(allProducts); return; }
+  const r = allProducts.filter(p =>
+    p.nombre.toLowerCase().includes(q) ||
+    p.codigo.includes(q) ||
+    String(p.sku).includes(q)
+  );
+  renderResults(r);
+}
+
+document.getElementById('search-inp').addEventListener('input', doSearch);
+document.getElementById('search-inp').addEventListener('keydown', e => {
+  if (e.key === 'Enter') {
+    const q = e.target.value.toLowerCase().trim();
+    const match = allProducts.find(p =>
+      p.nombre.toLowerCase().includes(q) || p.codigo === q || String(p.sku) === q
+    );
+    if (match) { addToCart(match.sku); e.target.value = ''; doSearch(); }
+  }
+});
+document.getElementById('search-btn').addEventListener('click', () => {
+  const q = document.getElementById('search-inp').value.toLowerCase().trim();
+  const match = allProducts.find(p =>
+    p.nombre.toLowerCase().includes(q) || p.codigo === q || String(p.sku) === q
+  );
+  if (match) { addToCart(match.sku); document.getElementById('search-inp').value = ''; doSearch(); }
+  else doSearch();
+});
+
+// ─── Cart ─────────────────────────────────────────
+function addToCart(sku) {
+  const p = allProducts.find(x => x.sku === sku);
+  if (!p) return;
+  const qty = parseInt(document.getElementById('qty-inp').value) || 1;
+  const existing = cart.find(r => r.sku === sku);
+  if (existing) existing.qty += qty;
+  else cart.push({ ...p, qty });
+  document.getElementById('qty-inp').value = 1;
+  renderCart();
+}
+
+function renderCart() {
+  const el = document.getElementById('sale-items');
+  const empty = document.getElementById('sale-empty');
+  const total = cartTotal();
+  const pzas  = cartPzas();
+
+  document.getElementById('total-display').textContent = fmt(total);
+  document.getElementById('ticket-pzs').textContent = pzas;
+
+  if (!cart.length) {
+    el.innerHTML = '';
+    empty.style.display = 'flex';
+    return;
+  }
+  empty.style.display = 'none';
+  el.innerHTML = cart.map((r, i) => `
+    <div class="sale-row">
+      <div class="prod-name">${r.nombre}</div>
+      <input class="qty-cell" type="number" min="1" value="${r.qty}" data-i="${i}">
+      <div class="price-cell">${fmt(r.precio)}</div>
+      <div class="total-cell">${fmt(r.precio * r.qty)}</div>
+      <button class="remove-btn" data-i="${i}">×</button>
+    </div>`).join('');
+
+  el.querySelectorAll('.qty-cell').forEach(inp => {
+    inp.addEventListener('change', () => {
+      const v = parseInt(inp.value);
+      if (v > 0) cart[parseInt(inp.dataset.i)].qty = v;
+      else cart.splice(parseInt(inp.dataset.i), 1);
+      renderCart();
+    });
+  });
+  el.querySelectorAll('.remove-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      cart.splice(parseInt(btn.dataset.i), 1);
+      renderCart();
+    });
+  });
+}
+
+document.getElementById('btn-cancelar').addEventListener('click', () => {
+  cart = [];
+  renderCart();
+  document.getElementById('ticket-pzs').textContent = '0';
+});
+
+document.getElementById('btn-tarjeta').addEventListener('click', () => {
+  payMethod = 'Tarjeta';
+  document.getElementById('ticket-pago').textContent = 'Tarjeta';
+});
+document.getElementById('btn-pendiente').addEventListener('click', () => {
+  payMethod = 'Pendiente';
+  document.getElementById('ticket-pago').textContent = 'Pendiente';
+});
+
+// ─── Cobro modal ──────────────────────────────────
+document.getElementById('btn-cobrar').addEventListener('click', () => {
+  if (!cart.length) return;
+  const total = cartTotal();
+  document.getElementById('modal-total-val').textContent = fmt(total);
+  document.getElementById('received-inp').value = '';
+  document.getElementById('change-display').innerHTML = '';
+  document.getElementById('modal-cobro').classList.remove('hidden');
+  document.getElementById('modal-success').classList.add('hidden');
+  document.getElementById('modal-overlay').classList.remove('hidden');
+  selectMethod(payMethod);
+});
+
+function selectMethod(m) {
+  payMethod = m;
+  document.getElementById('ticket-pago').textContent = m;
+  document.querySelectorAll('.pay-method').forEach(el => {
+    el.classList.toggle('selected', el.dataset.method === m);
+  });
+  const isEfectivo = m === 'Efectivo';
+  document.getElementById('received-row').style.display = isEfectivo ? 'flex' : 'none';
+  document.getElementById('quick-amounts').style.display = isEfectivo ? 'flex' : 'none';
+  document.getElementById('change-display').innerHTML = '';
+}
+document.querySelectorAll('.pay-method').forEach(el => {
+  el.addEventListener('click', () => selectMethod(el.dataset.method));
+});
+
+document.getElementById('received-inp').addEventListener('input', function() {
+  const total = cartTotal();
+  const received = parseFloat(this.value) || 0;
+  const cambio = received - total;
+  document.getElementById('change-display').innerHTML = received >= total
+    ? `Cambio: <strong>${fmt(cambio)}</strong>`
+    : received > 0 ? `<span style="color:var(--red)">Pago insuficiente</span>` : '';
+});
+
+document.querySelectorAll('.quick-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.getElementById('received-inp').value = btn.dataset.q;
+    document.getElementById('received-inp').dispatchEvent(new Event('input'));
+  });
+});
+
+document.getElementById('modal-cancel').addEventListener('click', () => {
+  document.getElementById('modal-overlay').classList.add('hidden');
+});
+document.getElementById('modal-overlay').addEventListener('click', e => {
+  if (e.target === document.getElementById('modal-overlay'))
+    document.getElementById('modal-overlay').classList.add('hidden');
+});
+
+document.getElementById('modal-confirm').addEventListener('click', () => {
+  const total = cartTotal();
+  const received = payMethod === 'Efectivo' ? parseFloat(document.getElementById('received-inp').value) || 0 : total;
+  if (payMethod === 'Efectivo' && received < total) {
+    document.getElementById('change-display').innerHTML = '<span style="color:var(--red)">Monto insuficiente</span>';
+    return;
+  }
+  const ticket = {
+    id: ticketCounter,
+    items: [...cart],
+    total,
+    pago: payMethod,
+    cambio: payMethod === 'Efectivo' ? received - total : 0,
+  };
+  soldTickets.push(ticket);
+  document.getElementById('s-total').textContent = fmt(total);
+  document.getElementById('s-pago').textContent = payMethod;
+  document.getElementById('s-cambio').textContent = fmt(ticket.cambio);
+  document.getElementById('s-cambio-row').style.display = payMethod === 'Efectivo' ? 'flex' : 'none';
+  document.getElementById('s-ticket').textContent = '#' + ticketCounter;
+  ticketCounter++;
+  document.getElementById('modal-cobro').classList.add('hidden');
+  document.getElementById('modal-success').classList.remove('hidden');
+});
+
+document.getElementById('modal-done').addEventListener('click', () => {
+  cart = [];
+  renderCart();
+  payMethod = 'Efectivo';
+  document.getElementById('ticket-pago').textContent = 'Efectivo';
+  document.getElementById('modal-overlay').classList.add('hidden');
+});
+
+// ─── Catálogo ─────────────────────────────────────
+function renderCatTable(list) {
+  document.getElementById('cat-count').textContent = list.length + ' productos encontrados.';
+  document.getElementById('cat-tbody').innerHTML = list.map(p => `
+    <tr data-sku="${p.sku}">
+      <td>${p.sku}</td>
+      <td>${p.nombre}</td>
+      <td style="font-size:11px;color:var(--muted);">${p.codigo || '—'}</td>
+      <td>${p.proveedor || '—'}</td>
+      <td>${p.presentacion || '—'}</td>
+      <td>${fmt(p.costo)}</td>
+      <td style="font-weight:700;">${fmt(p.precio)}</td>
+    </tr>`).join('');
+  document.querySelectorAll('#cat-tbody tr').forEach(row => {
+    row.addEventListener('click', () => {
+      document.querySelectorAll('#cat-tbody tr').forEach(r => r.classList.remove('selected'));
+      row.classList.add('selected');
+      const p = allProducts.find(x => x.sku === parseInt(row.dataset.sku));
+      if (!p) return;
+      document.getElementById('det-nombre').value = p.nombre;
+      document.getElementById('det-costo').value = fmt(p.costo);
+      document.getElementById('det-precio').value = fmt(p.precio);
+      document.getElementById('det-cant').value = p.cantidad;
+      document.getElementById('det-codigo').value = p.codigo || '';
+      document.getElementById('det-prov').value = p.proveedor || '';
+      document.getElementById('det-unidad').value = p.presentacion || '';
+    });
+  });
+}
+renderCatTable(allProducts);
+
+function filterCat() {
+  const q    = document.getElementById('cat-search').value.toLowerCase();
+  const code = document.getElementById('cat-code').value.toLowerCase();
+  const prov = document.getElementById('cat-prov').value.toLowerCase();
+  const min  = parseFloat(document.getElementById('cat-min').value) || 0;
+  const max  = parseFloat(document.getElementById('cat-max').value) || Infinity;
+  renderCatTable(allProducts.filter(p =>
+    (!q    || p.nombre.toLowerCase().includes(q)) &&
+    (!code || p.codigo.includes(code)) &&
+    (!prov || p.proveedor.toLowerCase().includes(prov)) &&
+    p.precio >= min && p.precio <= max
+  ));
+}
+document.getElementById('cat-filter-btn').addEventListener('click', filterCat);
+['cat-search','cat-code','cat-prov'].forEach(id =>
+  document.getElementById(id).addEventListener('keydown', e => { if (e.key==='Enter') filterCat(); })
+);
+document.getElementById('cat-clear-btn').addEventListener('click', () => {
+  ['cat-search','cat-code','cat-prov','cat-min','cat-max'].forEach(id =>
+    document.getElementById(id).value = '');
+  renderCatTable(allProducts);
+});
+
+// ─── Ventas del día ───────────────────────────────
+function renderDia() {
+  const today = new Date();
+  document.getElementById('dia-fecha').textContent =
+    today.toLocaleDateString('es-MX', { weekday:'long', year:'numeric', month:'long', day:'numeric' });
+  const total = soldTickets.reduce((s, t) => s + t.total, 0);
+  const pzas  = soldTickets.reduce((s, t) => s + t.items.reduce((a, i) => a + i.qty, 0), 0);
+  document.getElementById('stat-total').textContent   = fmt(total);
+  document.getElementById('stat-tickets').textContent = soldTickets.length;
+  document.getElementById('stat-pzas').textContent    = pzas;
+  document.getElementById('stat-prom').textContent    = soldTickets.length ? fmt(total / soldTickets.length) : '$0.00';
+  const list = document.getElementById('tickets-list');
+  const rows = soldTickets.map(t => `
+    <div class="ticket-row">
+      <span class="ticket-id">#${t.id}</span>
+      <span class="ticket-items">${t.items.map(i => i.nombre).join(', ')}</span>
+      <span><span class="ticket-pay">${t.pago}</span></span>
+      <span class="ticket-total">${fmt(t.total)}</span>
+    </div>`).reverse().join('');
+  list.innerHTML = `
+    <div class="ticket-row" style="font-size:11px;font-weight:700;color:var(--muted);">
+      <span>Ticket</span><span>Productos</span><span>Forma de pago</span><span style="text-align:right;">Total</span>
+    </div>` + (rows || `<div style="padding:30px;text-align:center;color:var(--muted);font-size:13px;">No hay ventas registradas aún.</div>`);
+}
+</script>
+</body>
+</html>

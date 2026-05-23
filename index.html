@@ -708,11 +708,23 @@
       color: rgba(255,255,255,.92);
       font-size: 16px;
     }
+    .download-actions {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 12px;
+    }
+    .history-link {
+      color: #fff;
+      font-size: 14px;
+      font-weight: 900;
+      text-decoration: underline;
+      text-underline-offset: 4px;
+    }
     .pill {
       display: inline-flex;
       align-items: center;
       min-height: 40px;
-      margin-left: 12px;
       padding: 0 20px;
       border-radius: 999px;
       color: var(--ink);
@@ -1092,7 +1104,7 @@
         <div class="download-panel" id="precios">
           <div class="download-copy">
             <svg class="icon" viewBox="0 0 24 24"><rect x="4" y="3" width="10" height="18" rx="2"/><path d="M8 17h2M16 8h2a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2h-4M18 13h2"/></svg>
-            <div><h2>Descarga Swipy y lleva tu tienda al siguiente nivel</h2><p>Instalación rápida, uso ilimitado y sin costos ocultos.</p><a class="btn light" href="https://github.com/DeSaa-Software/swipy-pages/releases/latest/download/SWIPY.zip"><svg class="icon" viewBox="0 0 24 24"><path d="M12 3v12"/><path d="m7 10 5 5 5-5"/><path d="M5 21h14"/></svg>Descargar Swipy</a><span class="pill">100% Gratis</span></div>
+            <div><h2>Descarga Swipy y lleva tu tienda al siguiente nivel</h2><p>Instalación rápida, uso ilimitado y sin costos ocultos.</p><div class="download-actions"><a class="btn light" id="download-swipy" href="https://github.com/DeSaa-Software/swipy-pages/releases/latest/download/SWIPY.zip" data-manifest-url="https://eejmmcqvmtncyexjpbuz.supabase.co/storage/v1/object/public/releases/version.json"><svg class="icon" viewBox="0 0 24 24"><path d="M12 3v12"/><path d="m7 10 5 5 5-5"/><path d="M5 21h14"/></svg>Descargar Swipy</a><a class="history-link" href="https://github.com/DeSaa-Software/swipy-pages/releases">Ver historial</a><span class="pill">100% Gratis</span></div></div>
           </div>
           <div class="divider"></div>
           <div class="points">
@@ -1116,5 +1128,26 @@
       <p class="copy">© 2026 Swipy Punto de Venta. Todos los derechos reservados.</p>
     </div>
   </footer>
+  <script>
+    (function () {
+      var downloadButton = document.getElementById('download-swipy');
+      if (!downloadButton || !window.fetch) return;
+
+      var manifestUrl = downloadButton.getAttribute('data-manifest-url');
+      fetch(manifestUrl, { cache: 'no-store' })
+        .then(function (response) {
+          if (!response.ok) throw new Error('Release manifest unavailable');
+          return response.json();
+        })
+        .then(function (release) {
+          if (release && typeof release.downloadUrl === 'string' && /^https:\/\//.test(release.downloadUrl)) {
+            downloadButton.href = release.downloadUrl;
+          }
+        })
+        .catch(function () {
+          // Keep the GitHub Releases fallback already defined in the href.
+        });
+    }());
+  </script>
 </body>
 </html>

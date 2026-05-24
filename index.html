@@ -1201,7 +1201,7 @@
   <section class="hero">
     <div class="container hero-inner">
       <div class="hero-copy">
-        <span class="eyebrow" id="hero-release-version">Windows · última versión</span>
+        <span class="eyebrow">Windows · instalador oficial</span>
         <h1>Vender en tu tienda, <em>así de fácil</em>.</h1>
         <p class="hero-lead">
           Swipy es el punto de venta hecho para tiendas de abarrotes.
@@ -1545,7 +1545,7 @@
           <h2>Empieza a vender mejor desde hoy.</h2>
           <p>Descarga Swipy, instálalo en tu computadora y empieza a cobrar en minutos. Sin tarjeta, sin registro, sin letras chicas.</p>
           <div class="download-actions">
-            <a class="btn btn-white btn-lg" id="download-swipy" href="https://github.com/DeSaa-Software/swipy-pages/releases/latest/download/SWIPY.zip" data-manifest-url="https://eejmmcqvmtncyexjpbuz.supabase.co/storage/v1/object/public/releases/version.json">
+            <a class="btn btn-white btn-lg" id="download-swipy" href="https://github.com/DeSaa-Software/swipy-pages/releases/latest/download/swipy-setup.exe">
               <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
                 <path d="M12 3v12M7 10l5 5 5-5M5 21h14"/>
               </svg>
@@ -1559,7 +1559,7 @@
             <span class="ico">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18"/></svg>
             </span>
-            <div><strong>Windows 10 o superior</strong><span id="release-version">Última versión disponible</span></div>
+            <div><strong>Windows 10 o superior</strong><span>Instalador completo desde GitHub Release</span></div>
           </div>
           <div class="download-meta-row">
             <span class="ico">
@@ -1620,7 +1620,7 @@
       </div>
       <div class="footer-bottom">
         <span>© 2026 Swipy Punto de Venta. Hecho con cariño para las tiendas.</span>
-        <span id="footer-release-version">Windows</span>
+        <span>Windows · instalador oficial</span>
       </div>
     </div>
   </footer>
@@ -1634,34 +1634,6 @@
         }, { passive: true });
       }
 
-      var downloadButton = document.getElementById('download-swipy');
-      if (!downloadButton || !window.fetch) return;
-
-      var manifestUrl = downloadButton.getAttribute('data-manifest-url');
-      fetch(manifestUrl, { cache: 'no-store' })
-        .then(function (response) {
-          if (!response.ok) throw new Error('Release manifest unavailable');
-          return response.json();
-        })
-        .then(function (release) {
-          if (release && typeof release.downloadUrl === 'string' && /^https:\/\//.test(release.downloadUrl)) {
-            downloadButton.href = release.downloadUrl;
-          }
-
-          if (release && typeof release.version === 'string' && release.version.trim()) {
-            var version = release.version.trim();
-            var releaseVersion = document.getElementById('release-version');
-            var heroReleaseVersion = document.getElementById('hero-release-version');
-            var footerReleaseVersion = document.getElementById('footer-release-version');
-
-            if (releaseVersion) releaseVersion.textContent = 'Versión ' + version;
-            if (heroReleaseVersion) heroReleaseVersion.textContent = 'v' + version + ' · para Windows';
-            if (footerReleaseVersion) footerReleaseVersion.textContent = 'v' + version + ' · Windows';
-          }
-        })
-        .catch(function () {
-          // Keep the GitHub Releases fallback already defined in the href.
-        });
     }());
   </script>
 </body>

@@ -3,1133 +3,1653 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="description" content="Swipy es un punto de venta para tiendas de abarrotes y pequenos negocios.">
-  <title>Swipy Punto de Venta</title>
+  <meta name="description" content="Swipy es un punto de venta para tiendas de abarrotes y pequeños negocios.">
+  <title>Swipy · Punto de venta</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet">
   <style>
     :root {
+      /* Brand palette (default — refined "azul brillante") */
       --blue: #0a63f6;
-      --blue-dark: #0447d8;
-      --navy: #071936;
-      --ink: #0b1c3b;
-      --muted: #53627d;
-      --line: #dce7f5;
-      --soft: #f3f8ff;
-      --white: #fff;
-      --shadow: 0 22px 55px rgba(7, 34, 83, .14);
+      --blue-hover: #0850d6;
+      --blue-soft: #eaf1ff;
+      --blue-tint: #f3f7ff;
+      --navy: #0a1f44;
+      --ink: #0e1f3d;
+      --ink-2: #324b76;
+      --muted: #6c7c97;
+      --line: #e3eaf4;
+      --line-2: #d6dfee;
+      --cream: #fbf9f4;
+      --bg: #fbfbf8;
+      --card: #ffffff;
+      --shadow-sm: 0 2px 6px rgba(11, 33, 73, .04), 0 8px 18px rgba(11, 33, 73, .04);
+      --shadow-md: 0 8px 24px rgba(11, 33, 73, .08), 0 24px 48px rgba(11, 33, 73, .06);
+      --shadow-lg: 0 32px 70px rgba(11, 33, 73, .14);
+      --accent: #0a63f6;        /* secondary accent (changes with palette tweak) */
+      --accent-soft: #eaf1ff;
+      --radius: 14px;
     }
 
-    * { box-sizing: border-box; }
+    /* Palette variants (Tweaks) */
+    body[data-palette="azul-profundo"] {
+      --blue: #1d4ed8;
+      --blue-hover: #1e40af;
+      --blue-soft: #e6ecfb;
+      --blue-tint: #f1f4fc;
+      --navy: #050e2a;
+      --accent: #1d4ed8;
+      --accent-soft: #e6ecfb;
+    }
+    body[data-palette="azul-naranja"] {
+      --blue: #0a63f6;
+      --blue-hover: #0850d6;
+      --blue-soft: #eaf1ff;
+      --blue-tint: #f3f7ff;
+      --navy: #0a1f44;
+      --accent: #ff7a3d;
+      --accent-soft: #fff1e8;
+    }
+    body[data-palette="azul-menta"] {
+      --blue: #0a63f6;
+      --blue-hover: #0850d6;
+      --blue-soft: #eaf1ff;
+      --blue-tint: #f3f7ff;
+      --navy: #0a1f44;
+      --accent: #14b8a6;
+      --accent-soft: #e3f7f4;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; }
     html { scroll-behavior: smooth; }
     body {
       margin: 0;
       color: var(--ink);
-      background: var(--white);
-      font-family: Inter, "Segoe UI", Roboto, Arial, sans-serif;
-      line-height: 1.5;
+      background: var(--bg);
+      font-family: "Manrope", system-ui, sans-serif;
+      font-size: 17px;
+      line-height: 1.55;
+      -webkit-font-smoothing: antialiased;
+      text-rendering: optimizeLegibility;
       overflow-x: hidden;
     }
     a { color: inherit; text-decoration: none; }
+    img { display: block; max-width: 100%; }
 
     .container {
-      width: min(1120px, calc(100% - 48px));
+      width: min(1200px, calc(100% - 48px));
       margin: 0 auto;
     }
 
+    .eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-family: "JetBrains Mono", monospace;
+      font-size: 12px;
+      font-weight: 500;
+      letter-spacing: .04em;
+      color: var(--blue);
+      text-transform: uppercase;
+    }
+    .eyebrow::before {
+      content: "";
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: var(--blue);
+    }
+
+    /* ── HEADER ─────────────────────────────── */
     .header {
       position: sticky;
       top: 0;
-      z-index: 20;
-      background: rgba(255,255,255,.94);
-      border-bottom: 1px solid rgba(220,231,245,.8);
-      backdrop-filter: blur(14px);
+      z-index: 30;
+      background: rgba(251, 251, 248, .85);
+      backdrop-filter: saturate(180%) blur(16px);
+      -webkit-backdrop-filter: saturate(180%) blur(16px);
+      border-bottom: 1px solid transparent;
+      transition: border-color .2s ease;
     }
-
+    .header.scrolled { border-bottom-color: var(--line); }
     .nav {
-      min-height: 84px;
       display: flex;
       align-items: center;
       justify-content: space-between;
-      gap: 28px;
+      gap: 32px;
+      min-height: 76px;
     }
-
     .brand {
       display: inline-flex;
       align-items: center;
       gap: 12px;
-      min-width: 190px;
     }
-
-    .mark {
-      width: 48px;
-      height: 48px;
+    .brand-mark {
+      width: 40px;
+      height: 40px;
+      border-radius: 10px;
+      overflow: hidden;
       display: grid;
       place-items: center;
-      border-radius: 12px;
-      overflow: hidden;
+      background: var(--navy);
+      box-shadow: 0 4px 10px rgba(10, 99, 246, .18);
     }
-
-    .mark img { width: 100%; height: 100%; object-fit: cover; border-radius: 12px; }
-    .brand strong {
-      display: block;
+    .brand-mark img { width: 100%; height: 100%; object-fit: cover; }
+    .brand-name {
+      display: grid;
+      line-height: 1;
+    }
+    .brand-name strong {
+      font-size: 22px;
+      font-weight: 800;
+      letter-spacing: -.01em;
       color: var(--navy);
-      font-size: 34px;
-      font-weight: 900;
-      line-height: .92;
     }
-    .brand span {
-      display: block;
-      color: #1c3155;
+    .brand-name span {
+      margin-top: 4px;
+      font-family: "JetBrains Mono", monospace;
       font-size: 10px;
-      font-weight: 900;
-      letter-spacing: 2.3px;
+      letter-spacing: .12em;
       text-transform: uppercase;
+      color: var(--muted);
     }
-
     .links {
       display: flex;
-      align-items: center;
-      gap: 34px;
-      font-size: 14px;
-      font-weight: 850;
+      gap: 28px;
+      font-size: 15px;
+      font-weight: 500;
+      color: var(--ink-2);
     }
-    .links a:first-child { color: var(--blue); }
+    .links a { transition: color .15s; }
+    .links a:hover { color: var(--blue); }
 
+    /* ── BUTTONS ─────────────────────────────── */
     .btn {
-      min-height: 50px;
       display: inline-flex;
       align-items: center;
       justify-content: center;
       gap: 10px;
-      padding: 0 24px;
+      min-height: 52px;
+      padding: 0 22px;
       border: 1px solid transparent;
-      border-radius: 8px;
-      font-size: 14px;
-      font-weight: 900;
+      border-radius: 12px;
+      font-family: inherit;
+      font-size: 16px;
+      font-weight: 700;
+      letter-spacing: -.005em;
+      cursor: pointer;
       white-space: nowrap;
-      transition: transform .18s ease, box-shadow .18s ease;
+      transition: transform .15s ease, box-shadow .2s ease, background .15s ease;
     }
-    .btn:hover { transform: translateY(-2px); }
-    .primary {
+    .btn-primary {
       color: #fff;
-      background: linear-gradient(180deg, #0870ff, #064fde);
-      box-shadow: 0 16px 28px rgba(6, 82, 226, .24);
+      background: var(--blue);
+      box-shadow: 0 1px 0 rgba(255,255,255,.2) inset,
+                  0 10px 22px rgba(10, 99, 246, .28);
     }
-    .secondary {
-      color: var(--blue);
-      background: #fff;
-      border-color: #8fb2ff;
+    .btn-primary:hover { background: var(--blue-hover); transform: translateY(-1px); }
+    .btn-ghost {
+      color: var(--ink);
+      background: transparent;
+      border-color: var(--line-2);
     }
-    .light {
-      color: var(--blue);
-      background: #fff;
-      box-shadow: 0 10px 22px rgba(0, 45, 140, .14);
-    }
-    .icon {
-      width: 20px;
-      height: 20px;
-      fill: none;
-      stroke: currentColor;
-      stroke-width: 2.3;
-      stroke-linecap: round;
-      stroke-linejoin: round;
-    }
-
-    .hero {
-      padding: 70px 0 42px;
-    }
-    .hero-grid {
-      display: grid;
-      grid-template-columns: minmax(360px, .78fr) minmax(560px, 1.22fr);
-      align-items: center;
-      gap: 34px;
-    }
-    .hero-grid > * { min-width: 0; }
-    .tag {
-      display: inline-flex;
-      align-items: center;
-      min-height: 32px;
-      margin-bottom: 20px;
-      padding: 0 16px;
-      border-radius: 999px;
-      color: var(--blue);
-      background: #eaf2ff;
-      font-size: 14px;
-      font-weight: 900;
-      text-transform: uppercase;
-    }
-    h1 {
-      max-width: 560px;
-      margin: 0 0 18px;
+    .btn-ghost:hover { border-color: var(--ink); background: rgba(14,31,61,.03); }
+    .btn-white {
       color: var(--navy);
-      font-size: clamp(42px, 5vw, 66px);
-      line-height: 1.07;
-      font-weight: 950;
+      background: #fff;
     }
-    h1 span {
-      display: block;
+    .btn-white:hover { transform: translateY(-1px); }
+    .btn-lg { min-height: 60px; padding: 0 28px; font-size: 17px; }
+
+    .icon { width: 20px; height: 20px; flex-shrink: 0; }
+
+    /* ── HERO ─────────────────────────────── */
+    .hero {
+      position: relative;
+      padding: 72px 0 96px;
+      overflow: hidden;
+    }
+    .hero::before {
+      content: "";
+      position: absolute;
+      top: -200px;
+      right: -100px;
+      width: 700px;
+      height: 700px;
+      background: radial-gradient(circle, var(--blue-soft) 0%, transparent 65%);
+      pointer-events: none;
+      z-index: 0;
+    }
+    .hero-inner {
+      position: relative;
+      z-index: 1;
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) minmax(0, 1.15fr);
+      gap: 56px;
+      align-items: center;
+    }
+    .hero-copy { max-width: 540px; }
+    .hero h1 {
+      margin: 18px 0 22px;
+      font-size: clamp(44px, 5.4vw, 68px);
+      font-weight: 800;
+      line-height: 1.02;
+      letter-spacing: -.025em;
+      color: var(--navy);
+    }
+    .hero h1 em {
+      font-style: normal;
       color: var(--blue);
+      background: linear-gradient(180deg, transparent 64%, var(--accent-soft) 64%, var(--accent-soft) 92%, transparent 92%);
+      padding: 0 .08em;
+      border-radius: 2px;
+      box-decoration-break: clone;
+      -webkit-box-decoration-break: clone;
     }
-    .lead {
-      max-width: 430px;
-      margin: 0 0 28px;
-      color: #1d3155;
-      font-size: 18px;
-      line-height: 1.65;
+    .hero-lead {
+      margin: 0 0 32px;
+      font-size: 19px;
+      line-height: 1.55;
+      color: var(--ink-2);
     }
-    .hero-actions {
+    .hero-ctas {
       display: flex;
       flex-wrap: wrap;
-      gap: 18px;
-      margin-bottom: 44px;
+      gap: 14px;
+      margin-bottom: 40px;
     }
-    .proof {
-      max-width: 460px;
-      display: grid;
-      grid-template-columns: repeat(4, 1fr);
-      gap: 20px;
+    .hero-proof {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 28px 32px;
     }
-    .proof div {
-      display: grid;
-      justify-items: center;
-      gap: 8px;
+    .proof-item {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--ink-2);
+    }
+    .proof-item .check {
+      width: 22px;
+      height: 22px;
+      border-radius: 50%;
+      background: var(--blue-soft);
       color: var(--blue);
-      text-align: center;
-      font-size: 12px;
-      font-weight: 850;
-      line-height: 1.2;
+      display: grid;
+      place-items: center;
+      flex-shrink: 0;
     }
+    .proof-item .check svg { width: 12px; height: 12px; }
 
+    /* ── HERO ART (CSS device + photo slot) ── */
     .hero-art {
       position: relative;
-      min-height: 590px;
+      aspect-ratio: 1.08 / 1;
+      min-height: 480px;
     }
-    .monitor {
+    .photo-slot {
       position: absolute;
-      top: 16px;
-      right: 0;
-      width: min(660px, 100%);
-      padding: 16px 16px 84px;
-      border: 14px solid #181c23;
-      border-radius: 16px 16px 10px 10px;
-      background: #f6f9ff;
-      box-shadow: 0 38px 70px rgba(0,0,0,.18);
-      transform: perspective(1200px) rotateY(-4deg) rotateX(1deg);
-    }
-    .monitor:after {
-      content: "";
-      position: absolute;
-      left: 39%;
-      bottom: -82px;
-      width: 190px;
-      height: 82px;
-      background: linear-gradient(180deg, #d9dde4, #bfc5d0);
-      clip-path: polygon(34% 0, 66% 0, 84% 100%, 16% 100%);
-      z-index: -1;
-    }
-    .monitor:before {
-      content: "";
-      position: absolute;
-      left: 28%;
-      bottom: -108px;
-      width: 330px;
-      height: 30px;
-      border-radius: 50%;
-      background: rgba(10,25,54,.16);
-      filter: blur(4px);
-      z-index: -2;
-    }
-    .mock {
-      min-height: 360px;
-      display: grid;
-      grid-template-columns: 84px 1fr;
+      left: 0;
+      top: 6%;
+      width: 56%;
+      aspect-ratio: 4 / 5;
+      border-radius: 18px;
+      background:
+        repeating-linear-gradient(135deg, #efe7d4 0 14px, #f5eede 14px 28px),
+        var(--cream);
+      box-shadow: var(--shadow-md);
       overflow: hidden;
-      border-radius: 7px;
-      background: #fff;
+      border: 1px solid rgba(0,0,0,.04);
     }
-    .side {
-      padding: 22px 12px;
-      color: #fff;
-      background: #061936;
-      font-size: 10px;
-      font-weight: 850;
-    }
-    .side strong {
-      display: block;
-      margin-bottom: 22px;
-      font-size: 13px;
-      letter-spacing: .7px;
-    }
-    .side span {
-      display: block;
-      margin: 8px 0;
-      padding: 7px 8px;
-      border-radius: 5px;
-      color: rgba(255,255,255,.62);
-    }
-    .side span:first-of-type {
-      color: #fff;
-      background: var(--blue);
-    }
-    .mock-content { padding: 22px; }
-    .mock-top {
-      display: flex;
-      justify-content: space-between;
-      gap: 18px;
-      margin-bottom: 18px;
-    }
-    .mock h2 {
-      margin: 0;
-      color: #172748;
-      font-size: 20px;
-      line-height: 1.1;
-    }
-    .mock small {
-      color: #77859b;
-      font-weight: 800;
-    }
-    .kpis {
-      display: flex;
-      gap: 10px;
-    }
-    .kpis span {
-      width: 54px;
-      padding: 7px 8px;
-      border: 1px solid #e4ebf7;
-      border-radius: 6px;
-      color: #66758c;
-      background: #fbfdff;
-      font-size: 9px;
-      font-weight: 850;
-      text-align: center;
-    }
-    .search {
-      display: grid;
-      grid-template-columns: 1fr 112px;
-      gap: 10px;
-      margin-bottom: 18px;
-    }
-    .search span, .line {
-      border-radius: 6px;
-      background: #eef4fb;
-    }
-    .search span { min-height: 34px; border: 1px solid #e0e8f3; background: #f7faff; }
-    .search b {
-      display: grid;
-      place-items: center;
-      border-radius: 6px;
-      color: #fff;
-      background: var(--blue);
-      font-size: 10px;
-    }
-    .panels {
-      display: grid;
-      grid-template-columns: 1.1fr .9fr;
-      gap: 16px;
-    }
-    .panel {
-      min-height: 176px;
-      padding: 12px;
-      border: 1px solid #e3eaf5;
-      border-radius: 7px;
-      background: linear-gradient(180deg, #fff, #fbfdff);
-      box-shadow: 0 8px 18px rgba(20,43,78,.05);
-    }
-    .panel strong {
-      display: block;
-      margin-bottom: 10px;
-      color: #182847;
-      font-size: 11px;
-    }
-    .line {
-      display: block;
-      height: 18px;
-      margin-top: 8px;
-    }
-    .mock-bottom {
-      display: flex;
-      align-items: end;
-      justify-content: space-between;
-      margin-top: 18px;
-    }
-    .total {
-      color: #071936;
-      font-size: 32px;
-      font-weight: 950;
-    }
-    .pay {
-      display: flex;
-      gap: 8px;
-    }
-    .pay span {
-      min-width: 48px;
-      padding: 10px 9px;
-      border-radius: 6px;
-      background: #eef5ff;
-      color: #52637b;
-      font-size: 10px;
-      font-weight: 850;
-      text-align: center;
-    }
-    .pay span:last-child { color: #fff; background: var(--blue); }
-
-    .phone {
-      position: absolute;
-      left: 24px;
-      bottom: 48px;
-      width: 162px;
-      height: 314px;
-      padding: 18px 13px;
-      border: 6px solid #10151f;
-      border-radius: 28px;
-      background: #fff;
-      box-shadow: 0 25px 45px rgba(0,0,0,.19);
-    }
-    .phone:before {
-      content: "";
-      position: absolute;
-      left: 50%;
-      top: 8px;
-      width: 58px;
-      height: 10px;
-      border-radius: 0 0 9px 9px;
-      background: #111722;
-      transform: translateX(-50%);
-    }
-    .phone-screen {
-      height: 100%;
-      display: grid;
-      place-items: center;
-      overflow: hidden;
-      border-radius: 20px;
-      background: linear-gradient(160deg, #fff 0 58%, #eaf4ff 58% 66%, #4aa0ff 66% 76%, #0868ff 76% 100%);
-      text-align: center;
-    }
-    .phone .mark {
-      margin: 0 auto 8px;
-      width: 78px;
-      height: 78px;
-      border-radius: 16px;
-    }
-    .phone strong {
-      display: block;
-      color: var(--navy);
-      font-size: 34px;
-      line-height: 1;
-      font-weight: 950;
-    }
-    .phone span {
-      color: #243754;
-      font-size: 8px;
-      font-weight: 900;
-      letter-spacing: 1.2px;
-    }
-    .basket {
-      position: absolute;
-      right: 4px;
-      bottom: 24px;
-      width: 230px;
-      height: 154px;
-      z-index: 3;
-    }
-    .basket-body {
+    .photo-slot::after {
+      content: "// foto · tendero atendiendo en mostrador";
       position: absolute;
       left: 18px;
+      bottom: 18px;
+      right: 18px;
+      font-family: "JetBrains Mono", monospace;
+      font-size: 11px;
+      letter-spacing: .02em;
+      color: #6b5b34;
+      background: rgba(255,255,255,.85);
+      padding: 8px 12px;
+      border-radius: 8px;
+    }
+    .photo-slot::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background:
+        radial-gradient(circle at 30% 35%, rgba(255,255,255,.6) 0%, transparent 35%),
+        linear-gradient(180deg, transparent 50%, rgba(0,0,0,.05) 100%);
+    }
+
+    /* Realistic POS UI — matches actual app layout */
+    .pos-device {
+      position: absolute;
       right: 0;
-      bottom: 0;
-      height: 98px;
-      border-radius: 10px 10px 24px 24px;
-      background: linear-gradient(180deg, #0871ff, #0151d8);
-      box-shadow: 0 18px 24px rgba(4,60,165,.2);
-    }
-    .basket-body:before {
-      content: "";
-      position: absolute;
-      left: -9px;
-      right: 9px;
-      top: 18px;
-      height: 16px;
-      border-radius: 10px;
-      background: #064fd1;
-    }
-    .slot {
-      position: absolute;
-      top: 42px;
-      width: 18px;
-      height: 34px;
-      border-radius: 8px;
-      background: rgba(255,255,255,.35);
-    }
-    .slot:nth-child(1) { left: 30px; }
-    .slot:nth-child(2) { left: 68px; }
-    .slot:nth-child(3) { left: 106px; }
-    .slot:nth-child(4) { left: 144px; }
-    .product {
-      position: absolute;
-      bottom: 58px;
-      border-radius: 8px;
-      box-shadow: 0 8px 16px rgba(10,24,54,.15);
-    }
-    .bag {
-      left: 36px;
-      width: 62px;
-      height: 86px;
-      background: linear-gradient(180deg, #f8c546, #e68221);
-      transform: rotate(-7deg);
-    }
-    .can {
-      left: 102px;
-      width: 48px;
-      height: 72px;
-      border-radius: 12px;
-      background: linear-gradient(90deg, #b51922, #f15045 48%, #b51922);
-    }
-    .bottle {
-      right: 16px;
-      width: 54px;
-      height: 128px;
-      border-radius: 18px 18px 10px 10px;
-      background: linear-gradient(90deg, #f9fbff, #fff 42%, #e7eef6);
-    }
-    .bottle:before {
-      content: "";
-      position: absolute;
-      left: 16px;
-      top: -30px;
-      width: 22px;
-      height: 38px;
-      border-radius: 8px 8px 3px 3px;
-      background: #f3f7fc;
-    }
-
-    .section-title {
-      margin: 0 0 12px;
-      color: var(--navy);
-      font-size: clamp(30px, 3vw, 38px);
-      line-height: 1.12;
-      font-weight: 950;
-      text-align: center;
-    }
-    .section-subtitle {
-      max-width: 640px;
-      margin: 0 auto 28px;
-      color: var(--muted);
-      font-size: 17px;
-      text-align: center;
-    }
-    .features { padding: 20px 0 18px; }
-    .feature-grid {
-      display: grid;
-      grid-template-columns: repeat(5, 1fr);
-      gap: 14px;
-      margin-top: 34px;
-    }
-    .card {
-      min-width: 0;
-      min-height: 212px;
-      padding: 30px 22px 24px;
+      top: 0;
+      width: 96%;
+      background: var(--card);
       border: 1px solid var(--line);
-      border-radius: 8px;
-      background: #fff;
-      text-align: center;
-      box-shadow: 0 12px 30px rgba(14,43,82,.04);
+      border-radius: 14px;
+      box-shadow: var(--shadow-lg);
+      overflow: hidden;
+      transform: rotate(-1deg);
+      display: grid;
+      grid-template-columns: 84px 1fr;
+      font-size: 11px;
     }
-    .card .icon {
-      width: 52px;
-      height: 52px;
-      margin-bottom: 18px;
-      color: var(--blue);
-      stroke-width: 1.9;
-    }
-    .card h3 {
-      margin: 0 0 10px;
-      color: var(--navy);
-      font-size: 16px;
-      line-height: 1.2;
-      font-weight: 950;
-    }
-    .card p {
-      margin: 0;
-      color: #213553;
-      font-size: 14px;
-      line-height: 1.45;
+    .pos-device::before {
+      content: "";
+      position: absolute;
+      left: 0;
+      right: 0;
+      top: 0;
+      height: 3px;
+      background: var(--blue);
+      z-index: 2;
     }
 
-    .screens { padding: 22px 0 58px; }
+    /* Sidebar */
+    .pos-side {
+      background: #0e1622;
+      padding: 12px 8px;
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+      color: #fff;
+    }
+    .pos-brand {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      padding: 4px 6px 10px;
+    }
+    .pos-brand .sq {
+      width: 18px;
+      height: 18px;
+      border-radius: 4px;
+      background: var(--blue);
+      color: #fff;
+      display: grid;
+      place-items: center;
+      font-size: 11px;
+      font-weight: 800;
+    }
+    .pos-brand strong {
+      font-size: 11px;
+      font-weight: 800;
+      letter-spacing: .04em;
+    }
+    .pos-nav {
+      padding: 5px 8px;
+      border-radius: 4px;
+      font-size: 9.5px;
+      font-weight: 600;
+      color: rgba(255,255,255,.55);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .pos-nav.on {
+      background: var(--blue);
+      color: #fff;
+    }
+    .pos-nav svg { width: 10px; height: 10px; flex-shrink: 0; opacity: .9; }
+    .pos-bottom { margin-top: auto; }
+    .pos-premium {
+      padding: 5px 8px;
+      border-radius: 4px;
+      font-size: 9px;
+      font-weight: 700;
+      color: #f4b400;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    /* Main area */
+    .pos-main {
+      display: flex;
+      flex-direction: column;
+      min-width: 0;
+    }
+    .pos-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      padding: 14px 16px 10px;
+      border-bottom: 1px solid var(--line);
+    }
+    .pos-head .title {
+      font-size: 16px;
+      font-weight: 800;
+      color: var(--navy);
+      letter-spacing: -.01em;
+    }
+    .pos-head .sub {
+      font-size: 9.5px;
+      color: var(--muted);
+      margin-top: 2px;
+    }
+    .pos-chips { display: flex; gap: 6px; }
+    .pos-chip {
+      padding: 5px 9px;
+      border: 1px solid var(--line);
+      border-radius: 6px;
+      text-align: center;
+      min-width: 46px;
+    }
+    .pos-chip .k {
+      font-size: 8px;
+      color: var(--muted);
+      font-weight: 600;
+      letter-spacing: .04em;
+    }
+    .pos-chip .v {
+      font-size: 11px;
+      font-weight: 800;
+      color: var(--navy);
+      margin-top: 1px;
+    }
+    .pos-chip.green .v { color: #16a34a; }
+
+    .pos-search {
+      display: grid;
+      grid-template-columns: 1fr 28px auto;
+      gap: 5px;
+      padding: 9px 16px;
+    }
+    .pos-search .inp {
+      height: 26px;
+      border-radius: 5px;
+      background: #fff;
+      border: 1px solid var(--line);
+    }
+    .pos-search .qty {
+      height: 26px;
+      border-radius: 5px;
+      background: #fff;
+      border: 1px solid var(--line);
+      display: grid;
+      place-items: center;
+      font-size: 10px;
+      font-weight: 700;
+      color: var(--navy);
+    }
+    .pos-search .agg {
+      height: 26px;
+      padding: 0 10px;
+      border-radius: 5px;
+      background: var(--blue);
+      color: #fff;
+      font-size: 9.5px;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+    .pos-search .agg svg { width: 10px; height: 10px; }
+
+    .pos-cols {
+      flex: 1;
+      display: grid;
+      grid-template-columns: 1.45fr 1fr;
+      gap: 8px;
+      padding: 0 16px 10px;
+      min-height: 0;
+    }
+    .pos-panel {
+      border: 1px solid var(--line);
+      border-radius: 6px;
+      padding: 8px 10px;
+      display: flex;
+      flex-direction: column;
+      min-height: 0;
+      background: #fff;
+    }
+    .pos-panel h5 {
+      margin: 0 0 6px;
+      font-size: 10px;
+      font-weight: 800;
+      color: var(--navy);
+      letter-spacing: -.005em;
+    }
+    .pos-th {
+      display: grid;
+      grid-template-columns: 1.4fr 24px 32px 36px 18px;
+      gap: 4px;
+      font-size: 7.5px;
+      font-weight: 700;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: .04em;
+      padding-bottom: 3px;
+      border-bottom: 1px solid var(--line);
+    }
+    .pos-tr {
+      display: grid;
+      grid-template-columns: 1.4fr 24px 32px 36px 18px;
+      gap: 4px;
+      padding: 5px 0;
+      align-items: center;
+      font-size: 9px;
+      border-bottom: 1px dashed var(--line);
+    }
+    .pos-tr .n { color: var(--navy); font-weight: 600; }
+    .pos-tr .q { color: var(--muted); text-align: center; }
+    .pos-tr .p { color: var(--muted); }
+    .pos-tr .t { color: var(--navy); font-weight: 700; text-align: right; }
+    .pos-tr .x {
+      width: 14px;
+      height: 14px;
+      border-radius: 3px;
+      background: #fee2e2;
+      color: #dc2626;
+      display: grid;
+      place-items: center;
+      font-size: 9px;
+      font-weight: 700;
+      justify-self: end;
+    }
+    .pos-empty {
+      flex: 1;
+      display: grid;
+      place-items: center;
+      color: var(--muted);
+      font-size: 9px;
+      padding: 12px;
+      text-align: center;
+    }
+
+    /* Foot bar — total + pago recibido + quick amounts + actions */
+    .pos-foot {
+      display: grid;
+      grid-template-columns: auto 1fr auto;
+      gap: 14px;
+      align-items: end;
+      padding: 12px 16px 14px;
+      border-top: 1px solid var(--line);
+      background: var(--blue-tint);
+    }
+    .pos-foot .total {
+      font-size: 22px;
+      font-weight: 800;
+      color: var(--navy);
+      letter-spacing: -.025em;
+      line-height: 1;
+    }
+    .pos-pay {
+      display: flex;
+      align-items: end;
+      gap: 6px;
+    }
+    .pos-pay .field {
+      display: grid;
+      gap: 3px;
+    }
+    .pos-pay .field label {
+      font-size: 8px;
+      font-weight: 700;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: .04em;
+    }
+    .pos-pay .recibido {
+      width: 60px;
+      height: 24px;
+      border-radius: 5px;
+      background: #fff;
+      border: 1px solid var(--line);
+      display: grid;
+      place-items: center;
+      font-size: 10px;
+      font-weight: 600;
+      color: var(--muted);
+    }
+    .pos-pay .cambio {
+      padding: 4px 8px;
+      border-radius: 5px;
+      background: #dcfce7;
+      border: 1px solid #bbf7d0;
+      color: #166534;
+    }
+    .pos-pay .cambio .v {
+      font-size: 12px;
+      font-weight: 800;
+      letter-spacing: -.015em;
+    }
+    .pos-quick { display: flex; gap: 3px; }
+    .pos-quick .q {
+      height: 22px;
+      padding: 0 6px;
+      border-radius: 4px;
+      background: #fff;
+      border: 1px solid var(--line);
+      color: var(--ink);
+      font-size: 9px;
+      font-weight: 700;
+      display: grid;
+      place-items: center;
+    }
+    .pos-actions {
+      display: flex;
+      gap: 5px;
+    }
+    .pos-actions .a {
+      height: 28px;
+      padding: 0 10px;
+      border-radius: 5px;
+      font-size: 9.5px;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+    .pos-actions .cancel {
+      background: #fff;
+      color: var(--ink-2);
+      border: 1px solid var(--line);
+    }
+    .pos-actions .qr {
+      background: #fff;
+      color: var(--ink-2);
+      border: 1px solid var(--line);
+    }
+    .pos-actions .cobrar {
+      background: var(--blue);
+      color: #fff;
+      box-shadow: 0 4px 12px rgba(10,99,246,.35);
+    }
+    .pos-actions svg { width: 10px; height: 10px; }
+
+    /* ── SECTIONS ─────────────────────────── */
+    section { padding: 100px 0; }
+    section.tight { padding: 80px 0; }
+    .section-head {
+      display: flex;
+      align-items: flex-end;
+      justify-content: space-between;
+      gap: 32px;
+      margin-bottom: 48px;
+    }
+    .section-head h2 {
+      margin: 14px 0 0;
+      max-width: 620px;
+      font-size: clamp(34px, 3.6vw, 48px);
+      line-height: 1.05;
+      letter-spacing: -.022em;
+      font-weight: 800;
+      color: var(--navy);
+      text-wrap: balance;
+    }
+    .section-head p {
+      max-width: 380px;
+      margin: 0;
+      color: var(--ink-2);
+      font-size: 17px;
+      text-align: right;
+    }
+
+    /* ── BENEFITS (3 BIG CARDS) ─────────────── */
+    .benefits {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 20px;
+    }
+    .benefit {
+      position: relative;
+      padding: 32px 30px 30px;
+      background: var(--card);
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow-sm);
+      overflow: hidden;
+      transition: transform .2s ease, box-shadow .2s ease;
+    }
+    .benefit:hover {
+      transform: translateY(-3px);
+      box-shadow: var(--shadow-md);
+    }
+    .benefit-num {
+      font-family: "JetBrains Mono", monospace;
+      font-size: 12px;
+      color: var(--muted);
+      letter-spacing: .04em;
+    }
+    .benefit-glyph {
+      width: 56px;
+      height: 56px;
+      margin: 20px 0 24px;
+      border-radius: 14px;
+      background: var(--blue-soft);
+      color: var(--blue);
+      display: grid;
+      place-items: center;
+    }
+    .benefit-glyph svg { width: 28px; height: 28px; }
+    .benefit h3 {
+      margin: 0 0 8px;
+      font-size: 24px;
+      font-weight: 800;
+      letter-spacing: -.015em;
+      color: var(--navy);
+    }
+    .benefit p {
+      margin: 0;
+      color: var(--ink-2);
+      font-size: 16px;
+      line-height: 1.55;
+    }
+    .benefit-meta {
+      margin-top: 20px;
+      padding-top: 18px;
+      border-top: 1px dashed var(--line-2);
+      display: flex;
+      justify-content: space-between;
+      font-size: 13px;
+      font-weight: 600;
+    }
+    .benefit-meta span { color: var(--muted); }
+    .benefit-meta strong { color: var(--blue); }
+
+    /* ── SCREENS ─────────────────────────── */
+    .screens-section {
+      background:
+        radial-gradient(circle at 80% 10%, var(--blue-soft) 0%, transparent 50%),
+        var(--bg);
+    }
     .screen-grid {
       display: grid;
-      grid-template-columns: repeat(2, 1fr);
+      grid-template-columns: 1.15fr 1fr;
       gap: 28px;
-      margin-top: 22px;
+      align-items: stretch;
     }
-
-    /* Mockups realistas de la app */
-    .app-wrap { height: 100%; display: flex; overflow: hidden; border-radius: 5px; border: 1px solid #bcd3f2; }
-    .app-side { width: 76px; background: #181c23; padding: 8px 6px; display: flex; flex-direction: column; gap: 2px; flex-shrink: 0; }
-    .app-logo { color: #fff; font-size: 7px; font-weight: 900; letter-spacing: .4px; margin-bottom: 7px; padding: 0 2px; }
-    .app-item { padding: 4px 5px; border-radius: 3px; color: rgba(255,255,255,.5); font-size: 5.5px; font-weight: 700; }
-    .app-item.on { background: #0a63f6; color: #fff; }
-    .app-main { flex: 1; background: #fff; display: flex; flex-direction: column; overflow: hidden; min-width: 0; }
-    .app-head { padding: 7px 9px 4px; border-bottom: 1px solid #f0f4fa; }
-    .app-title { font-size: 9px; font-weight: 900; color: #172748; line-height: 1; }
-    .app-sub { font-size: 5px; color: #90a0b4; margin-top: 1px; }
-    .app-search { display: flex; gap: 4px; padding: 5px 9px; }
-    .app-inp { flex: 1; height: 13px; border: 1px solid #dde6f3; border-radius: 3px; background: #f7faff; }
-    .app-inp-num { width: 22px; height: 13px; border: 1px solid #dde6f3; border-radius: 3px; background: #f7faff; }
-    .app-btn { height: 13px; padding: 0 7px; background: #0a63f6; border-radius: 3px; color: #fff; font-size: 5px; font-weight: 700; display: flex; align-items: center; white-space: nowrap; }
-    .app-cols { flex: 1; display: grid; grid-template-columns: 1fr .72fr; gap: 5px; padding: 0 9px 5px; overflow: hidden; }
-    .app-panel { border: 1px solid #e3eaf5; border-radius: 4px; padding: 5px 6px; overflow: hidden; }
-    .app-ptitle { font-size: 6px; font-weight: 800; color: #182847; margin-bottom: 3px; }
-    .app-th { display: flex; gap: 4px; border-bottom: 1px solid #eef3fb; padding-bottom: 2px; margin-bottom: 2px; }
-    .app-th span { font-size: 4.5px; color: #8899b0; font-weight: 700; flex: 1; }
-    .app-th span:first-child { flex: 2; }
-    .app-foot { padding: 4px 9px; border-top: 1px solid #eef3fb; display: flex; justify-content: space-between; align-items: center; flex-shrink: 0; }
-    .app-total { font-size: 12px; font-weight: 900; color: #071936; }
-    .app-pays { display: flex; gap: 3px; }
-    .app-pay { height: 12px; padding: 0 5px; border-radius: 3px; background: #eef5ff; color: #52637b; font-size: 4.5px; font-weight: 700; display: flex; align-items: center; }
-    .app-pay.b { background: #0a63f6; color: #fff; }
-    /* Catálogo */
-    .app-filters { padding: 4px 9px; border-bottom: 1px solid #f0f4fa; display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 4px; }
-    .app-field label { display: block; font-size: 4.5px; color: #8899b0; margin-bottom: 1px; }
-    .app-field input-mock { display: block; height: 10px; border: 1px solid #dde6f3; border-radius: 3px; background: #f7faff; }
-    .app-tbl { flex: 1; padding: 4px 9px; overflow: hidden; }
-    .app-thead { display: grid; grid-template-columns: 18px 1fr 52px 38px 32px 32px; gap: 2px; border-bottom: 1px solid #e3eaf5; padding-bottom: 2px; margin-bottom: 1px; }
-    .app-thead span { font-size: 4.5px; color: #8899b0; font-weight: 700; }
-    .app-trow { display: grid; grid-template-columns: 18px 1fr 52px 38px 32px 32px; gap: 2px; padding: 2.5px 0; border-bottom: 1px solid #f5f8fd; }
-    .app-trow span { font-size: 4.5px; color: #172748; }
     .screen-card {
-      overflow: hidden;
+      background: var(--card);
       border: 1px solid var(--line);
-      border-radius: 8px;
-      background: #fff;
-      box-shadow: 0 15px 35px rgba(6,51,104,.08);
-    }
-    .mini-screen {
-      aspect-ratio: 16 / 9;
-      padding: 8px;
-      background: #edf6ff;
-    }
-    .mini-ui {
-      height: 100%;
-      display: grid;
-      grid-template-columns: 48px 1fr;
+      border-radius: 18px;
+      box-shadow: var(--shadow-sm);
       overflow: hidden;
-      border: 1px solid #bcd3f2;
-      border-radius: 5px;
-      background: #fff;
+      display: flex;
+      flex-direction: column;
     }
-    .mini-side { padding: 10px 7px; background: #061936; }
-    .mini-side i, .mini-main i, .mini-main em {
-      display: block;
-      border-radius: 3px;
-      background: #dfe8f5;
+    .screen-frame {
+      flex: 1;
+      padding: 18px;
+      background: var(--blue-tint);
+      min-height: 380px;
     }
-    .mini-side i {
-      height: 6px;
-      margin-bottom: 8px;
-      background: rgba(255,255,255,.75);
+    .screen-body {
+      padding: 24px 28px 28px;
+      border-top: 1px solid var(--line);
     }
-    .mini-side i:nth-child(2) { background: var(--blue); }
-    .mini-main { padding: 11px 12px; }
-    .mini-main em {
-      width: 34%;
-      height: 10px;
-      margin-bottom: 10px;
+    .screen-body .tag {
+      font-family: "JetBrains Mono", monospace;
+      font-size: 11px;
+      color: var(--blue);
+      letter-spacing: .04em;
     }
-    .mini-cols {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 10px;
-    }
-    .mini-panel {
-      height: 92px;
-      padding: 8px;
-      border: 1px solid #e3eaf5;
-      border-radius: 5px;
-      background: #fbfdff;
-    }
-    .mini-main i {
-      height: 7px;
-      margin: 6px 0;
-      background: #edf3fb;
-    }
-    .mini-total {
-      margin-top: 9px;
-      color: #081936;
-      font-size: 17px;
-      font-weight: 950;
-    }
-    .screen-body { padding: 16px 28px 22px; }
     .screen-body h3 {
-      margin: 0 0 6px;
+      margin: 8px 0 6px;
+      font-size: 22px;
+      font-weight: 800;
+      letter-spacing: -.015em;
       color: var(--navy);
-      font-size: 15px;
-      font-weight: 950;
     }
     .screen-body p {
       margin: 0;
-      color: #1f3150;
-      font-size: 14px;
-      line-height: 1.45;
-    }
-    .center { display: flex; justify-content: center; margin-top: 12px; }
-
-    .download { padding: 0 0 18px; }
-    .download-panel {
-      min-height: 210px;
-      display: grid;
-      grid-template-columns: 1fr 1px 1.08fr 280px;
-      align-items: center;
-      gap: 44px;
-      padding: 36px 64px;
-      border-radius: 18px;
-      color: #fff;
-      background: linear-gradient(135deg, #0647db, #086dff);
-      box-shadow: 0 25px 56px rgba(6,83,226,.22);
-    }
-    .download-copy {
-      display: grid;
-      grid-template-columns: 76px 1fr;
-      gap: 24px;
-      align-items: start;
-    }
-    .download-copy > .icon {
-      width: 58px;
-      height: 58px;
-      margin-top: 6px;
-    }
-    .download h2 {
-      margin: 0 0 10px;
-      font-size: 30px;
-      line-height: 1.2;
-      font-weight: 950;
-    }
-    .download p {
-      margin: 0 0 24px;
-      color: rgba(255,255,255,.92);
-      font-size: 16px;
-    }
-    .download-actions {
-      display: flex;
-      flex-wrap: wrap;
-      align-items: center;
-      gap: 12px;
-    }
-    .history-link {
-      color: #fff;
-      font-size: 14px;
-      font-weight: 900;
-      text-decoration: underline;
-      text-underline-offset: 4px;
-    }
-    .pill {
-      display: inline-flex;
-      align-items: center;
-      min-height: 40px;
-      padding: 0 20px;
-      border-radius: 999px;
-      color: var(--ink);
-      background: #fff;
-      font-size: 14px;
-      font-weight: 950;
-    }
-    .divider {
-      height: 132px;
-      background: rgba(255,255,255,.38);
-    }
-    .points { display: grid; gap: 26px; }
-    .point {
-      display: grid;
-      grid-template-columns: 38px 1fr;
-      gap: 14px;
-    }
-    .point .icon {
-      width: 32px;
-      height: 32px;
-    }
-    .point strong {
-      display: block;
-      margin-bottom: 3px;
+      color: var(--ink-2);
       font-size: 15px;
-      font-weight: 950;
     }
-    .point span {
-      color: rgba(255,255,255,.9);
-      font-size: 14px;
+
+    /* Punto de venta mini */
+    .ui {
+      height: 100%;
+      display: flex;
+      background: #fff;
+      border-radius: 10px;
+      overflow: hidden;
+      border: 1px solid var(--line);
     }
-    .shop {
-      position: relative;
-      height: 150px;
-      align-self: end;
+    .ui-side {
+      width: 90px;
+      background: var(--navy);
+      padding: 14px 10px;
+      color: #fff;
+      flex-shrink: 0;
+      display: flex;
+      flex-direction: column;
     }
-    .shop-base {
-      position: absolute;
-      right: 0;
-      bottom: 0;
-      width: 220px;
-      height: 120px;
-      border-radius: 10px 10px 18px 18px;
-      background: linear-gradient(145deg, #47a2ff, #0c4dc3);
-      box-shadow: 0 20px 28px rgba(3,38,113,.28);
+    .ui-side .brand-tiny {
+      font-family: "JetBrains Mono", monospace;
+      font-size: 10px;
+      letter-spacing: .15em;
+      color: rgba(255,255,255,.7);
+      margin-bottom: 16px;
     }
-    .shop-base:before {
-      content: "ABARROTES";
-      position: absolute;
-      left: 48px;
-      top: -32px;
-      width: 128px;
-      height: 42px;
+    .ui-side .item {
+      padding: 7px 9px;
+      border-radius: 5px;
+      font-size: 11px;
+      color: rgba(255,255,255,.6);
+      margin-bottom: 2px;
+    }
+    .ui-side .item.on { background: var(--blue); color: #fff; font-weight: 700; }
+    .ui-main {
+      flex: 1;
+      padding: 16px 18px;
+      min-width: 0;
+    }
+    .ui-h {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      margin-bottom: 14px;
+    }
+    .ui-h h5 {
+      margin: 0;
+      font-size: 15px;
+      font-weight: 800;
+      color: var(--navy);
+      letter-spacing: -.01em;
+    }
+    .ui-h small { font-size: 10px; color: var(--muted); }
+    .ui-search {
+      display: flex;
+      gap: 6px;
+      margin-bottom: 14px;
+    }
+    .ui-search .x {
+      flex: 1;
+      height: 28px;
+      border-radius: 6px;
+      background: var(--blue-tint);
+      border: 1px solid var(--line);
+    }
+    .ui-search .y {
+      height: 28px;
+      padding: 0 10px;
+      border-radius: 6px;
+      background: var(--blue);
+      color: #fff;
+      font-size: 10px;
+      font-weight: 700;
       display: grid;
       place-items: center;
-      border-radius: 8px 8px 0 0;
-      color: #ec423c;
-      background: #f4f8ff;
-      font-weight: 950;
-      transform: rotate(-6deg);
     }
-    .awning {
-      position: absolute;
-      right: 12px;
-      top: 20px;
-      width: 196px;
-      height: 42px;
-      display: flex;
-      overflow: hidden;
-      border-radius: 10px;
-    }
-    .awning i { flex: 1; background: #fff; }
-    .awning i:nth-child(even) { background: #f0443e; }
-    .door, .window {
-      position: absolute;
-      bottom: 18px;
-      border: 4px solid #173e8e;
-      border-radius: 6px;
-      background: #0d2c6b;
-    }
-    .door { left: 40px; width: 56px; height: 70px; }
-    .window {
-      right: 30px;
-      width: 70px;
-      height: 48px;
-      background: linear-gradient(135deg, #c7f0ff, #1882ed);
-    }
-    .boxes {
-      position: absolute;
-      left: -26px;
-      bottom: 0;
+    .ui-rows .r {
       display: grid;
-      grid-template-columns: repeat(2, 42px);
-      gap: 4px;
-      align-items: end;
+      grid-template-columns: 1fr 30px 50px;
+      gap: 6px;
+      padding: 7px 0;
+      border-bottom: 1px dashed var(--line);
+      font-size: 11px;
     }
-    .boxes i {
-      width: 42px;
-      height: 34px;
-      border-radius: 5px;
-      background: linear-gradient(180deg, #dba458, #b66f2b);
+    .ui-rows .r .n { color: var(--navy); font-weight: 600; }
+    .ui-rows .r .q { color: var(--muted); text-align: center; }
+    .ui-rows .r .p { color: var(--navy); font-weight: 700; text-align: right; }
+    .ui-foot {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+      margin-top: 14px;
+      padding-top: 12px;
+      border-top: 1px solid var(--line);
+    }
+    .ui-foot .t {
+      font-size: 22px;
+      font-weight: 800;
+      color: var(--navy);
+      letter-spacing: -.02em;
+    }
+    .ui-foot .cob {
+      padding: 7px 14px;
+      border-radius: 7px;
+      background: var(--navy);
+      color: #fff;
+      font-size: 11px;
+      font-weight: 700;
     }
 
-    .footer {
-      padding: 42px 0 22px;
+    /* Corte de caja screen */
+    .corte {
+      height: 100%;
+      background: #fff;
+      border-radius: 10px;
+      border: 1px solid var(--line);
+      padding: 22px;
+      display: flex;
+      flex-direction: column;
+    }
+    .corte-h {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 18px;
+    }
+    .corte-h h5 {
+      margin: 0;
+      font-size: 16px;
+      font-weight: 800;
+      color: var(--navy);
+      letter-spacing: -.01em;
+    }
+    .corte-h small {
+      display: block;
+      font-size: 11px;
+      color: var(--muted);
+      margin-top: 3px;
+    }
+    .corte-h .date-pill {
+      font-family: "JetBrains Mono", monospace;
+      font-size: 10px;
+      padding: 4px 9px;
+      background: var(--blue-soft);
+      color: var(--blue);
+      border-radius: 5px;
+      letter-spacing: .04em;
+    }
+    .corte-stats {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+      margin-bottom: 14px;
+    }
+    .corte-stat {
+      padding: 12px;
+      background: var(--blue-tint);
+      border: 1px solid var(--line);
+      border-radius: 8px;
+    }
+    .corte-stat .lbl {
+      font-size: 10px;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: .06em;
+      font-weight: 700;
+    }
+    .corte-stat .val {
+      font-size: 20px;
+      font-weight: 800;
+      color: var(--navy);
+      letter-spacing: -.02em;
+      margin-top: 4px;
+    }
+    .corte-stat .val.green { color: #16a34a; }
+    .corte-breakdown {
+      flex: 1;
+      background: var(--blue-tint);
+      border-radius: 8px;
+      padding: 12px 14px;
+      margin-bottom: 14px;
+    }
+    .corte-breakdown h6 {
+      margin: 0 0 10px;
+      font-size: 10px;
+      text-transform: uppercase;
+      letter-spacing: .08em;
+      color: var(--muted);
+      font-weight: 700;
+    }
+    .br-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 6px 0;
+      font-size: 12px;
+      border-bottom: 1px dashed var(--line);
+    }
+    .br-row:last-child { border-bottom: none; }
+    .br-row .pm { display: flex; align-items: center; gap: 6px; color: var(--ink); font-weight: 600; }
+    .br-row .pm i { width: 8px; height: 8px; border-radius: 50%; background: var(--blue); }
+    .br-row .pm.tarjeta i { background: var(--accent); }
+    .br-row .pm.transf i { background: #16a34a; }
+    .br-row b { color: var(--navy); font-weight: 700; }
+    .corte-cierre {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 12px 14px;
+      background: var(--navy);
       color: #fff;
-      background: radial-gradient(circle at 20% 0, #123864, #071936 42%, #041124 100%);
+      border-radius: 8px;
+    }
+    .corte-cierre span {
+      font-size: 11px;
+      font-weight: 600;
+      color: rgba(255,255,255,.75);
+    }
+    .corte-cierre strong { font-size: 17px; font-weight: 800; letter-spacing: -.01em; }
+
+    /* ── DOWNLOAD BAND ─────────────────────────── */
+    .download-section { padding: 60px 0 110px; }
+    .download-band {
+      position: relative;
+      overflow: hidden;
+      padding: 56px 64px;
+      background: var(--navy);
+      color: #fff;
+      border-radius: 24px;
+      display: grid;
+      grid-template-columns: 1.3fr 1fr;
+      gap: 48px;
+      align-items: center;
+    }
+    .download-band::before {
+      content: "";
+      position: absolute;
+      top: -150px;
+      right: -150px;
+      width: 500px;
+      height: 500px;
+      background: radial-gradient(circle, var(--blue) 0%, transparent 60%);
+      opacity: .5;
+      pointer-events: none;
+    }
+    .download-band > * { position: relative; z-index: 1; }
+    .download-band h2 {
+      margin: 12px 0 14px;
+      font-size: clamp(32px, 3.4vw, 44px);
+      font-weight: 800;
+      line-height: 1.05;
+      letter-spacing: -.022em;
+      text-wrap: balance;
+    }
+    .download-band .eyebrow { color: #6fb3ff; }
+    .download-band .eyebrow::before { background: #6fb3ff; }
+    .download-band p {
+      margin: 0 0 28px;
+      color: rgba(255,255,255,.78);
+      font-size: 17px;
+      max-width: 460px;
+    }
+    .download-actions { display: flex; flex-wrap: wrap; gap: 14px; align-items: center; }
+    .download-meta {
+      display: grid;
+      gap: 18px;
+      padding: 24px 28px;
+      background: rgba(255,255,255,.04);
+      border: 1px solid rgba(255,255,255,.1);
+      border-radius: 14px;
+    }
+    .download-meta-row {
+      display: grid;
+      grid-template-columns: 28px 1fr;
+      gap: 14px;
+      align-items: center;
+    }
+    .download-meta-row .ico {
+      width: 28px;
+      height: 28px;
+      border-radius: 8px;
+      background: rgba(111,179,255,.18);
+      color: #6fb3ff;
+      display: grid;
+      place-items: center;
+    }
+    .download-meta-row .ico svg { width: 16px; height: 16px; }
+    .download-meta-row strong {
+      display: block;
+      font-size: 14px;
+      font-weight: 700;
+    }
+    .download-meta-row span {
+      display: block;
+      font-size: 12px;
+      color: rgba(255,255,255,.65);
+      margin-top: 1px;
+    }
+
+    /* ── FOOTER ─────────────────────────── */
+    .footer {
+      padding: 64px 0 32px;
+      background: var(--cream);
+      border-top: 1px solid var(--line);
     }
     .footer-grid {
       display: grid;
-      grid-template-columns: 1.4fr 1fr 1fr 1.2fr;
-      gap: 60px;
-      margin-bottom: 34px;
+      grid-template-columns: 1.6fr 1fr 1fr 1.2fr;
+      gap: 56px;
+      margin-bottom: 48px;
     }
-    .footer .brand { margin-bottom: 18px; color: #fff; }
-    .footer .brand strong { color: #fff; }
-    .footer p, .footer a {
-      color: rgba(255,255,255,.92);
+    .footer .brand-name strong { color: var(--navy); }
+    .footer-grid p {
+      color: var(--ink-2);
       font-size: 15px;
+      margin: 20px 0 0;
+      max-width: 320px;
     }
-    .footer h3 {
-      margin: 0 0 14px;
-      font-size: 16px;
-      font-weight: 950;
+    .footer-grid h4 {
+      margin: 0 0 16px;
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--navy);
+      text-transform: uppercase;
+      letter-spacing: .06em;
     }
-    .footer a {
+    .footer-grid a, .footer-grid li {
       display: block;
-      margin-bottom: 8px;
+      color: var(--ink-2);
+      font-size: 15px;
+      margin-bottom: 10px;
+      list-style: none;
+      padding: 0;
+      transition: color .15s;
     }
-    .copy {
-      margin: 0;
-      text-align: center;
+    .footer-grid a:hover { color: var(--blue); }
+    .footer-grid ul { padding: 0; margin: 0; }
+    .footer-bottom {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding-top: 28px;
+      border-top: 1px solid var(--line);
+      font-size: 13px;
+      color: var(--muted);
     }
 
+    /* ── RESPONSIVE ─────────────────────────── */
     @media (max-width: 980px) {
-      .container { width: min(100% - 32px, 760px); }
       .links { display: none; }
-      .hero { padding-top: 38px; }
-      .hero-grid { grid-template-columns: 1fr; }
-      .hero-art { min-height: 480px; }
-      .monitor { left: 80px; right: auto; width: calc(100% - 80px); }
-      .phone { left: 0; bottom: 36px; }
-      .basket { right: -16px; }
-      .feature-grid { grid-template-columns: repeat(2, 1fr); }
-      .screen-grid, .download-panel, .footer-grid { grid-template-columns: 1fr; }
-      .divider { display: none; }
-      .download-panel { gap: 28px; padding: 32px; }
-      .shop { justify-self: center; width: 280px; }
-    }
-
-    @media (max-width: 640px) {
-      .container {
-        width: calc(100% - 24px);
-        max-width: 540px;
-      }
-      .nav { min-height: 76px; }
-      .brand { min-width: 0; }
-      .brand strong { font-size: 28px; }
-      .header .btn {
-        width: 46px;
-        min-height: 42px;
-        padding: 0;
-        font-size: 0;
-      }
-      .header .btn .icon { width: 19px; height: 19px; }
-      h1 { max-width: 100%; font-size: 37px; }
-      .lead { font-size: 16px; }
-      .hero-actions { display: grid; }
-      .proof { grid-template-columns: repeat(2, 1fr); }
-      .hero-art {
-        min-height: 410px;
-        width: 100%;
-        overflow: hidden;
-      }
-      .monitor {
-        left: 54px;
-        width: 520px;
-        transform: perspective(1200px) rotateY(-4deg) rotateX(1deg) scale(.72);
-        transform-origin: top left;
-      }
-      .phone {
-        left: 0;
-        bottom: 82px;
-        width: 142px;
-        height: 276px;
-      }
-      .basket {
-        right: -72px;
-        bottom: 62px;
-        transform: scale(.72);
-      }
-      .feature-grid { grid-template-columns: 1fr; }
+      .hero { padding: 48px 0 72px; }
+      .hero-inner { grid-template-columns: 1fr; gap: 56px; }
+      .hero-art { min-height: 420px; }
+      .section-head { flex-direction: column; align-items: flex-start; }
+      .section-head p { text-align: left; max-width: 100%; }
+      .benefits { grid-template-columns: 1fr; }
       .screen-grid { grid-template-columns: 1fr; }
-      .download-copy { grid-template-columns: 1fr; }
-      .download-panel {
-        padding: 28px 22px;
-        border-radius: 14px;
-      }
-      .download h2 { font-size: 26px; }
-      .pill { margin: 12px 0 0; }
+      .download-band { grid-template-columns: 1fr; padding: 40px 32px; }
+      .footer-grid { grid-template-columns: 1fr 1fr; gap: 32px; }
+      .footer-bottom { flex-direction: column; gap: 12px; }
+    }
+    @media (max-width: 600px) {
+      body { font-size: 16px; }
+      .container { width: calc(100% - 32px); }
+      .hero h1 { font-size: 40px; }
+      .hero-lead { font-size: 17px; }
+      .hero-art { aspect-ratio: auto; min-height: 0; height: auto; display: grid; gap: 16px; }
+      .photo-slot, .pos-device { position: relative; width: 100%; transform: none; top: auto; right: auto; }
+      .pos-device { grid-template-columns: 70px 1fr; font-size: 10px; }
+      section { padding: 64px 0; }
+      .download-band { padding: 36px 24px; }
+      .footer-grid { grid-template-columns: 1fr; }
     }
   </style>
 </head>
-<body>
-  <header class="header">
+<body data-palette="azul-brillante">
+
+  <!-- ─── HEADER ─────────────────────────── -->
+  <header class="header" id="top">
     <div class="container nav">
-      <a class="brand" href="#inicio" aria-label="Swipy inicio">
-        <span class="mark" aria-hidden="true">
-          <img src="Swipy2.png" alt="Swipy">
+      <a class="brand" href="#top" aria-label="Swipy">
+        <span class="brand-mark"><img src="Swipy2.png" alt="Swipy"></span>
+        <span class="brand-name">
+          <strong>swipy</strong>
+          <span>Punto de venta</span>
         </span>
-        <span><strong>swipy</strong><span>Punto de venta</span></span>
       </a>
-      <nav class="links" aria-label="Navegacion principal">
-        <a href="#inicio">Inicio</a>
-        <a href="#caracteristicas">Características</a>
-        <a href="#beneficios">Beneficios</a>
+      <nav class="links" aria-label="Navegación">
+        <a href="#beneficios">Por qué Swipy</a>
         <a href="#pantallas">Pantallas</a>
-        <a href="#precios">Precios</a>
-        <a href="#soporte">Soporte</a>
+        <a href="#descargar">Descargar</a>
+        <a href="demo.html">Probar demo</a>
       </nav>
-      <a class="btn primary" href="#descarga"><svg class="icon" viewBox="0 0 24 24"><path d="M12 3v12"/><path d="m7 10 5 5 5-5"/><path d="M5 21h14"/></svg>Descargar ahora</a>
+      <a class="btn btn-primary" href="#descargar">
+        <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M12 3v12M7 10l5 5 5-5M5 21h14"/>
+        </svg>
+        Descargar gratis
+      </a>
     </div>
   </header>
 
-  <main id="inicio">
-    <section class="hero">
-      <div class="container hero-grid">
+  <!-- ─── HERO ─────────────────────────── -->
+  <section class="hero">
+    <div class="container hero-inner">
+      <div class="hero-copy">
+        <span class="eyebrow" id="hero-release-version">Windows · última versión</span>
+        <h1>Vender en tu tienda, <em>así de fácil</em>.</h1>
+        <p class="hero-lead">
+          Swipy es el punto de venta hecho para tiendas de abarrotes.
+          Cobra rápido, lleva tu inventario al día y cierra la caja en segundos —
+          sin complicaciones, sin mensualidades.
+        </p>
+        <div class="hero-ctas">
+          <a class="btn btn-primary btn-lg" href="#descargar">
+            <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M12 3v12M7 10l5 5 5-5M5 21h14"/>
+            </svg>
+            Descargar Swipy
+          </a>
+          <a class="btn btn-ghost btn-lg" href="demo.html">
+            <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M8 5v14l11-7-11-7z"/>
+            </svg>
+            Probar la demo
+          </a>
+        </div>
+        <div class="hero-proof">
+          <span class="proof-item">
+            <span class="check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg></span>
+            100 % gratis
+          </span>
+          <span class="proof-item">
+            <span class="check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg></span>
+            Funciona sin internet
+          </span>
+          <span class="proof-item">
+            <span class="check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg></span>
+            Sin mensualidades
+          </span>
+          <span class="proof-item">
+            <span class="check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg></span>
+            Listo en 5 minutos
+          </span>
+        </div>
+      </div>
+
+      <div class="hero-art" aria-hidden="true">
+        <div class="photo-slot"></div>
+
+        <div class="pos-device">
+          <!-- Sidebar -->
+          <div class="pos-side">
+            <div class="pos-brand"><span class="sq">S</span><strong>SWIPY</strong></div>
+            <div class="pos-nav on">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.7 13.4a2 2 0 0 0 2 1.6h9.7a2 2 0 0 0 2-1.6L23 6H6"/></svg>
+              Venta
+            </div>
+            <div class="pos-nav">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 6h16M4 12h16M4 18h16"/></svg>
+              Catálogo
+            </div>
+            <div class="pos-nav">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 3v18h18M7 14l4-4 4 4 5-5"/></svg>
+              Ventas del día
+            </div>
+            <div class="pos-nav">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="5" y="3" width="14" height="18" rx="1"/><path d="M8 7h8M8 11h8M8 15h5"/></svg>
+              Tickets
+            </div>
+            <div class="pos-bottom">
+              <div class="pos-nav">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><circle cx="12" cy="12" r="9"/></svg>
+                Config.
+              </div>
+              <div class="pos-premium">
+                <svg viewBox="0 0 24 24" fill="currentColor"><path d="m12 2 3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01z"/></svg>
+                Premium
+              </div>
+            </div>
+          </div>
+
+          <!-- Main -->
+          <div class="pos-main">
+            <div class="pos-head">
+              <div>
+                <div class="title">Punto de venta</div>
+                <div class="sub">Venta lista para capturar productos.</div>
+              </div>
+              <div class="pos-chips">
+                <div class="pos-chip"><div class="k">Ticket</div><div class="v">183 001</div></div>
+                <div class="pos-chip"><div class="k">Piezas</div><div class="v">7</div></div>
+                <div class="pos-chip green"><div class="k">Pago</div><div class="v">Efectivo</div></div>
+              </div>
+            </div>
+
+            <div class="pos-search">
+              <div class="inp"></div>
+              <div class="qty">1</div>
+              <div class="agg">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.35-4.35"/></svg>
+                Agregar / Buscar
+              </div>
+            </div>
+
+            <div class="pos-cols">
+              <div class="pos-panel">
+                <h5>Venta actual</h5>
+                <div class="pos-th"><span>Producto</span><span>Cant.</span><span>Precio</span><span>Total</span><span></span></div>
+                <div class="pos-tr"><span class="n">Coca Cola 2.5 L</span><span class="q">2</span><span class="p">$40</span><span class="t">$80.00</span><span class="x">×</span></div>
+                <div class="pos-tr"><span class="n">Pan Bimbo grande</span><span class="q">1</span><span class="p">$50</span><span class="t">$50.00</span><span class="x">×</span></div>
+                <div class="pos-tr"><span class="n">Huevo 1 Kg</span><span class="q">1</span><span class="p">$56</span><span class="t">$56.00</span><span class="x">×</span></div>
+                <div class="pos-tr"><span class="n">Sabritas 45 g</span><span class="q">3</span><span class="p">$20</span><span class="t">$60.00</span><span class="x">×</span></div>
+              </div>
+              <div class="pos-panel">
+                <h5>Resultados</h5>
+                <div class="pos-th" style="grid-template-columns:1fr 38px;"><span>Producto</span><span style="text-align:right;">Precio</span></div>
+                <div class="pos-tr" style="grid-template-columns:1fr 38px;"><span class="n">Galletas Oreo</span><span class="t">$24.00</span></div>
+                <div class="pos-tr" style="grid-template-columns:1fr 38px;"><span class="n">Agua Ciel 1 L</span><span class="t">$12.00</span></div>
+                <div class="pos-tr" style="grid-template-columns:1fr 38px;"><span class="n">Leche Lala 1 L</span><span class="t">$34.00</span></div>
+                <div class="pos-tr" style="grid-template-columns:1fr 38px;"><span class="n">Doritos Nacho</span><span class="t">$20.00</span></div>
+              </div>
+            </div>
+
+            <div class="pos-foot">
+              <div class="total">$246.00</div>
+              <div class="pos-pay">
+                <div class="field">
+                  <label>Pago recibido</label>
+                  <div class="recibido">$300</div>
+                </div>
+                <div class="field">
+                  <label>Cambio</label>
+                  <div class="cambio"><div class="v">$54.00</div></div>
+                </div>
+                <div class="pos-quick">
+                  <div class="q">$50</div>
+                  <div class="q">$100</div>
+                  <div class="q">$200</div>
+                  <div class="q">$500</div>
+                </div>
+              </div>
+              <div class="pos-actions">
+                <div class="a cancel">Cancelar</div>
+                <div class="a qr">QR</div>
+                <div class="a cobrar">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 1v22M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+                  Cobrar
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ─── BENEFITS ─────────────────────────── -->
+  <section id="beneficios" class="tight">
+    <div class="container">
+      <div class="section-head">
         <div>
-          <span class="tag">Sistema de punto de venta</span>
-          <h1>El punto de venta <span>hecho para tu tienda</span></h1>
-          <p class="lead">Swipy es un sistema fácil, rápido e intuitivo para administrar ventas, inventario y más. Ideal para tiendas de abarrotes y negocios que quieren llevar el control de su negocio sin complicaciones.</p>
-          <div class="hero-actions">
-            <a class="btn primary" href="#descarga"><svg class="icon" viewBox="0 0 24 24"><path d="M12 3v12"/><path d="m7 10 5 5 5-5"/><path d="M5 21h14"/></svg>Descargar Swipy</a>
-            <a class="btn secondary" href="demo.html"><svg class="icon" viewBox="0 0 24 24"><path d="m8 5 11 7-11 7z"/></svg>Probar demo</a>
-          </div>
-          <div class="proof">
-            <div><svg class="icon" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M8 14s1.5 2 4 2 4-2 4-2"/><path d="M9 9h.01M15 9h.01"/></svg>Fácil de usar</div>
-            <div><svg class="icon" viewBox="0 0 24 24"><path d="M20 7 9 18l-5-5"/><path d="M16 7h4v4"/></svg>Sin mensualidades</div>
-            <div><svg class="icon" viewBox="0 0 24 24"><path d="M2 8.8a15 15 0 0 1 20 0M5 12a10.5 10.5 0 0 1 14 0M8.5 15.5a5.2 5.2 0 0 1 7 0M3 3l18 18"/></svg>Funciona sin internet</div>
-            <div><svg class="icon" viewBox="0 0 24 24"><path d="M12 13v8M8 17h8"/><path d="M20 16.2A4.5 4.5 0 0 0 17.5 8h-.8A6.5 6.5 0 1 0 6 15.5"/></svg>Actualizaciones gratuitas</div>
-          </div>
+          <span class="eyebrow">por qué Swipy</span>
+          <h2>Hecho para tu tienda, no para una corporación.</h2>
         </div>
-
-        <div class="hero-art" aria-hidden="true">
-          <div class="monitor">
-            <div class="mock">
-              <div class="side"><strong>SWIPY</strong><span>Cartera</span><span>Catálogo</span><span>Inventario</span><span>Venta del día</span><span>Tickets</span></div>
-              <div class="mock-content">
-                <div class="mock-top">
-                  <div><h2>Punto de venta</h2><small>Todos los datos se registran al instante.</small></div>
-                  <div class="kpis"><span>Total<br>4</span><span>Pagos<br>0</span><span>Ingreso<br>Efectivo</span></div>
-                </div>
-                <div class="search"><span></span><b>Agregar o buscar</b></div>
-                <div class="panels">
-                  <div class="panel"><strong>Venta actual</strong><i class="line"></i><i class="line"></i><i class="line"></i><i class="line"></i><i class="line"></i></div>
-                  <div class="panel"><strong>Resultados</strong><i class="line"></i><i class="line"></i><i class="line"></i></div>
-                </div>
-                <div class="mock-bottom"><div class="total">$0.00</div><div class="pay"><span>Tarjeta</span><span>Pendiente</span><span>Cancelar</span><span>Cobrar</span></div></div>
-              </div>
-            </div>
-          </div>
-          <div class="phone"><div class="phone-screen"><div><span class="mark"><img src="Swipy2.png" alt="Swipy"></span><strong>swipy</strong><span>Punto de venta</span></div></div></div>
-          <div class="basket"><div class="product bag"></div><div class="product can"></div><div class="product bottle"></div><div class="basket-body"><i class="slot"></i><i class="slot"></i><i class="slot"></i><i class="slot"></i></div></div>
-        </div>
+        <p>Tres cosas que cambian cuando empiezas a vender con Swipy.</p>
       </div>
-    </section>
 
-    <section class="features" id="caracteristicas">
-      <div class="container">
-        <h2 class="section-title">Todo lo que necesitas, en un solo sistema</h2>
-        <div class="feature-grid">
-          <article class="card"><svg class="icon" viewBox="0 0 24 24"><path d="M3 8h18l-2 12H5L3 8Z"/><path d="M7 8 9 3m8 5-2-5M9 13h6M10 17h4"/></svg><h3>Ventas rápidas</h3><p>Interfaz intuitiva para vender en segundos y mejorar tu atención al cliente.</p></article>
-          <article class="card"><svg class="icon" viewBox="0 0 24 24"><path d="M3 8.5 12 4l9 4.5-9 4.5-9-4.5Z"/><path d="M3 8.5v7L12 20l9-4.5v-7M12 13v7"/></svg><h3>Control de inventario</h3><p>Administra tu inventario en tiempo real y evita quedarte sin productos importantes.</p></article>
-          <article class="card"><svg class="icon" viewBox="0 0 24 24"><path d="M4 20h16M7 16v-5M12 16V7M17 16V4"/></svg><h3>Reportes claros</h3><p>Conoce tus ganancias, productos más vendidos y el rendimiento de tu tienda.</p></article>
-          <article class="card" id="beneficios"><svg class="icon" viewBox="0 0 24 24"><path d="M16 21v-2a4 4 0 0 0-8 0v2"/><circle cx="12" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87M2 21v-2a4 4 0 0 1 3-3.87"/></svg><h3>Múltiples usuarios</h3><p>Crea usuarios y asigna permisos para llevar un mejor control de tu negocio.</p></article>
-          <article class="card"><svg class="icon" viewBox="0 0 24 24"><path d="M20 16.2A4.5 4.5 0 0 0 17.5 8h-.8A6.5 6.5 0 1 0 6 15.5"/><path d="M12 12v7m-4-4 4 4 4-4"/></svg><h3>Sin internet</h3><p>Sigue vendiendo sin conexión. Swipy funciona sin internet y sincroniza tus datos después.</p></article>
-        </div>
+      <div class="benefits">
+        <article class="benefit">
+          <div class="benefit-num">01 / Fácil</div>
+          <div class="benefit-glyph">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M9 11h6M9 15h4"/>
+              <rect x="3" y="3" width="18" height="18" rx="3"/>
+              <path d="M9 7h6"/>
+            </svg>
+          </div>
+          <h3>Fácil de usar</h3>
+          <p>Sin manuales largos ni cursos. Si sabes usar el celular, sabes usar Swipy. Tu equipo aprende en una tarde.</p>
+          <div class="benefit-meta"><span>Curva de aprendizaje</span><strong>~ 20 min</strong></div>
+        </article>
+
+        <article class="benefit">
+          <div class="benefit-num">02 / Rápido</div>
+          <div class="benefit-glyph">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M13 2 3 14h8l-1 8 10-12h-8l1-8z"/>
+            </svg>
+          </div>
+          <h3>Más rápido al cobrar</h3>
+          <p>Lector de código, búsqueda al vuelo y atajos del teclado. Cobras una venta en menos de 10 segundos.</p>
+          <div class="benefit-meta"><span>Tiempo por ticket</span><strong>&lt; 10 seg</strong></div>
+        </article>
+
+        <article class="benefit">
+          <div class="benefit-num">03 / Moderno</div>
+          <div class="benefit-glyph">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M3 3v18h18"/>
+              <path d="m7 14 4-4 4 4 5-5"/>
+            </svg>
+          </div>
+          <h3>Reportes claros</h3>
+          <p>Mira al instante cuánto vendiste hoy, qué productos se mueven más y cuándo conviene volver a surtir.</p>
+          <div class="benefit-meta"><span>Corte de caja</span><strong>1 clic</strong></div>
+        </article>
       </div>
-    </section>
+    </div>
+  </section>
 
-    <section class="screens" id="pantallas">
-      <div class="container">
-        <h2 class="section-title">Conoce Swipy por dentro</h2>
-        <p class="section-subtitle">Un sistema diseñado para que todo sea más fácil.</p>
-        <div class="screen-grid">
+  <!-- ─── SCREENS ─────────────────────────── -->
+  <section id="pantallas" class="screens-section">
+    <div class="container">
+      <div class="section-head">
+        <div>
+          <span class="eyebrow">pantallas</span>
+          <h2>Lo que vas a usar todos los días.</h2>
+        </div>
+        <p>Las dos pantallas que abren la tienda en la mañana y la cierran en la noche.</p>
+      </div>
 
-          <!-- Punto de venta -->
-          <article class="screen-card">
-            <div class="mini-screen">
-              <div class="app-wrap">
-                <div class="app-side">
-                  <div class="app-logo">SWIPY</div>
-                  <div class="app-item on">Venta</div>
-                  <div class="app-item">Catalogo</div>
-                  <div class="app-item">Ventas del dia</div>
-                  <div class="app-item">Tickets</div>
-                  <div class="app-item">Usuarios</div>
-                </div>
-                <div class="app-main">
-                  <div class="app-head">
-                    <div class="app-title">Punto de venta</div>
-                    <div class="app-sub">Venta lista para capturar productos.</div>
-                  </div>
-                  <div class="app-search">
-                    <div class="app-inp"></div>
-                    <div class="app-inp-num"></div>
-                    <div class="app-btn">Agregar / Buscar</div>
-                  </div>
-                  <div class="app-cols">
-                    <div class="app-panel">
-                      <div class="app-ptitle">Venta actual</div>
-                      <div class="app-th"><span>Producto</span><span>Cant.</span><span>Precio</span><span>Total</span></div>
-                    </div>
-                    <div class="app-panel">
-                      <div class="app-ptitle">Resultados</div>
-                      <div class="app-th"><span>SKU</span><span>Producto</span><span>Precio</span></div>
-                    </div>
-                  </div>
-                  <div class="app-foot">
-                    <div class="app-total">$0.00</div>
-                    <div class="app-pays">
-                      <div class="app-pay">Tarjeta</div>
-                      <div class="app-pay">Pendiente</div>
-                      <div class="app-pay">Cancelar</div>
-                      <div class="app-pay b">Cobrar</div>
-                    </div>
-                  </div>
-                </div>
+      <div class="screen-grid">
+        <!-- Punto de venta -->
+        <article class="screen-card">
+          <div class="screen-frame">
+            <div class="ui">
+              <div class="ui-side">
+                <div class="brand-tiny">S · SWIPY</div>
+                <div class="item on">Venta</div>
+                <div class="item">Catálogo</div>
+                <div class="item">Ventas día</div>
+                <div class="item">Tickets</div>
+                <div class="item" style="margin-top:auto;color:#f4b400;">★ Premium</div>
               </div>
-            </div>
-            <div class="screen-body"><h3>Punto de venta</h3><p>Vende rápido con búsqueda de productos, control de tickets y cobros en efectivo o tarjeta.</p></div>
-          </article>
-
-          <!-- Catálogo -->
-          <article class="screen-card">
-            <div class="mini-screen">
-              <div class="app-wrap">
-                <div class="app-side">
-                  <div class="app-logo">SWIPY</div>
-                  <div class="app-item">Venta</div>
-                  <div class="app-item on">Catalogo</div>
-                  <div class="app-item">Ventas del dia</div>
-                  <div class="app-item">Tickets</div>
-                  <div class="app-item">Usuarios</div>
+              <div class="ui-main">
+                <div class="ui-h">
+                  <div>
+                    <h5>Punto de venta</h5>
+                    <small>Venta lista para capturar productos.</small>
+                  </div>
+                  <div style="display:flex;gap:5px;">
+                    <span style="border:1px solid var(--line);border-radius:5px;padding:3px 6px;font-size:8px;color:var(--muted);font-weight:700;text-align:center;">Ticket<br><b style="color:var(--navy);font-size:11px;">1</b></span>
+                    <span style="border:1px solid var(--line);border-radius:5px;padding:3px 6px;font-size:8px;color:var(--muted);font-weight:700;text-align:center;">Piezas<br><b style="color:var(--navy);font-size:11px;">0</b></span>
+                    <span style="border:1px solid var(--line);border-radius:5px;padding:3px 6px;font-size:8px;color:var(--muted);font-weight:700;text-align:center;">Pago<br><b style="color:#16a34a;font-size:11px;">Efectivo</b></span>
+                  </div>
                 </div>
-                <div class="app-main">
-                  <div class="app-head">
-                    <div class="app-title">Catalogo de productos</div>
-                    <div class="app-sub">50 productos encontrados.</div>
+                <div class="ui-search">
+                  <div class="x"></div>
+                  <div class="y">Agregar / Buscar</div>
+                </div>
+                <div style="display:grid;grid-template-columns:1.4fr 1fr;gap:8px;">
+                  <div style="border:1px solid var(--line);border-radius:6px;padding:8px;">
+                    <div style="font-size:10px;font-weight:800;color:var(--navy);margin-bottom:6px;">Venta actual</div>
+                    <div style="font-size:7.5px;color:var(--muted);text-transform:uppercase;letter-spacing:.05em;display:grid;grid-template-columns:1fr 22px 30px 30px;gap:4px;padding-bottom:3px;border-bottom:1px solid var(--line);font-weight:700;"><span>Producto</span><span>Cant.</span><span>Precio</span><span>Total</span></div>
+                    <div class="ui-rows" style="margin-top:2px;">
+                      <div class="r" style="grid-template-columns:1fr 22px 30px 30px;"><span class="n">Coca Cola 2.5 L</span><span class="q">2</span><span class="p">$40</span><span class="p" style="text-align:right;color:var(--navy);font-weight:700;">$80</span></div>
+                      <div class="r" style="grid-template-columns:1fr 22px 30px 30px;"><span class="n">Sabritas 45 g</span><span class="q">3</span><span class="p">$20</span><span class="p" style="text-align:right;color:var(--navy);font-weight:700;">$60</span></div>
+                      <div class="r" style="grid-template-columns:1fr 22px 30px 30px;"><span class="n">Huevo 1 Kg</span><span class="q">1</span><span class="p">$56</span><span class="p" style="text-align:right;color:var(--navy);font-weight:700;">$56</span></div>
+                      <div class="r" style="grid-template-columns:1fr 22px 30px 30px;"><span class="n">Pan Bimbo</span><span class="q">1</span><span class="p">$50</span><span class="p" style="text-align:right;color:var(--navy);font-weight:700;">$50</span></div>
+                    </div>
                   </div>
-                  <div class="app-filters">
-                    <div class="app-field"><label>Producto</label><input-mock></input-mock></div>
-                    <div class="app-field"><label>Codigo</label><input-mock></input-mock></div>
-                    <div class="app-field"><label>Proveedor</label><input-mock></input-mock></div>
+                  <div style="border:1px solid var(--line);border-radius:6px;padding:8px;">
+                    <div style="font-size:10px;font-weight:800;color:var(--navy);margin-bottom:6px;">Resultados</div>
+                    <div class="ui-rows">
+                      <div class="r" style="grid-template-columns:1fr 30px;"><span class="n">Galletas Oreo</span><span class="p" style="text-align:right;color:var(--blue);font-weight:700;">$24</span></div>
+                      <div class="r" style="grid-template-columns:1fr 30px;"><span class="n">Agua Ciel 1 L</span><span class="p" style="text-align:right;color:var(--blue);font-weight:700;">$12</span></div>
+                      <div class="r" style="grid-template-columns:1fr 30px;"><span class="n">Leche Lala</span><span class="p" style="text-align:right;color:var(--blue);font-weight:700;">$34</span></div>
+                    </div>
                   </div>
-                  <div class="app-tbl">
-                    <div class="app-thead"><span>SKU</span><span>Nombre</span><span>Codigo</span><span>Proveedor</span><span>Costo</span><span>Precio</span></div>
-                    <div class="app-trow"><span>1</span><span>Coca Cola 2.5L</span><span>750105531...</span><span>ArcaCont.</span><span>35.00</span><span>40.00</span></div>
-                    <div class="app-trow"><span>3</span><span>Coca Cola 1.5L</span><span>750105530...</span><span>ArcaCont.</span><span>23.62</span><span>27.00</span></div>
-                    <div class="app-trow"><span>4</span><span>Gansito 50g</span><span>750100015...</span><span>Marinela</span><span>12.30</span><span>18.00</span></div>
-                    <div class="app-trow"><span>1008</span><span>Power de Mora 600ml</span><span>750105531...</span><span>ArcaCont.</span><span>21.16</span><span>26.00</span></div>
-                    <div class="app-trow"><span>1015</span><span>Huevo 1Kg</span><span>0</span><span>Abarrotes</span><span>46.00</span><span>56.00</span></div>
+                </div>
+                <div class="ui-foot">
+                  <div class="t">$246.00</div>
+                  <div style="display:flex;gap:4px;">
+                    <span style="height:22px;padding:0 8px;border-radius:5px;background:#fff;border:1px solid var(--line);font-size:9px;font-weight:700;color:var(--ink-2);display:flex;align-items:center;">Cancelar</span>
+                    <span style="height:22px;padding:0 10px;border-radius:5px;background:var(--blue);color:#fff;font-size:9px;font-weight:700;display:flex;align-items:center;">$ Cobrar</span>
                   </div>
                 </div>
               </div>
             </div>
-            <div class="screen-body"><h3>Catálogo e Inventario</h3><p>Administra tus productos, precios, costos y existencias con filtros de búsqueda avanzada.</p></div>
-          </article>
-
-        </div>
-        <div class="center"><a class="btn secondary" href="#descarga">Ver todas las pantallas</a></div>
-      </div>
-    </section>
-
-    <section class="download" id="descarga">
-      <div class="container">
-        <div class="download-panel" id="precios">
-          <div class="download-copy">
-            <svg class="icon" viewBox="0 0 24 24"><rect x="4" y="3" width="10" height="18" rx="2"/><path d="M8 17h2M16 8h2a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2h-4M18 13h2"/></svg>
-            <div><h2>Descarga Swipy y lleva tu tienda al siguiente nivel</h2><p>Instalación rápida, uso ilimitado y sin costos ocultos.</p><div class="download-actions"><a class="btn light" id="download-swipy" href="https://github.com/DeSaa-Software/swipy-pages/releases/latest/download/SWIPY.zip" data-manifest-url="https://eejmmcqvmtncyexjpbuz.supabase.co/storage/v1/object/public/releases/version.json"><svg class="icon" viewBox="0 0 24 24"><path d="M12 3v12"/><path d="m7 10 5 5 5-5"/><path d="M5 21h14"/></svg>Descargar Swipy</a><a class="history-link" href="https://github.com/DeSaa-Software/swipy-pages/releases">Ver historial</a><span class="pill">100% Gratis</span></div></div>
           </div>
-          <div class="divider"></div>
-          <div class="points">
-            <div class="point"><svg class="icon" viewBox="0 0 24 24"><path d="M3 5h8v7H3zm10 0h8v7h-8zM3 14h8v5H3zm10 0h8v5h-8z"/></svg><div><strong>Compatible con Windows</strong><span>Windows 10 o superior</span></div></div>
-            <div class="point"><svg class="icon" viewBox="0 0 24 24"><path d="M4.5 16.5c-1.3 1.3-1.8 3-1.5 4.5 1.5.3 3.2-.2 4.5-1.5"/><path d="M9 15 4 20"/><path d="M15 3c3.5.4 5.6 2.5 6 6l-8 8-6-6 8-8Z"/><path d="M14 8h.01"/></svg><div><strong>Ligero y rápido</strong><span>No ocupa mucho espacio en tu computadora.</span></div></div>
+          <div class="screen-body">
+            <span class="tag">// venta</span>
+            <h3>Punto de venta</h3>
+            <p>Cobra rápido con búsqueda por nombre, código de barras o SKU. Acepta efectivo, tarjeta y transferencia.</p>
           </div>
-          <div class="shop" aria-hidden="true"><div class="shop-base"><div class="door"></div><div class="window"></div></div><div class="awning"><i></i><i></i><i></i><i></i><i></i><i></i></div><div class="boxes"><i></i><i></i><i></i></div></div>
+        </article>
+
+        <!-- Corte de caja -->
+        <article class="screen-card">
+          <div class="screen-frame">
+            <div class="corte">
+              <div class="corte-h">
+                <div>
+                  <h5>Corte de caja</h5>
+                  <small>Cierre del turno · efectivo y formas de pago</small>
+                </div>
+                <span class="date-pill">23 / 05 / 26</span>
+              </div>
+              <div class="corte-stats">
+                <div class="corte-stat">
+                  <div class="lbl">Total del día</div>
+                  <div class="val green">$4 286.50</div>
+                </div>
+                <div class="corte-stat">
+                  <div class="lbl">Tickets</div>
+                  <div class="val">38</div>
+                </div>
+              </div>
+              <div class="corte-breakdown">
+                <h6>Por forma de pago</h6>
+                <div class="br-row">
+                  <span class="pm"><i></i>Efectivo</span>
+                  <b>$2 940.00</b>
+                </div>
+                <div class="br-row">
+                  <span class="pm tarjeta"><i></i>Tarjeta</span>
+                  <b>$986.50</b>
+                </div>
+                <div class="br-row">
+                  <span class="pm transf"><i></i>Transferencia</span>
+                  <b>$360.00</b>
+                </div>
+              </div>
+              <div class="corte-cierre">
+                <div>
+                  <span>Caja al cerrar</span>
+                  <strong>$2 940.00</strong>
+                </div>
+                <div class="cob" style="padding:8px 14px;border-radius:7px;background:var(--blue);color:#fff;font-size:11px;font-weight:700;">
+                  Cerrar turno
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="screen-body">
+            <span class="tag">// cierre</span>
+            <h3>Corte de caja</h3>
+            <p>Cierra tu día en un clic. Mira cuánto entró por efectivo, tarjeta y transferencia, y deja la caja lista para mañana.</p>
+          </div>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <!-- ─── DOWNLOAD ─────────────────────────── -->
+  <section id="descargar" class="download-section">
+    <div class="container">
+      <div class="download-band">
+        <div>
+          <span class="eyebrow">descargar</span>
+          <h2>Empieza a vender mejor desde hoy.</h2>
+          <p>Descarga Swipy, instálalo en tu computadora y empieza a cobrar en minutos. Sin tarjeta, sin registro, sin letras chicas.</p>
+          <div class="download-actions">
+            <a class="btn btn-white btn-lg" id="download-swipy" href="https://github.com/DeSaa-Software/swipy-pages/releases/latest/download/SWIPY.zip" data-manifest-url="https://eejmmcqvmtncyexjpbuz.supabase.co/storage/v1/object/public/releases/version.json">
+              <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M12 3v12M7 10l5 5 5-5M5 21h14"/>
+              </svg>
+              Descargar Swipy
+            </a>
+            <a href="https://github.com/DeSaa-Software/swipy-pages/releases" style="color:rgba(255,255,255,.85);font-size:15px;font-weight:600;text-decoration:underline;text-underline-offset:4px;">Versiones anteriores</a>
+          </div>
+        </div>
+        <div class="download-meta">
+          <div class="download-meta-row">
+            <span class="ico">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18"/></svg>
+            </span>
+            <div><strong>Windows 10 o superior</strong><span id="release-version">Última versión disponible</span></div>
+          </div>
+          <div class="download-meta-row">
+            <span class="ico">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 7 9 18l-5-5"/></svg>
+            </span>
+            <div><strong>Actualizaciones gratuitas</strong><span>Para siempre — sin sorpresas</span></div>
+          </div>
+          <div class="download-meta-row">
+            <span class="ico">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 8.8a15 15 0 0 1 20 0M5 12a10.5 10.5 0 0 1 14 0M8.5 15.5a5.2 5.2 0 0 1 7 0M3 3l18 18"/></svg>
+            </span>
+            <div><strong>Funciona sin internet</strong><span>Sincroniza después si lo necesitas</span></div>
+          </div>
         </div>
       </div>
-    </section>
-  </main>
+    </div>
+  </section>
 
-  <footer class="footer" id="soporte">
+  <!-- ─── FOOTER ─────────────────────────── -->
+  <footer class="footer">
     <div class="container">
       <div class="footer-grid">
-        <div><div class="brand"><span class="mark"><img src="Swipy2.png" alt="Swipy"></span><span><strong>swipy</strong><span>Punto de venta</span></span></div><p>El sistema de punto de venta hecho para tiendas de abarrotes y pequeños negocios.</p></div>
-        <div><h3>Enlaces</h3><a href="#inicio">Inicio</a><a href="#caracteristicas">Características</a><a href="#pantallas">Pantallas</a><a href="#precios">Precios</a><a href="#soporte">Soporte</a></div>
-        <div><h3>Recursos</h3><a href="#descarga">Descargar</a><a href="#pantallas">Manual de usuario</a><a href="#caracteristicas">Preguntas frecuentes</a><a href="#soporte">Contacto</a></div>
-        <div><h3>Soporte</h3><p>¿Tienes dudas?<br>Estamos para ayudarte.</p><p>+52 000 000 0000</p><p>soporte@swipy.com</p></div>
+        <div>
+          <a class="brand" href="#top">
+            <span class="brand-mark"><img src="Swipy2.png" alt=""></span>
+            <span class="brand-name">
+              <strong>swipy</strong>
+              <span>Punto de venta</span>
+            </span>
+          </a>
+          <p>El punto de venta hecho para tiendas de abarrotes y pequeños negocios.</p>
+        </div>
+        <div>
+          <h4>Producto</h4>
+          <ul>
+            <li><a href="#beneficios">Por qué Swipy</a></li>
+            <li><a href="#pantallas">Pantallas</a></li>
+            <li><a href="demo.html">Demo</a></li>
+            <li><a href="#descargar">Descargar</a></li>
+          </ul>
+        </div>
+        <div>
+          <h4>Recursos</h4>
+          <ul>
+            <li><a href="demo.html">Manual de usuario</a></li>
+            <li><a href="#beneficios">Preguntas frecuentes</a></li>
+            <li><a href="https://github.com/DeSaa-Software/swipy-pages/releases">Historial de versiones</a></li>
+          </ul>
+        </div>
+        <div>
+          <h4>Soporte</h4>
+          <ul>
+            <li>+52 000 000 0000</li>
+            <li><a href="mailto:soporte@swipy.com">soporte@swipy.com</a></li>
+            <li>Lunes a sábado · 9 – 19 h</li>
+          </ul>
+        </div>
       </div>
-      <p class="copy">© 2026 Swipy Punto de Venta. Todos los derechos reservados.</p>
+      <div class="footer-bottom">
+        <span>© 2026 Swipy Punto de Venta. Hecho con cariño para las tiendas.</span>
+        <span id="footer-release-version">Windows</span>
+      </div>
     </div>
   </footer>
+
   <script>
     (function () {
+      var header = document.querySelector('.header');
+      if (header) {
+        addEventListener('scroll', function () {
+          header.classList.toggle('scrolled', scrollY > 6);
+        }, { passive: true });
+      }
+
       var downloadButton = document.getElementById('download-swipy');
       if (!downloadButton || !window.fetch) return;
 
@@ -1142,6 +1662,17 @@
         .then(function (release) {
           if (release && typeof release.downloadUrl === 'string' && /^https:\/\//.test(release.downloadUrl)) {
             downloadButton.href = release.downloadUrl;
+          }
+
+          if (release && typeof release.version === 'string' && release.version.trim()) {
+            var version = release.version.trim();
+            var releaseVersion = document.getElementById('release-version');
+            var heroReleaseVersion = document.getElementById('hero-release-version');
+            var footerReleaseVersion = document.getElementById('footer-release-version');
+
+            if (releaseVersion) releaseVersion.textContent = 'Versión ' + version;
+            if (heroReleaseVersion) heroReleaseVersion.textContent = 'v' + version + ' · para Windows';
+            if (footerReleaseVersion) footerReleaseVersion.textContent = 'v' + version + ' · Windows';
           }
         })
         .catch(function () {

@@ -1058,6 +1058,71 @@
       max-width: 460px;
     }
     .download-actions { display: flex; flex-wrap: wrap; gap: 14px; align-items: center; }
+
+    /* "Windows bloquea el instalador?" — bloque desplegable discreto */
+    .download-tip {
+      margin-top: 18px;
+      max-width: 540px;
+      background: rgba(255,255,255,.06);
+      border: 1px solid rgba(255,255,255,.14);
+      border-radius: 12px;
+      overflow: hidden;
+      color: rgba(255,255,255,.85);
+    }
+    .download-tip summary {
+      list-style: none;
+      cursor: pointer;
+      padding: 12px 16px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 13px;
+      font-weight: 600;
+      color: #fff;
+      user-select: none;
+    }
+    .download-tip summary::-webkit-details-marker { display: none; }
+    .download-tip summary::before {
+      content: "ℹ";
+      width: 22px;
+      height: 22px;
+      border-radius: 50%;
+      background: rgba(111,179,255,.22);
+      color: #6fb3ff;
+      display: grid;
+      place-items: center;
+      font-size: 12px;
+      font-weight: 700;
+      flex-shrink: 0;
+    }
+    .download-tip summary::after {
+      content: "›";
+      margin-left: auto;
+      font-size: 20px;
+      color: rgba(255,255,255,.55);
+      transition: transform .2s ease;
+    }
+    .download-tip[open] summary::after { transform: rotate(90deg); }
+    .download-tip .tip-body {
+      padding: 0 16px 16px 48px;
+      font-size: 13px;
+      line-height: 1.55;
+      color: rgba(255,255,255,.78);
+    }
+    .download-tip .tip-body p { margin: 6px 0; max-width: none; color: inherit; font-size: 13px; }
+    .download-tip .tip-body ol {
+      margin: 6px 0 10px;
+      padding-left: 18px;
+    }
+    .download-tip .tip-body ol li { margin: 3px 0; }
+    .download-tip .tip-body strong { color: #fff; }
+    .download-tip .tip-body code {
+      background: rgba(0,0,0,.28);
+      padding: 1px 6px;
+      border-radius: 4px;
+      font-size: 12px;
+      font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+    }
     .download-meta {
       display: grid;
       gap: 18px;
@@ -1553,6 +1618,26 @@
             </a>
             <a href="https://github.com/DeSaa-Software/swipy-pages/releases" style="color:rgba(255,255,255,.85);font-size:15px;font-weight:600;text-decoration:underline;text-underline-offset:4px;">Versiones anteriores</a>
           </div>
+
+          <details class="download-tip">
+            <summary>¿Windows bloquea el instalador? Solucionalo en 10 segundos</summary>
+            <div class="tip-body">
+              <p>Como Swipy es independiente y todavia no firmamos el ejecutable con certificado comercial, Windows lo marca como "editor desconocido" la primera vez. <strong>El archivo es seguro</strong>; solo hay que desbloquearlo:</p>
+              <p><strong>Opcion A — Mensaje "Windows protegio su PC"</strong></p>
+              <ol>
+                <li>Click en <strong>"Mas informacion"</strong>.</li>
+                <li>Click en <strong>"Ejecutar de todas formas"</strong>.</li>
+              </ol>
+              <p><strong>Opcion B — Si el instalador no abre al darle doble click</strong></p>
+              <ol>
+                <li>En la carpeta de Descargas, <strong>click derecho</strong> sobre <code>swipy-setup-...exe</code>.</li>
+                <li><strong>Propiedades</strong> → pestana <strong>General</strong>.</li>
+                <li>Hasta abajo, marca el checkbox <strong>"Desbloquear"</strong> y dale <strong>Aplicar</strong>.</li>
+                <li>Doble click al instalador — ahora abre el asistente normal.</li>
+              </ol>
+              <p>Una vez instalado, las actualizaciones automaticas dentro de Swipy ya no pasan por este bloqueo.</p>
+            </div>
+          </details>
         </div>
         <div class="download-meta">
           <div class="download-meta-row">

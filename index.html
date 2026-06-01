@@ -1545,7 +1545,7 @@
           <h2>Empieza a vender mejor desde hoy.</h2>
           <p>Descarga Swipy, instálalo en tu computadora y empieza a cobrar en minutos. Sin tarjeta, sin registro, sin letras chicas.</p>
           <div class="download-actions">
-            <a class="btn btn-white btn-lg" id="download-swipy" href="https://github.com/DeSaa-Software/swipy-pages/releases/latest/download/swipy-2.26.05.31.zip">
+            <a class="btn btn-white btn-lg" id="download-swipy" href="https://github.com/DeSaa-Software/swipy-pages/releases/latest/download/swipy-setup-2.26.05.31.exe">
               <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
                 <path d="M12 3v12M7 10l5 5 5-5M5 21h14"/>
               </svg>
@@ -1559,7 +1559,7 @@
             <span class="ico">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18"/></svg>
             </span>
-            <div><strong>Windows 10 o superior</strong><span id="download-version">ZIP listo para usar · v2.26.05.31</span></div>
+            <div><strong>Windows 10 o superior</strong><span id="download-version">Instalador listo para Windows · v2.26.05.31</span></div>
           </div>
           <div class="download-meta-row">
             <span class="ico">
@@ -1649,14 +1649,17 @@
         .then(function (r) { return r.ok ? r.json() : null; })
         .then(function (data) {
           if (!data || !Array.isArray(data.assets)) return;
-          var asset = data.assets.find(function (a) {
-            return /\.zip$/i.test(a.name);
-          }) || data.assets[0];
+          // Prioridad: instalador (.exe que contiene "setup") → cualquier .exe → .zip → cualquier asset.
+          var setup = data.assets.find(function (a) { return /setup.*\.exe$/i.test(a.name); });
+          var exe   = data.assets.find(function (a) { return /\.exe$/i.test(a.name); });
+          var zip   = data.assets.find(function (a) { return /\.zip$/i.test(a.name); });
+          var asset = setup || exe || zip || data.assets[0];
           if (asset && asset.browser_download_url) {
             btn.href = asset.browser_download_url;
           }
           if (label && data.tag_name) {
-            label.textContent = 'ZIP listo para usar · ' + data.tag_name;
+            var kind = asset && /\.exe$/i.test(asset.name) ? 'Instalador' : 'ZIP';
+            label.textContent = kind + ' listo para Windows · ' + data.tag_name;
           }
         })
         .catch(function () { /* silencio: queda el href estatico */ });

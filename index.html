@@ -1266,7 +1266,7 @@
   <section class="hero">
     <div class="container hero-inner">
       <div class="hero-copy">
-        <span class="eyebrow">Windows · instalador oficial</span>
+        <span class="eyebrow" id="hero-eyebrow">Windows · instalador oficial</span>
         <h1>Vender en tu tienda, <em>así de fácil</em>.</h1>
         <p class="hero-lead">
           Swipy es el punto de venta hecho para tiendas de abarrotes.
@@ -1611,15 +1611,15 @@
           <p>Descarga Swipy, instálalo en tu computadora y empieza a cobrar en minutos. Sin tarjeta, sin registro, sin letras chicas.</p>
           <div class="download-actions">
             <a class="btn btn-white btn-lg" id="download-swipy" href="https://github.com/DeSaa-Software/swipy-pages/releases/latest/download/swipy-setup-2.26.05.31.exe">
-              <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+              <svg class="icon" id="download-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
                 <path d="M12 3v12M7 10l5 5 5-5M5 21h14"/>
               </svg>
-              Descargar Swipy
+              <span id="download-label">Descargar Swipy</span>
             </a>
-            <a href="https://github.com/DeSaa-Software/swipy-pages/releases" style="color:rgba(255,255,255,.85);font-size:15px;font-weight:600;text-decoration:underline;text-underline-offset:4px;">Versiones anteriores</a>
+            <a id="download-alt" href="https://github.com/DeSaa-Software/swipy-pages/releases" style="color:rgba(255,255,255,.85);font-size:15px;font-weight:600;text-decoration:underline;text-underline-offset:4px;">Versiones anteriores</a>
           </div>
 
-          <details class="download-tip">
+          <details class="download-tip" id="tip-windows">
             <summary>¿Windows bloquea el instalador? Solucionalo en 10 segundos</summary>
             <div class="tip-body">
               <p>Como Swipy es independiente y todavia no firmamos el ejecutable con certificado comercial, Windows lo marca como "editor desconocido" la primera vez. <strong>El archivo es seguro</strong>; solo hay que desbloquearlo:</p>
@@ -1638,13 +1638,33 @@
               <p>Una vez instalado, las actualizaciones automaticas dentro de Swipy ya no pasan por este bloqueo.</p>
             </div>
           </details>
+
+          <details class="download-tip" id="tip-mac" style="display:none;">
+            <summary>¿macOS bloquea SWIPY al abrir? Soluciónalo en 10 segundos</summary>
+            <div class="tip-body">
+              <p>La versión Mac de Swipy todavía no está firmada con un certificado Apple, así que Gatekeeper la marca como "no se puede verificar" la primera vez. <strong>El archivo es seguro</strong>; solo hay que desbloquearlo:</p>
+              <p><strong>Opción A — Mensaje "no se puede abrir porque Apple no la puede verificar"</strong></p>
+              <ol>
+                <li>Click derecho (o Control + click) sobre <code>SWIPY.app</code>.</li>
+                <li>Elegí <strong>Abrir</strong>.</li>
+                <li>En el diálogo nuevo, click <strong>Abrir</strong>.</li>
+              </ol>
+              <p><strong>Opción B — Si el botón "Abrir" no aparece</strong></p>
+              <ol>
+                <li>Abrí <strong>Terminal</strong>.</li>
+                <li>Pegá: <code>xattr -d com.apple.quarantine /Applications/SWIPY.app</code> (ajustá la ruta si la moviste).</li>
+                <li>Doble click a SWIPY.app — ya abre normalmente.</li>
+              </ol>
+              <p>Esta versión Mac es <strong>preview</strong> en migración a Avalonia. Lee y escribe los mismos datos que la versión Windows. Ya tiene auto-update integrado: las versiones nuevas llegan solas a la app.</p>
+            </div>
+          </details>
         </div>
         <div class="download-meta">
           <div class="download-meta-row">
-            <span class="ico">
+            <span class="ico" id="download-platform-icon">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18"/></svg>
             </span>
-            <div><strong>Windows 10 o superior</strong><span id="download-version">Instalador listo para Windows · v2.26.05.31</span></div>
+            <div><strong id="download-platform-label">Windows 10 o superior</strong><span id="download-version">Instalador listo para Windows · v2.26.05.31</span></div>
           </div>
           <div class="download-meta-row">
             <span class="ico">
@@ -1719,14 +1739,66 @@
         }, { passive: true });
       }
 
-      // ── Auto-link boton de descarga al ultimo release de GitHub ────────
-      // Sirve para que la landing nunca apunte a un asset 404 cuando subes
-      // una version nueva. Se reemplaza el href estatico por el primer
-      // asset .zip del release marcado "latest" y se actualiza el chip
-      // de version. Si el fetch falla (sin red, rate-limit, etc.), el
-      // boton conserva el href estatico que ya esta en el HTML.
-      var btn = document.getElementById('download-swipy');
-      var label = document.getElementById('download-version');
+      // ── Detectar plataforma del visitante ──────────────────────────────
+      // userAgent + platform funciona en ~todos los navegadores. macOS
+      // marca platform como "MacIntel" o "MacPPC" historicamente, y
+      // "iPhone"/"iPad"/"iPod" para iOS (que tratamos aparte). Windows
+      // marca "Win32"/"Win64". Lo demas (Linux, Android, Chrome OS) cae
+      // al fallback Windows porque ese es nuestro instalador estable.
+      var ua = (navigator.userAgent || '').toLowerCase();
+      var platform = (navigator.platform || '').toLowerCase();
+      var isMac = /mac/.test(platform) || /macintosh|mac os x/.test(ua);
+      var isIos = /iphone|ipad|ipod/.test(ua) || (platform === 'iphone' || platform === 'ipad');
+      // iOS lo tratamos como "mobile fallback" — la app no corre ahi, asi
+      // que mantenemos el boton apuntando al instalador Windows para que
+      // el usuario lo descargue en su PC mas tarde.
+      if (isIos) isMac = false;
+
+      var btn      = document.getElementById('download-swipy');
+      var label    = document.getElementById('download-version');
+      var caption  = document.getElementById('download-label');
+      var iconEl   = document.getElementById('download-icon');
+      var platformIco   = document.getElementById('download-platform-icon');
+      var platformLabel = document.getElementById('download-platform-label');
+      var heroEyebrow   = document.getElementById('hero-eyebrow');
+      var tipWindows    = document.getElementById('tip-windows');
+      var tipMac        = document.getElementById('tip-mac');
+      var altLink       = document.getElementById('download-alt');
+
+      // ── Si es Mac, swap inicial del UI ────────────────────────────────
+      if (isMac && btn) {
+        // Apunta a un asset Mac del mismo release. Como aun no esta
+        // publicado, el fetch de abajo lo va a re-resolver al asset real
+        // cuando lo subas a GitHub Releases. Mientras tanto, el href
+        // estatico es la URL prevista del proximo release.
+        btn.href = 'https://github.com/DeSaa-Software/swipy-pages/releases/latest/download/SWIPY-Avalonia-mac-arm64-0.1.0.zip';
+        if (caption) caption.textContent = 'Descargar Swipy (Mac · preview)';
+        if (heroEyebrow) heroEyebrow.textContent = 'macOS · preview Avalonia';
+        if (platformLabel) platformLabel.textContent = 'macOS 11 o superior (Apple Silicon)';
+        if (label) label.textContent = 'Preview Avalonia para Mac · v0.1.0';
+        if (tipWindows) tipWindows.style.display = 'none';
+        if (tipMac) tipMac.style.display = '';
+        // Icono Apple
+        if (iconEl) {
+          iconEl.outerHTML =
+            '<svg class="icon" id="download-icon" viewBox="0 0 24 24" fill="currentColor">' +
+            '<path d="M17.05 12.04c-.03-2.81 2.29-4.16 2.39-4.22-1.3-1.9-3.33-2.17-4.05-2.2-1.72-.18-3.36 1.02-4.23 1.02-.88 0-2.22-1-3.66-.97-1.88.03-3.62 1.1-4.59 2.78-1.96 3.4-.5 8.43 1.41 11.19.93 1.35 2.04 2.86 3.49 2.81 1.41-.06 1.94-.91 3.64-.91s2.18.91 3.66.88c1.51-.03 2.47-1.37 3.39-2.73 1.07-1.56 1.51-3.07 1.54-3.15-.03-.02-2.96-1.13-2.99-4.5zM14.29 4.13c.78-.94 1.31-2.25 1.16-3.55-1.13.05-2.49.75-3.3 1.69-.72.83-1.36 2.16-1.19 3.43 1.26.1 2.55-.64 3.33-1.57z"/>' +
+            '</svg>';
+        }
+        if (platformIco) {
+          platformIco.innerHTML =
+            '<svg viewBox="0 0 24 24" fill="currentColor" style="width:16px;height:16px;">' +
+            '<path d="M17.05 12.04c-.03-2.81 2.29-4.16 2.39-4.22-1.3-1.9-3.33-2.17-4.05-2.2-1.72-.18-3.36 1.02-4.23 1.02-.88 0-2.22-1-3.66-.97-1.88.03-3.62 1.1-4.59 2.78-1.96 3.4-.5 8.43 1.41 11.19.93 1.35 2.04 2.86 3.49 2.81 1.41-.06 1.94-.91 3.64-.91s2.18.91 3.66.88c1.51-.03 2.47-1.37 3.39-2.73 1.07-1.56 1.51-3.07 1.54-3.15-.03-.02-2.96-1.13-2.99-4.5zM14.29 4.13c.78-.94 1.31-2.25 1.16-3.55-1.13.05-2.49.75-3.3 1.69-.72.83-1.36 2.16-1.19 3.43 1.26.1 2.55-.64 3.33-1.57z"/>' +
+            '</svg>';
+        }
+      }
+
+      // ── Auto-link al ultimo release de GitHub (Windows + Mac) ─────────
+      // Sirve para que la landing nunca apunte a un asset 404 cuando
+      // subis una version nueva. Por OS detectado se prioriza un asset
+      // distinto: en Windows el instalador setup; en Mac el zip que
+      // contiene SWIPY.app. Si el fetch falla, el href estatico ya
+      // configurado arriba queda como fallback.
       if (btn && typeof fetch === 'function') {
         fetch('https://api.github.com/repos/DeSaa-Software/swipy-pages/releases/latest', {
           headers: { 'Accept': 'application/vnd.github+json' }
@@ -1734,11 +1806,30 @@
         .then(function (r) { return r.ok ? r.json() : null; })
         .then(function (data) {
           if (!data || !Array.isArray(data.assets)) return;
-          // Prioridad: instalador (.exe que contiene "setup") → cualquier .exe → .zip → cualquier asset.
-          var setup = data.assets.find(function (a) { return /setup.*\.exe$/i.test(a.name); });
-          var exe   = data.assets.find(function (a) { return /\.exe$/i.test(a.name); });
-          var zip   = data.assets.find(function (a) { return /\.zip$/i.test(a.name); });
-          var asset = setup || exe || zip || data.assets[0];
+
+          var asset = null;
+          if (isMac) {
+            // Buscar primero un asset Mac (arm64 preferido), luego un
+            // generico mac/.zip, luego nada (queda el href Windows).
+            asset =
+              data.assets.find(function (a) { return /mac-arm64.*\.zip$/i.test(a.name); }) ||
+              data.assets.find(function (a) { return /mac.*\.zip$/i.test(a.name); }) ||
+              data.assets.find(function (a) { return /mac.*\.tar\.gz$/i.test(a.name); }) ||
+              data.assets.find(function (a) { return /mac.*\.dmg$/i.test(a.name); });
+            if (asset && asset.browser_download_url) {
+              btn.href = asset.browser_download_url;
+              if (label) label.textContent = 'Preview Avalonia para Mac · ' + data.tag_name;
+            }
+            return;
+          }
+
+          // Default Windows: setup .exe primero, despues cualquier .exe,
+          // despues .zip, despues primer asset.
+          asset =
+            data.assets.find(function (a) { return /setup.*\.exe$/i.test(a.name); }) ||
+            data.assets.find(function (a) { return /\.exe$/i.test(a.name); }) ||
+            data.assets.find(function (a) { return /\.zip$/i.test(a.name); }) ||
+            data.assets[0];
           if (asset && asset.browser_download_url) {
             btn.href = asset.browser_download_url;
           }

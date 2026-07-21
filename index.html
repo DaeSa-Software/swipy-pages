@@ -1610,13 +1610,13 @@
           <h2>Empieza a vender mejor desde hoy.</h2>
           <p>Descarga Swipy, instálalo en tu computadora y empieza a cobrar en minutos. Sin tarjeta, sin registro, sin letras chicas.</p>
           <div class="download-actions">
-            <a class="btn btn-white btn-lg" id="download-swipy" href="https://github.com/DeSaa-Software/swipy-pages/releases/latest/download/swipy-setup-2.26.05.31.exe">
+            <a class="btn btn-white btn-lg" id="download-swipy" href="https://github.com/DaeSa-Software/swipy-pages/releases/latest">
               <svg class="icon" id="download-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
                 <path d="M12 3v12M7 10l5 5 5-5M5 21h14"/>
               </svg>
               <span id="download-label">Descargar Swipy</span>
             </a>
-            <a id="download-alt" href="https://github.com/DeSaa-Software/swipy-pages/releases" style="color:rgba(255,255,255,.85);font-size:15px;font-weight:600;text-decoration:underline;text-underline-offset:4px;">Versiones anteriores</a>
+            <a id="download-alt" href="https://github.com/DaeSa-Software/swipy-pages/releases" style="color:rgba(255,255,255,.85);font-size:15px;font-weight:600;text-decoration:underline;text-underline-offset:4px;">Versiones anteriores</a>
           </div>
 
           <details class="download-tip" id="tip-windows">
@@ -1664,7 +1664,7 @@
             <span class="ico" id="download-platform-icon">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18"/></svg>
             </span>
-            <div><strong id="download-platform-label">Windows 10 o superior</strong><span id="download-version">Instalador listo para Windows · v2.26.05.31</span></div>
+            <div><strong id="download-platform-label">Windows 10 u 11</strong><span id="download-version">Instalador Avalonia disponible para Windows</span></div>
           </div>
           <div class="download-meta-row">
             <span class="ico">
@@ -1711,7 +1711,7 @@
           <ul>
             <li><a href="demo.html">Manual de usuario</a></li>
             <li><a href="#beneficios">Preguntas frecuentes</a></li>
-            <li><a href="https://github.com/DeSaa-Software/swipy-pages/releases">Historial de versiones</a></li>
+            <li><a href="https://github.com/DaeSa-Software/swipy-pages/releases">Historial de versiones</a></li>
           </ul>
         </div>
         <div>
@@ -1767,11 +1767,9 @@
 
       // ── Si es Mac, swap inicial del UI ────────────────────────────────
       if (isMac && btn) {
-        // Apunta a un asset Mac del mismo release. Como aun no esta
-        // publicado, el fetch de abajo lo va a re-resolver al asset real
-        // cuando lo subas a GitHub Releases. Mientras tanto, el href
-        // estatico es la URL prevista del proximo release.
-        btn.href = 'https://github.com/DeSaa-Software/swipy-pages/releases/latest/download/SWIPY-Avalonia-mac-arm64-0.1.0.zip';
+        // Si el API no responde, dejamos la pagina del release actual
+        // como fallback; asi nunca se ofrece un archivo de una version vieja.
+        btn.href = 'https://github.com/DaeSa-Software/swipy-pages/releases/latest';
         if (caption) caption.textContent = 'Descargar Swipy (Mac · preview)';
         if (heroEyebrow) heroEyebrow.textContent = 'macOS · preview Avalonia';
         if (platformLabel) platformLabel.textContent = 'macOS 11 o superior (Apple Silicon)';
@@ -1800,7 +1798,7 @@
       // contiene SWIPY.app. Si el fetch falla, el href estatico ya
       // configurado arriba queda como fallback.
       if (btn && typeof fetch === 'function') {
-        fetch('https://api.github.com/repos/DeSaa-Software/swipy-pages/releases/latest', {
+        fetch('https://api.github.com/repos/DaeSa-Software/swipy-pages/releases/latest', {
           headers: { 'Accept': 'application/vnd.github+json' }
         })
         .then(function (r) { return r.ok ? r.json() : null; })

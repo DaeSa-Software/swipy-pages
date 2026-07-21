@@ -1810,10 +1810,10 @@
             // Buscar primero un asset Mac (arm64 preferido), luego un
             // generico mac/.zip, luego nada (queda el href Windows).
             asset =
-              data.assets.find(function (a) { return /mac-arm64.*\.zip$/i.test(a.name); }) ||
-              data.assets.find(function (a) { return /mac.*\.zip$/i.test(a.name); }) ||
-              data.assets.find(function (a) { return /mac.*\.tar\.gz$/i.test(a.name); }) ||
-              data.assets.find(function (a) { return /mac.*\.dmg$/i.test(a.name); });
+              data.assets.find(function (a) { return /(?:mac|osx)-arm64.*\.zip$/i.test(a.name); }) ||
+              data.assets.find(function (a) { return /(?:mac|osx).*\.zip$/i.test(a.name); }) ||
+              data.assets.find(function (a) { return /(?:mac|osx).*\.pkg$/i.test(a.name); }) ||
+              data.assets.find(function (a) { return /(?:mac|osx).*\.dmg$/i.test(a.name); });
             if (asset && asset.browser_download_url) {
               btn.href = asset.browser_download_url;
               if (label) label.textContent = 'Preview Avalonia para Mac · ' + data.tag_name;

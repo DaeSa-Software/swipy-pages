@@ -3,1842 +3,405 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="description" content="Swipy es un punto de venta para tiendas de abarrotes y pequeños negocios.">
-  <title>Swipy · Punto de venta</title>
+  <meta name="theme-color" content="#00384a">
+  <meta name="description" content="SWIPY es el punto de venta para cobrar, controlar inventario, clientes, tickets y la operación de tu tienda desde un solo lugar.">
+  <meta property="og:title" content="SWIPY · El centro operativo de tu tienda">
+  <meta property="og:description" content="Vende, controla y decide desde un solo lugar. Descarga SWIPY Free para Windows o macOS.">
+  <meta property="og:type" content="website">
+  <meta property="og:image" content="Swipy2.png">
+  <title>SWIPY · Punto de venta para tu tienda</title>
+  <link rel="icon" href="Swipy2.png">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet">
-  <style>
-    :root {
-      /* Brand palette (default — refined "azul brillante") */
-      --blue: #0a63f6;
-      --blue-hover: #0850d6;
-      --blue-soft: #eaf1ff;
-      --blue-tint: #f3f7ff;
-      --navy: #0a1f44;
-      --ink: #0e1f3d;
-      --ink-2: #324b76;
-      --muted: #6c7c97;
-      --line: #e3eaf4;
-      --line-2: #d6dfee;
-      --cream: #fbf9f4;
-      --bg: #fbfbf8;
-      --card: #ffffff;
-      --shadow-sm: 0 2px 6px rgba(11, 33, 73, .04), 0 8px 18px rgba(11, 33, 73, .04);
-      --shadow-md: 0 8px 24px rgba(11, 33, 73, .08), 0 24px 48px rgba(11, 33, 73, .06);
-      --shadow-lg: 0 32px 70px rgba(11, 33, 73, .14);
-      --accent: #0a63f6;        /* secondary accent (changes with palette tweak) */
-      --accent-soft: #eaf1ff;
-      --radius: 14px;
-    }
-
-    /* Palette variants (Tweaks) */
-    body[data-palette="azul-profundo"] {
-      --blue: #1d4ed8;
-      --blue-hover: #1e40af;
-      --blue-soft: #e6ecfb;
-      --blue-tint: #f1f4fc;
-      --navy: #050e2a;
-      --accent: #1d4ed8;
-      --accent-soft: #e6ecfb;
-    }
-    body[data-palette="azul-naranja"] {
-      --blue: #0a63f6;
-      --blue-hover: #0850d6;
-      --blue-soft: #eaf1ff;
-      --blue-tint: #f3f7ff;
-      --navy: #0a1f44;
-      --accent: #ff7a3d;
-      --accent-soft: #fff1e8;
-    }
-    body[data-palette="azul-menta"] {
-      --blue: #0a63f6;
-      --blue-hover: #0850d6;
-      --blue-soft: #eaf1ff;
-      --blue-tint: #f3f7ff;
-      --navy: #0a1f44;
-      --accent: #14b8a6;
-      --accent-soft: #e3f7f4;
-    }
-
-    *, *::before, *::after { box-sizing: border-box; }
-    html { scroll-behavior: smooth; }
-    body {
-      margin: 0;
-      color: var(--ink);
-      background: var(--bg);
-      font-family: "Manrope", system-ui, sans-serif;
-      font-size: 17px;
-      line-height: 1.55;
-      -webkit-font-smoothing: antialiased;
-      text-rendering: optimizeLegibility;
-      overflow-x: hidden;
-    }
-    a { color: inherit; text-decoration: none; }
-    img { display: block; max-width: 100%; }
-
-    .container {
-      width: min(1200px, calc(100% - 48px));
-      margin: 0 auto;
-    }
-
-    .eyebrow {
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
-      font-family: "JetBrains Mono", monospace;
-      font-size: 12px;
-      font-weight: 500;
-      letter-spacing: .04em;
-      color: var(--blue);
-      text-transform: uppercase;
-    }
-    .eyebrow::before {
-      content: "";
-      width: 6px;
-      height: 6px;
-      border-radius: 50%;
-      background: var(--blue);
-    }
-
-    /* ── HEADER ─────────────────────────────── */
-    .header {
-      position: sticky;
-      top: 0;
-      z-index: 30;
-      background: rgba(251, 251, 248, .85);
-      backdrop-filter: saturate(180%) blur(16px);
-      -webkit-backdrop-filter: saturate(180%) blur(16px);
-      border-bottom: 1px solid transparent;
-      transition: border-color .2s ease;
-    }
-    .header.scrolled { border-bottom-color: var(--line); }
-    .nav {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 32px;
-      min-height: 76px;
-    }
-    .brand {
-      display: inline-flex;
-      align-items: center;
-      gap: 12px;
-    }
-    .brand-mark {
-      width: 40px;
-      height: 40px;
-      border-radius: 10px;
-      overflow: hidden;
-      display: grid;
-      place-items: center;
-      background: var(--navy);
-      box-shadow: 0 4px 10px rgba(10, 99, 246, .18);
-    }
-    .brand-mark img { width: 100%; height: 100%; object-fit: cover; }
-    .brand-name {
-      display: grid;
-      line-height: 1;
-    }
-    .brand-name strong {
-      font-size: 22px;
-      font-weight: 800;
-      letter-spacing: -.01em;
-      color: var(--navy);
-    }
-    .brand-name span {
-      margin-top: 4px;
-      font-family: "JetBrains Mono", monospace;
-      font-size: 10px;
-      letter-spacing: .12em;
-      text-transform: uppercase;
-      color: var(--muted);
-    }
-    .links {
-      display: flex;
-      gap: 28px;
-      font-size: 15px;
-      font-weight: 500;
-      color: var(--ink-2);
-    }
-    .links a { transition: color .15s; }
-    .links a:hover { color: var(--blue); }
-
-    /* ── BUTTONS ─────────────────────────────── */
-    .btn {
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      gap: 10px;
-      min-height: 52px;
-      padding: 0 22px;
-      border: 1px solid transparent;
-      border-radius: 12px;
-      font-family: inherit;
-      font-size: 16px;
-      font-weight: 700;
-      letter-spacing: -.005em;
-      cursor: pointer;
-      white-space: nowrap;
-      transition: transform .15s ease, box-shadow .2s ease, background .15s ease;
-    }
-    .btn-primary {
-      color: #fff;
-      background: var(--blue);
-      box-shadow: 0 1px 0 rgba(255,255,255,.2) inset,
-                  0 10px 22px rgba(10, 99, 246, .28);
-    }
-    .btn-primary:hover { background: var(--blue-hover); transform: translateY(-1px); }
-    .btn-ghost {
-      color: var(--ink);
-      background: transparent;
-      border-color: var(--line-2);
-    }
-    .btn-ghost:hover { border-color: var(--ink); background: rgba(14,31,61,.03); }
-    .btn-white {
-      color: var(--navy);
-      background: #fff;
-    }
-    .btn-white:hover { transform: translateY(-1px); }
-    .btn-lg { min-height: 60px; padding: 0 28px; font-size: 17px; }
-
-    .icon { width: 20px; height: 20px; flex-shrink: 0; }
-
-    /* ── HERO ─────────────────────────────── */
-    .hero {
-      position: relative;
-      padding: 72px 0 96px;
-      overflow: hidden;
-    }
-    .hero::before {
-      content: "";
-      position: absolute;
-      top: -200px;
-      right: -100px;
-      width: 700px;
-      height: 700px;
-      background: radial-gradient(circle, var(--blue-soft) 0%, transparent 65%);
-      pointer-events: none;
-      z-index: 0;
-    }
-    .hero-inner {
-      position: relative;
-      z-index: 1;
-      display: grid;
-      grid-template-columns: minmax(0, 1fr) minmax(0, 1.15fr);
-      gap: 56px;
-      align-items: center;
-    }
-    .hero-copy { max-width: 540px; }
-    .hero h1 {
-      margin: 18px 0 22px;
-      font-size: clamp(44px, 5.4vw, 68px);
-      font-weight: 800;
-      line-height: 1.02;
-      letter-spacing: -.025em;
-      color: var(--navy);
-    }
-    .hero h1 em {
-      font-style: normal;
-      color: var(--blue);
-      background: linear-gradient(180deg, transparent 64%, var(--accent-soft) 64%, var(--accent-soft) 92%, transparent 92%);
-      padding: 0 .08em;
-      border-radius: 2px;
-      box-decoration-break: clone;
-      -webkit-box-decoration-break: clone;
-    }
-    .hero-lead {
-      margin: 0 0 32px;
-      font-size: 19px;
-      line-height: 1.55;
-      color: var(--ink-2);
-    }
-    .hero-ctas {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 14px;
-      margin-bottom: 40px;
-    }
-    .hero-proof {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 28px 32px;
-    }
-    .proof-item {
-      display: inline-flex;
-      align-items: center;
-      gap: 10px;
-      font-size: 14px;
-      font-weight: 600;
-      color: var(--ink-2);
-    }
-    .proof-item .check {
-      width: 22px;
-      height: 22px;
-      border-radius: 50%;
-      background: var(--blue-soft);
-      color: var(--blue);
-      display: grid;
-      place-items: center;
-      flex-shrink: 0;
-    }
-    .proof-item .check svg { width: 12px; height: 12px; }
-
-    /* ── HERO ART (CSS device + photo slot) ── */
-    .hero-art {
-      position: relative;
-      aspect-ratio: 1.08 / 1;
-      min-height: 480px;
-    }
-    .photo-slot {
-      position: absolute;
-      left: 0;
-      top: 6%;
-      width: 56%;
-      aspect-ratio: 4 / 5;
-      border-radius: 18px;
-      background:
-        repeating-linear-gradient(135deg, #efe7d4 0 14px, #f5eede 14px 28px),
-        var(--cream);
-      box-shadow: var(--shadow-md);
-      overflow: hidden;
-      border: 1px solid rgba(0,0,0,.04);
-    }
-    .photo-slot::after {
-      content: "// foto · tendero atendiendo en mostrador";
-      position: absolute;
-      left: 18px;
-      bottom: 18px;
-      right: 18px;
-      font-family: "JetBrains Mono", monospace;
-      font-size: 11px;
-      letter-spacing: .02em;
-      color: #6b5b34;
-      background: rgba(255,255,255,.85);
-      padding: 8px 12px;
-      border-radius: 8px;
-    }
-    .photo-slot::before {
-      content: "";
-      position: absolute;
-      inset: 0;
-      background:
-        radial-gradient(circle at 30% 35%, rgba(255,255,255,.6) 0%, transparent 35%),
-        linear-gradient(180deg, transparent 50%, rgba(0,0,0,.05) 100%);
-    }
-
-    /* Realistic POS UI — matches actual app layout */
-    .pos-device {
-      position: absolute;
-      right: 0;
-      top: 0;
-      width: 96%;
-      background: var(--card);
-      border: 1px solid var(--line);
-      border-radius: 14px;
-      box-shadow: var(--shadow-lg);
-      overflow: hidden;
-      transform: rotate(-1deg);
-      display: grid;
-      grid-template-columns: 84px 1fr;
-      font-size: 11px;
-    }
-    .pos-device::before {
-      content: "";
-      position: absolute;
-      left: 0;
-      right: 0;
-      top: 0;
-      height: 3px;
-      background: var(--blue);
-      z-index: 2;
-    }
-
-    /* Sidebar */
-    .pos-side {
-      background: #0e1622;
-      padding: 12px 8px;
-      display: flex;
-      flex-direction: column;
-      gap: 2px;
-      color: #fff;
-    }
-    .pos-brand {
-      display: flex;
-      align-items: center;
-      gap: 6px;
-      padding: 4px 6px 10px;
-    }
-    .pos-brand .sq {
-      width: 18px;
-      height: 18px;
-      border-radius: 4px;
-      background: var(--blue);
-      color: #fff;
-      display: grid;
-      place-items: center;
-      font-size: 11px;
-      font-weight: 800;
-    }
-    .pos-brand strong {
-      font-size: 11px;
-      font-weight: 800;
-      letter-spacing: .04em;
-    }
-    .pos-nav {
-      padding: 5px 8px;
-      border-radius: 4px;
-      font-size: 9.5px;
-      font-weight: 600;
-      color: rgba(255,255,255,.55);
-      display: flex;
-      align-items: center;
-      gap: 6px;
-    }
-    .pos-nav.on {
-      background: var(--blue);
-      color: #fff;
-    }
-    .pos-nav svg { width: 10px; height: 10px; flex-shrink: 0; opacity: .9; }
-    .pos-bottom { margin-top: auto; }
-    /* Main area */
-    .pos-main {
-      display: flex;
-      flex-direction: column;
-      min-width: 0;
-    }
-    .pos-head {
-      display: flex;
-      justify-content: space-between;
-      align-items: flex-start;
-      padding: 14px 16px 10px;
-      border-bottom: 1px solid var(--line);
-    }
-    .pos-head .title {
-      font-size: 16px;
-      font-weight: 800;
-      color: var(--navy);
-      letter-spacing: -.01em;
-    }
-    .pos-head .sub {
-      font-size: 9.5px;
-      color: var(--muted);
-      margin-top: 2px;
-    }
-    .pos-chips { display: flex; gap: 6px; }
-    .pos-chip {
-      padding: 5px 9px;
-      border: 1px solid var(--line);
-      border-radius: 6px;
-      text-align: center;
-      min-width: 46px;
-    }
-    .pos-chip .k {
-      font-size: 8px;
-      color: var(--muted);
-      font-weight: 600;
-      letter-spacing: .04em;
-    }
-    .pos-chip .v {
-      font-size: 11px;
-      font-weight: 800;
-      color: var(--navy);
-      margin-top: 1px;
-    }
-    .pos-chip.green .v { color: #16a34a; }
-
-    .pos-search {
-      display: grid;
-      grid-template-columns: 1fr 28px auto;
-      gap: 5px;
-      padding: 9px 16px;
-    }
-    .pos-search .inp {
-      height: 26px;
-      border-radius: 5px;
-      background: #fff;
-      border: 1px solid var(--line);
-    }
-    .pos-search .qty {
-      height: 26px;
-      border-radius: 5px;
-      background: #fff;
-      border: 1px solid var(--line);
-      display: grid;
-      place-items: center;
-      font-size: 10px;
-      font-weight: 700;
-      color: var(--navy);
-    }
-    .pos-search .agg {
-      height: 26px;
-      padding: 0 10px;
-      border-radius: 5px;
-      background: var(--blue);
-      color: #fff;
-      font-size: 9.5px;
-      font-weight: 700;
-      display: flex;
-      align-items: center;
-      gap: 4px;
-    }
-    .pos-search .agg svg { width: 10px; height: 10px; }
-
-    .pos-cols {
-      flex: 1;
-      display: grid;
-      grid-template-columns: 1.45fr 1fr;
-      gap: 8px;
-      padding: 0 16px 10px;
-      min-height: 0;
-    }
-    .pos-panel {
-      border: 1px solid var(--line);
-      border-radius: 6px;
-      padding: 8px 10px;
-      display: flex;
-      flex-direction: column;
-      min-height: 0;
-      background: #fff;
-    }
-    .pos-panel h5 {
-      margin: 0 0 6px;
-      font-size: 10px;
-      font-weight: 800;
-      color: var(--navy);
-      letter-spacing: -.005em;
-    }
-    .pos-th {
-      display: grid;
-      grid-template-columns: 1.4fr 24px 32px 36px 18px;
-      gap: 4px;
-      font-size: 7.5px;
-      font-weight: 700;
-      color: var(--muted);
-      text-transform: uppercase;
-      letter-spacing: .04em;
-      padding-bottom: 3px;
-      border-bottom: 1px solid var(--line);
-    }
-    .pos-tr {
-      display: grid;
-      grid-template-columns: 1.4fr 24px 32px 36px 18px;
-      gap: 4px;
-      padding: 5px 0;
-      align-items: center;
-      font-size: 9px;
-      border-bottom: 1px dashed var(--line);
-    }
-    .pos-tr .n { color: var(--navy); font-weight: 600; }
-    .pos-tr .q { color: var(--muted); text-align: center; }
-    .pos-tr .p { color: var(--muted); }
-    .pos-tr .t { color: var(--navy); font-weight: 700; text-align: right; }
-    .pos-tr .x {
-      width: 14px;
-      height: 14px;
-      border-radius: 3px;
-      background: #fee2e2;
-      color: #dc2626;
-      display: grid;
-      place-items: center;
-      font-size: 9px;
-      font-weight: 700;
-      justify-self: end;
-    }
-    .pos-empty {
-      flex: 1;
-      display: grid;
-      place-items: center;
-      color: var(--muted);
-      font-size: 9px;
-      padding: 12px;
-      text-align: center;
-    }
-
-    /* Foot bar — total + pago recibido + quick amounts + actions */
-    .pos-foot {
-      display: grid;
-      grid-template-columns: auto 1fr auto;
-      gap: 14px;
-      align-items: end;
-      padding: 12px 16px 14px;
-      border-top: 1px solid var(--line);
-      background: var(--blue-tint);
-    }
-    .pos-foot .total {
-      font-size: 22px;
-      font-weight: 800;
-      color: var(--navy);
-      letter-spacing: -.025em;
-      line-height: 1;
-    }
-    .pos-pay {
-      display: flex;
-      align-items: end;
-      gap: 6px;
-    }
-    .pos-pay .field {
-      display: grid;
-      gap: 3px;
-    }
-    .pos-pay .field label {
-      font-size: 8px;
-      font-weight: 700;
-      color: var(--muted);
-      text-transform: uppercase;
-      letter-spacing: .04em;
-    }
-    .pos-pay .recibido {
-      width: 60px;
-      height: 24px;
-      border-radius: 5px;
-      background: #fff;
-      border: 1px solid var(--line);
-      display: grid;
-      place-items: center;
-      font-size: 10px;
-      font-weight: 600;
-      color: var(--muted);
-    }
-    .pos-pay .cambio {
-      padding: 4px 8px;
-      border-radius: 5px;
-      background: #dcfce7;
-      border: 1px solid #bbf7d0;
-      color: #166534;
-    }
-    .pos-pay .cambio .v {
-      font-size: 12px;
-      font-weight: 800;
-      letter-spacing: -.015em;
-    }
-    .pos-quick { display: flex; gap: 3px; }
-    .pos-quick .q {
-      height: 22px;
-      padding: 0 6px;
-      border-radius: 4px;
-      background: #fff;
-      border: 1px solid var(--line);
-      color: var(--ink);
-      font-size: 9px;
-      font-weight: 700;
-      display: grid;
-      place-items: center;
-    }
-    .pos-actions {
-      display: flex;
-      gap: 5px;
-    }
-    .pos-actions .a {
-      height: 28px;
-      padding: 0 10px;
-      border-radius: 5px;
-      font-size: 9.5px;
-      font-weight: 700;
-      display: flex;
-      align-items: center;
-      gap: 4px;
-    }
-    .pos-actions .cancel {
-      background: #fff;
-      color: var(--ink-2);
-      border: 1px solid var(--line);
-    }
-    .pos-actions .qr {
-      background: #fff;
-      color: var(--ink-2);
-      border: 1px solid var(--line);
-    }
-    .pos-actions .cobrar {
-      background: var(--blue);
-      color: #fff;
-      box-shadow: 0 4px 12px rgba(10,99,246,.35);
-    }
-    .pos-actions svg { width: 10px; height: 10px; }
-
-    /* ── SECTIONS ─────────────────────────── */
-    section { padding: 100px 0; }
-    section.tight { padding: 80px 0; }
-    .section-head {
-      display: flex;
-      align-items: flex-end;
-      justify-content: space-between;
-      gap: 32px;
-      margin-bottom: 48px;
-    }
-    .section-head h2 {
-      margin: 14px 0 0;
-      max-width: 620px;
-      font-size: clamp(34px, 3.6vw, 48px);
-      line-height: 1.05;
-      letter-spacing: -.022em;
-      font-weight: 800;
-      color: var(--navy);
-      text-wrap: balance;
-    }
-    .section-head p {
-      max-width: 380px;
-      margin: 0;
-      color: var(--ink-2);
-      font-size: 17px;
-      text-align: right;
-    }
-
-    /* ── BENEFITS (3 BIG CARDS) ─────────────── */
-    .benefits {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 20px;
-    }
-    .benefit {
-      position: relative;
-      padding: 32px 30px 30px;
-      background: var(--card);
-      border: 1px solid var(--line);
-      border-radius: var(--radius);
-      box-shadow: var(--shadow-sm);
-      overflow: hidden;
-      transition: transform .2s ease, box-shadow .2s ease;
-    }
-    .benefit:hover {
-      transform: translateY(-3px);
-      box-shadow: var(--shadow-md);
-    }
-    .benefit-num {
-      font-family: "JetBrains Mono", monospace;
-      font-size: 12px;
-      color: var(--muted);
-      letter-spacing: .04em;
-    }
-    .benefit-glyph {
-      width: 56px;
-      height: 56px;
-      margin: 20px 0 24px;
-      border-radius: 14px;
-      background: var(--blue-soft);
-      color: var(--blue);
-      display: grid;
-      place-items: center;
-    }
-    .benefit-glyph svg { width: 28px; height: 28px; }
-    .benefit h3 {
-      margin: 0 0 8px;
-      font-size: 24px;
-      font-weight: 800;
-      letter-spacing: -.015em;
-      color: var(--navy);
-    }
-    .benefit p {
-      margin: 0;
-      color: var(--ink-2);
-      font-size: 16px;
-      line-height: 1.55;
-    }
-    .benefit-meta {
-      margin-top: 20px;
-      padding-top: 18px;
-      border-top: 1px dashed var(--line-2);
-      display: flex;
-      justify-content: space-between;
-      font-size: 13px;
-      font-weight: 600;
-    }
-    .benefit-meta span { color: var(--muted); }
-    .benefit-meta strong { color: var(--blue); }
-
-    /* ── SCREENS ─────────────────────────── */
-    .screens-section {
-      background:
-        radial-gradient(circle at 80% 10%, var(--blue-soft) 0%, transparent 50%),
-        var(--bg);
-    }
-    .screen-grid {
-      display: grid;
-      grid-template-columns: 1.15fr 1fr;
-      gap: 28px;
-      align-items: stretch;
-    }
-    .screen-card {
-      background: var(--card);
-      border: 1px solid var(--line);
-      border-radius: 18px;
-      box-shadow: var(--shadow-sm);
-      overflow: hidden;
-      display: flex;
-      flex-direction: column;
-    }
-    .screen-frame {
-      flex: 1;
-      padding: 18px;
-      background: var(--blue-tint);
-      min-height: 380px;
-    }
-    .screen-body {
-      padding: 24px 28px 28px;
-      border-top: 1px solid var(--line);
-    }
-    .screen-body .tag {
-      font-family: "JetBrains Mono", monospace;
-      font-size: 11px;
-      color: var(--blue);
-      letter-spacing: .04em;
-    }
-    .screen-body h3 {
-      margin: 8px 0 6px;
-      font-size: 22px;
-      font-weight: 800;
-      letter-spacing: -.015em;
-      color: var(--navy);
-    }
-    .screen-body p {
-      margin: 0;
-      color: var(--ink-2);
-      font-size: 15px;
-    }
-
-    /* Punto de venta mini */
-    .ui {
-      height: 100%;
-      display: flex;
-      background: #fff;
-      border-radius: 10px;
-      overflow: hidden;
-      border: 1px solid var(--line);
-    }
-    .ui-side {
-      width: 90px;
-      background: var(--navy);
-      padding: 14px 10px;
-      color: #fff;
-      flex-shrink: 0;
-      display: flex;
-      flex-direction: column;
-    }
-    .ui-side .brand-tiny {
-      font-family: "JetBrains Mono", monospace;
-      font-size: 10px;
-      letter-spacing: .15em;
-      color: rgba(255,255,255,.7);
-      margin-bottom: 16px;
-    }
-    .ui-side .item {
-      padding: 7px 9px;
-      border-radius: 5px;
-      font-size: 11px;
-      color: rgba(255,255,255,.6);
-      margin-bottom: 2px;
-    }
-    .ui-side .item.on { background: var(--blue); color: #fff; font-weight: 700; }
-    .ui-main {
-      flex: 1;
-      padding: 16px 18px;
-      min-width: 0;
-    }
-    .ui-h {
-      display: flex;
-      justify-content: space-between;
-      align-items: baseline;
-      margin-bottom: 14px;
-    }
-    .ui-h h5 {
-      margin: 0;
-      font-size: 15px;
-      font-weight: 800;
-      color: var(--navy);
-      letter-spacing: -.01em;
-    }
-    .ui-h small { font-size: 10px; color: var(--muted); }
-    .ui-search {
-      display: flex;
-      gap: 6px;
-      margin-bottom: 14px;
-    }
-    .ui-search .x {
-      flex: 1;
-      height: 28px;
-      border-radius: 6px;
-      background: var(--blue-tint);
-      border: 1px solid var(--line);
-    }
-    .ui-search .y {
-      height: 28px;
-      padding: 0 10px;
-      border-radius: 6px;
-      background: var(--blue);
-      color: #fff;
-      font-size: 10px;
-      font-weight: 700;
-      display: grid;
-      place-items: center;
-    }
-    .ui-rows .r {
-      display: grid;
-      grid-template-columns: 1fr 30px 50px;
-      gap: 6px;
-      padding: 7px 0;
-      border-bottom: 1px dashed var(--line);
-      font-size: 11px;
-    }
-    .ui-rows .r .n { color: var(--navy); font-weight: 600; }
-    .ui-rows .r .q { color: var(--muted); text-align: center; }
-    .ui-rows .r .p { color: var(--navy); font-weight: 700; text-align: right; }
-    .ui-foot {
-      display: flex;
-      justify-content: space-between;
-      align-items: flex-end;
-      margin-top: 14px;
-      padding-top: 12px;
-      border-top: 1px solid var(--line);
-    }
-    .ui-foot .t {
-      font-size: 22px;
-      font-weight: 800;
-      color: var(--navy);
-      letter-spacing: -.02em;
-    }
-    .ui-foot .cob {
-      padding: 7px 14px;
-      border-radius: 7px;
-      background: var(--navy);
-      color: #fff;
-      font-size: 11px;
-      font-weight: 700;
-    }
-
-    /* Corte de caja screen */
-    .corte {
-      height: 100%;
-      background: #fff;
-      border-radius: 10px;
-      border: 1px solid var(--line);
-      padding: 22px;
-      display: flex;
-      flex-direction: column;
-    }
-    .corte-h {
-      display: flex;
-      justify-content: space-between;
-      align-items: flex-start;
-      margin-bottom: 18px;
-    }
-    .corte-h h5 {
-      margin: 0;
-      font-size: 16px;
-      font-weight: 800;
-      color: var(--navy);
-      letter-spacing: -.01em;
-    }
-    .corte-h small {
-      display: block;
-      font-size: 11px;
-      color: var(--muted);
-      margin-top: 3px;
-    }
-    .corte-h .date-pill {
-      font-family: "JetBrains Mono", monospace;
-      font-size: 10px;
-      padding: 4px 9px;
-      background: var(--blue-soft);
-      color: var(--blue);
-      border-radius: 5px;
-      letter-spacing: .04em;
-    }
-    .corte-stats {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 8px;
-      margin-bottom: 14px;
-    }
-    .corte-stat {
-      padding: 12px;
-      background: var(--blue-tint);
-      border: 1px solid var(--line);
-      border-radius: 8px;
-    }
-    .corte-stat .lbl {
-      font-size: 10px;
-      color: var(--muted);
-      text-transform: uppercase;
-      letter-spacing: .06em;
-      font-weight: 700;
-    }
-    .corte-stat .val {
-      font-size: 20px;
-      font-weight: 800;
-      color: var(--navy);
-      letter-spacing: -.02em;
-      margin-top: 4px;
-    }
-    .corte-stat .val.green { color: #16a34a; }
-    .corte-breakdown {
-      flex: 1;
-      background: var(--blue-tint);
-      border-radius: 8px;
-      padding: 12px 14px;
-      margin-bottom: 14px;
-    }
-    .corte-breakdown h6 {
-      margin: 0 0 10px;
-      font-size: 10px;
-      text-transform: uppercase;
-      letter-spacing: .08em;
-      color: var(--muted);
-      font-weight: 700;
-    }
-    .br-row {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding: 6px 0;
-      font-size: 12px;
-      border-bottom: 1px dashed var(--line);
-    }
-    .br-row:last-child { border-bottom: none; }
-    .br-row .pm { display: flex; align-items: center; gap: 6px; color: var(--ink); font-weight: 600; }
-    .br-row .pm i { width: 8px; height: 8px; border-radius: 50%; background: var(--blue); }
-    .br-row .pm.tarjeta i { background: var(--accent); }
-    .br-row .pm.transf i { background: #16a34a; }
-    .br-row b { color: var(--navy); font-weight: 700; }
-    .corte-cierre {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding: 12px 14px;
-      background: var(--navy);
-      color: #fff;
-      border-radius: 8px;
-    }
-    .corte-cierre span {
-      font-size: 11px;
-      font-weight: 600;
-      color: rgba(255,255,255,.75);
-    }
-    .corte-cierre strong { font-size: 17px; font-weight: 800; letter-spacing: -.01em; }
-
-    /* ── DOWNLOAD BAND ─────────────────────────── */
-    .download-section { padding: 60px 0 110px; }
-    .download-band {
-      position: relative;
-      overflow: hidden;
-      padding: 56px 64px;
-      background: var(--navy);
-      color: #fff;
-      border-radius: 24px;
-      display: grid;
-      grid-template-columns: 1.3fr 1fr;
-      gap: 48px;
-      align-items: center;
-    }
-    .download-band::before {
-      content: "";
-      position: absolute;
-      top: -150px;
-      right: -150px;
-      width: 500px;
-      height: 500px;
-      background: radial-gradient(circle, var(--blue) 0%, transparent 60%);
-      opacity: .5;
-      pointer-events: none;
-    }
-    .download-band > * { position: relative; z-index: 1; }
-    .download-band h2 {
-      margin: 12px 0 14px;
-      font-size: clamp(32px, 3.4vw, 44px);
-      font-weight: 800;
-      line-height: 1.05;
-      letter-spacing: -.022em;
-      text-wrap: balance;
-    }
-    .download-band .eyebrow { color: #6fb3ff; }
-    .download-band .eyebrow::before { background: #6fb3ff; }
-    .download-band p {
-      margin: 0 0 28px;
-      color: rgba(255,255,255,.78);
-      font-size: 17px;
-      max-width: 460px;
-    }
-    .download-actions { display: flex; flex-wrap: wrap; gap: 14px; align-items: center; }
-
-    /* "Windows bloquea el instalador?" — bloque desplegable discreto */
-    .download-tip {
-      margin-top: 18px;
-      max-width: 540px;
-      background: rgba(255,255,255,.06);
-      border: 1px solid rgba(255,255,255,.14);
-      border-radius: 12px;
-      overflow: hidden;
-      color: rgba(255,255,255,.85);
-    }
-    .download-tip summary {
-      list-style: none;
-      cursor: pointer;
-      padding: 12px 16px;
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      font-size: 13px;
-      font-weight: 600;
-      color: #fff;
-      user-select: none;
-    }
-    .download-tip summary::-webkit-details-marker { display: none; }
-    .download-tip summary::before {
-      content: "ℹ";
-      width: 22px;
-      height: 22px;
-      border-radius: 50%;
-      background: rgba(111,179,255,.22);
-      color: #6fb3ff;
-      display: grid;
-      place-items: center;
-      font-size: 12px;
-      font-weight: 700;
-      flex-shrink: 0;
-    }
-    .download-tip summary::after {
-      content: "›";
-      margin-left: auto;
-      font-size: 20px;
-      color: rgba(255,255,255,.55);
-      transition: transform .2s ease;
-    }
-    .download-tip[open] summary::after { transform: rotate(90deg); }
-    .download-tip .tip-body {
-      padding: 0 16px 16px 48px;
-      font-size: 13px;
-      line-height: 1.55;
-      color: rgba(255,255,255,.78);
-    }
-    .download-tip .tip-body p { margin: 6px 0; max-width: none; color: inherit; font-size: 13px; }
-    .download-tip .tip-body ol {
-      margin: 6px 0 10px;
-      padding-left: 18px;
-    }
-    .download-tip .tip-body ol li { margin: 3px 0; }
-    .download-tip .tip-body strong { color: #fff; }
-    .download-tip .tip-body code {
-      background: rgba(0,0,0,.28);
-      padding: 1px 6px;
-      border-radius: 4px;
-      font-size: 12px;
-      font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
-    }
-    .download-meta {
-      display: grid;
-      gap: 18px;
-      padding: 24px 28px;
-      background: rgba(255,255,255,.04);
-      border: 1px solid rgba(255,255,255,.1);
-      border-radius: 14px;
-    }
-    .download-meta-row {
-      display: grid;
-      grid-template-columns: 28px 1fr;
-      gap: 14px;
-      align-items: center;
-    }
-    .download-meta-row .ico {
-      width: 28px;
-      height: 28px;
-      border-radius: 8px;
-      background: rgba(111,179,255,.18);
-      color: #6fb3ff;
-      display: grid;
-      place-items: center;
-    }
-    .download-meta-row .ico svg { width: 16px; height: 16px; }
-    .download-meta-row strong {
-      display: block;
-      font-size: 14px;
-      font-weight: 700;
-    }
-    .download-meta-row span {
-      display: block;
-      font-size: 12px;
-      color: rgba(255,255,255,.65);
-      margin-top: 1px;
-    }
-
-    /* ── FOOTER ─────────────────────────── */
-    .footer {
-      padding: 64px 0 32px;
-      background: var(--cream);
-      border-top: 1px solid var(--line);
-    }
-    .footer-grid {
-      display: grid;
-      grid-template-columns: 1.6fr 1fr 1fr 1.2fr;
-      gap: 56px;
-      margin-bottom: 48px;
-    }
-    .footer .brand-name strong { color: var(--navy); }
-    .footer-grid p {
-      color: var(--ink-2);
-      font-size: 15px;
-      margin: 20px 0 0;
-      max-width: 320px;
-    }
-    .footer-grid h4 {
-      margin: 0 0 16px;
-      font-size: 13px;
-      font-weight: 700;
-      color: var(--navy);
-      text-transform: uppercase;
-      letter-spacing: .06em;
-    }
-    .footer-grid a, .footer-grid li {
-      display: block;
-      color: var(--ink-2);
-      font-size: 15px;
-      margin-bottom: 10px;
-      list-style: none;
-      padding: 0;
-      transition: color .15s;
-    }
-    .footer-grid a:hover { color: var(--blue); }
-    .footer-grid ul { padding: 0; margin: 0; }
-    .footer-bottom {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding-top: 28px;
-      border-top: 1px solid var(--line);
-      font-size: 13px;
-      color: var(--muted);
-    }
-
-    /* ── RESPONSIVE ─────────────────────────── */
-    @media (max-width: 980px) {
-      .links { display: none; }
-      .hero { padding: 48px 0 72px; }
-      .hero-inner { grid-template-columns: 1fr; gap: 56px; }
-      .hero-art { min-height: 420px; }
-      .section-head { flex-direction: column; align-items: flex-start; }
-      .section-head p { text-align: left; max-width: 100%; }
-      .benefits { grid-template-columns: 1fr; }
-      .screen-grid { grid-template-columns: 1fr; }
-      .download-band { grid-template-columns: 1fr; padding: 40px 32px; }
-      .footer-grid { grid-template-columns: 1fr 1fr; gap: 32px; }
-      .footer-bottom { flex-direction: column; gap: 12px; }
-    }
-    @media (max-width: 600px) {
-      body { font-size: 16px; }
-      .container { width: calc(100% - 32px); }
-      .hero h1 { font-size: 40px; }
-      .hero-lead { font-size: 17px; }
-      .hero-art { aspect-ratio: auto; min-height: 0; height: auto; display: grid; gap: 16px; }
-      .photo-slot, .pos-device { position: relative; width: 100%; transform: none; top: auto; right: auto; }
-      .pos-device { grid-template-columns: 70px 1fr; font-size: 10px; }
-      section { padding: 64px 0; }
-      .download-band { padding: 36px 24px; }
-      .footer-grid { grid-template-columns: 1fr; }
-    }
-  </style>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
 </head>
-<body data-palette="azul-brillante">
+<body>
+  <a class="skip-link" href="#contenido">Saltar al contenido</a>
 
-  <!-- ─── HEADER ─────────────────────────── -->
-  <header class="header" id="top">
-    <div class="container nav">
-      <a class="brand" href="#top" aria-label="Swipy">
-        <span class="brand-mark"><img src="Swipy2.png" alt="Swipy"></span>
-        <span class="brand-name">
-          <strong>swipy</strong>
-          <span>Punto de venta</span>
+  <header class="site-header" id="top">
+    <div class="shell header-inner">
+      <a class="brand" href="#top" aria-label="SWIPY, inicio">
+        <span class="brand-symbol" aria-hidden="true">
+          <svg viewBox="0 0 28 28" fill="none">
+            <rect x="3" y="4" width="22" height="20" rx="5" stroke="currentColor" stroke-width="2"/>
+            <path d="M8 9h12M8 14h8M8 19h5" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+            <circle cx="20" cy="18" r="2.5" fill="currentColor"/>
+          </svg>
         </span>
+        <span><strong>SWIPY</strong><small>Punto de venta</small></span>
       </a>
-      <nav class="links" aria-label="Navegación">
-        <a href="#beneficios">Por qué Swipy</a>
-        <a href="#pantallas">Pantallas</a>
+
+      <button class="menu-button" type="button" aria-expanded="false" aria-controls="site-nav">
+        <span></span><span></span><span></span>
+        <span class="sr-only">Abrir menú</span>
+      </button>
+
+      <nav class="site-nav" id="site-nav" aria-label="Navegación principal">
+        <a href="#producto">Producto</a>
+        <a href="#modulos">Módulos</a>
+        <a href="#planes">Free y Premium</a>
         <a href="#descargar">Descargar</a>
         <a href="demo.html">Probar demo</a>
       </nav>
-      <a class="btn btn-primary" href="#descargar">
-        <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
-          <path d="M12 3v12M7 10l5 5 5-5M5 21h14"/>
-        </svg>
+
+      <a class="button button-sand header-download" id="header-download" href="#descargar">
         Descargar gratis
+        <svg viewBox="0 0 20 20" aria-hidden="true"><path d="M10 3v9m0 0 3-3m-3 3L7 9M4 16h12" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
       </a>
     </div>
   </header>
 
-  <!-- ─── HERO ─────────────────────────── -->
-  <section class="hero">
-    <div class="container hero-inner">
-      <div class="hero-copy">
-        <span class="eyebrow" id="hero-eyebrow">Windows · instalador oficial</span>
-        <h1>Vender en tu tienda, <em>así de fácil</em>.</h1>
-        <p class="hero-lead">
-          Swipy es el punto de venta hecho para tiendas de abarrotes.
-          Cobra rápido, lleva tu inventario al día y cierra la caja en segundos —
-          sin complicaciones, sin mensualidades.
-        </p>
-        <div class="hero-ctas">
-          <a class="btn btn-primary btn-lg" href="#descargar">
-            <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
-              <path d="M12 3v12M7 10l5 5 5-5M5 21h14"/>
-            </svg>
-            Descargar Swipy
-          </a>
-          <a class="btn btn-ghost btn-lg" href="demo.html">
-            <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
-              <path d="M8 5v14l11-7-11-7z"/>
-            </svg>
-            Probar la demo
-          </a>
-        </div>
-        <div class="hero-proof">
-          <span class="proof-item">
-            <span class="check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg></span>
-            100 % gratis
-          </span>
-          <span class="proof-item">
-            <span class="check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg></span>
-            Funciona sin internet
-          </span>
-          <span class="proof-item">
-            <span class="check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg></span>
-            Sin mensualidades
-          </span>
-          <span class="proof-item">
-            <span class="check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg></span>
-            Listo en 5 minutos
-          </span>
-        </div>
-      </div>
-
-      <div class="hero-art" aria-hidden="true">
-        <div class="photo-slot"></div>
-
-        <div class="pos-device">
-          <!-- Sidebar -->
-          <div class="pos-side">
-            <div class="pos-brand"><span class="sq">S</span><strong>SWIPY</strong></div>
-            <div class="pos-nav on">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.7 13.4a2 2 0 0 0 2 1.6h9.7a2 2 0 0 0 2-1.6L23 6H6"/></svg>
-              Venta
-            </div>
-            <div class="pos-nav">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 6h16M4 12h16M4 18h16"/></svg>
-              Catálogo
-            </div>
-            <div class="pos-nav">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 3v18h18M7 14l4-4 4 4 5-5"/></svg>
-              Ventas del día
-            </div>
-            <div class="pos-nav">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="5" y="3" width="14" height="18" rx="1"/><path d="M8 7h8M8 11h8M8 15h5"/></svg>
-              Tickets
-            </div>
-            <div class="pos-bottom">
-              <div class="pos-nav">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><circle cx="12" cy="12" r="9"/></svg>
-                Config.
-              </div>
-            </div>
+  <main id="contenido">
+    <section class="hero" id="producto">
+      <div class="blueprint" aria-hidden="true"></div>
+      <div class="shell hero-grid">
+        <div class="hero-copy">
+          <div class="availability">
+            <span class="pulse"></span>
+            SWIPY Free disponible
           </div>
-
-          <!-- Main -->
-          <div class="pos-main">
-            <div class="pos-head">
-              <div>
-                <div class="title">Punto de venta</div>
-                <div class="sub">Venta lista para capturar productos.</div>
-              </div>
-              <div class="pos-chips">
-                <div class="pos-chip"><div class="k">Ticket</div><div class="v">183 001</div></div>
-                <div class="pos-chip"><div class="k">Piezas</div><div class="v">7</div></div>
-                <div class="pos-chip green"><div class="k">Pago</div><div class="v">Efectivo</div></div>
-              </div>
-            </div>
-
-            <div class="pos-search">
-              <div class="inp"></div>
-              <div class="qty">1</div>
-              <div class="agg">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.35-4.35"/></svg>
-                Agregar / Buscar
-              </div>
-            </div>
-
-            <div class="pos-cols">
-              <div class="pos-panel">
-                <h5>Venta actual</h5>
-                <div class="pos-th"><span>Producto</span><span>Cant.</span><span>Precio</span><span>Total</span><span></span></div>
-                <div class="pos-tr"><span class="n">Coca Cola 2.5 L</span><span class="q">2</span><span class="p">$40</span><span class="t">$80.00</span><span class="x">×</span></div>
-                <div class="pos-tr"><span class="n">Pan Bimbo grande</span><span class="q">1</span><span class="p">$50</span><span class="t">$50.00</span><span class="x">×</span></div>
-                <div class="pos-tr"><span class="n">Huevo 1 Kg</span><span class="q">1</span><span class="p">$56</span><span class="t">$56.00</span><span class="x">×</span></div>
-                <div class="pos-tr"><span class="n">Sabritas 45 g</span><span class="q">3</span><span class="p">$20</span><span class="t">$60.00</span><span class="x">×</span></div>
-              </div>
-              <div class="pos-panel">
-                <h5>Resultados</h5>
-                <div class="pos-th" style="grid-template-columns:1fr 38px;"><span>Producto</span><span style="text-align:right;">Precio</span></div>
-                <div class="pos-tr" style="grid-template-columns:1fr 38px;"><span class="n">Galletas Oreo</span><span class="t">$24.00</span></div>
-                <div class="pos-tr" style="grid-template-columns:1fr 38px;"><span class="n">Agua Ciel 1 L</span><span class="t">$12.00</span></div>
-                <div class="pos-tr" style="grid-template-columns:1fr 38px;"><span class="n">Leche Lala 1 L</span><span class="t">$34.00</span></div>
-                <div class="pos-tr" style="grid-template-columns:1fr 38px;"><span class="n">Doritos Nacho</span><span class="t">$20.00</span></div>
-              </div>
-            </div>
-
-            <div class="pos-foot">
-              <div class="total">$246.00</div>
-              <div class="pos-pay">
-                <div class="field">
-                  <label>Pago recibido</label>
-                  <div class="recibido">$300</div>
-                </div>
-                <div class="field">
-                  <label>Cambio</label>
-                  <div class="cambio"><div class="v">$54.00</div></div>
-                </div>
-                <div class="pos-quick">
-                  <div class="q">$50</div>
-                  <div class="q">$100</div>
-                  <div class="q">$200</div>
-                  <div class="q">$500</div>
-                </div>
-              </div>
-              <div class="pos-actions">
-                <div class="a cancel">Cancelar</div>
-                <div class="a qr">QR</div>
-                <div class="a cobrar">
-                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 1v22M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
-                  Cobrar
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-
-      </div>
-    </div>
-  </section>
-
-  <!-- ─── BENEFITS ─────────────────────────── -->
-  <section id="beneficios" class="tight">
-    <div class="container">
-      <div class="section-head">
-        <div>
-          <span class="eyebrow">por qué Swipy</span>
-          <h2>Hecho para tu tienda, no para una corporación.</h2>
-        </div>
-        <p>Tres cosas que cambian cuando empiezas a vender con Swipy.</p>
-      </div>
-
-      <div class="benefits">
-        <article class="benefit">
-          <div class="benefit-num">01 / Fácil</div>
-          <div class="benefit-glyph">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-              <path d="M9 11h6M9 15h4"/>
-              <rect x="3" y="3" width="18" height="18" rx="3"/>
-              <path d="M9 7h6"/>
-            </svg>
-          </div>
-          <h3>Fácil de usar</h3>
-          <p>Sin manuales largos ni cursos. Si sabes usar el celular, sabes usar Swipy. Tu equipo aprende en una tarde.</p>
-          <div class="benefit-meta"><span>Curva de aprendizaje</span><strong>~ 20 min</strong></div>
-        </article>
-
-        <article class="benefit">
-          <div class="benefit-num">02 / Rápido</div>
-          <div class="benefit-glyph">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-              <path d="M13 2 3 14h8l-1 8 10-12h-8l1-8z"/>
-            </svg>
-          </div>
-          <h3>Más rápido al cobrar</h3>
-          <p>Lector de código, búsqueda al vuelo y atajos del teclado. Cobras una venta en menos de 10 segundos.</p>
-          <div class="benefit-meta"><span>Tiempo por ticket</span><strong>&lt; 10 seg</strong></div>
-        </article>
-
-        <article class="benefit">
-          <div class="benefit-num">03 / Moderno</div>
-          <div class="benefit-glyph">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-              <path d="M3 3v18h18"/>
-              <path d="m7 14 4-4 4 4 5-5"/>
-            </svg>
-          </div>
-          <h3>Reportes claros</h3>
-          <p>Mira al instante cuánto vendiste hoy, qué productos se mueven más y cuándo conviene volver a surtir.</p>
-          <div class="benefit-meta"><span>Corte de caja</span><strong>1 clic</strong></div>
-        </article>
-      </div>
-    </div>
-  </section>
-
-  <!-- ─── SCREENS ─────────────────────────── -->
-  <section id="pantallas" class="screens-section">
-    <div class="container">
-      <div class="section-head">
-        <div>
-          <span class="eyebrow">pantallas</span>
-          <h2>Lo que vas a usar todos los días.</h2>
-        </div>
-        <p>Las dos pantallas que abren la tienda en la mañana y la cierran en la noche.</p>
-      </div>
-
-      <div class="screen-grid">
-        <!-- Punto de venta -->
-        <article class="screen-card">
-          <div class="screen-frame">
-            <div class="ui">
-              <div class="ui-side">
-                <div class="brand-tiny">S · SWIPY</div>
-                <div class="item on">Venta</div>
-                <div class="item">Catálogo</div>
-                <div class="item">Ventas día</div>
-                <div class="item">Tickets</div>
-              </div>
-              <div class="ui-main">
-                <div class="ui-h">
-                  <div>
-                    <h5>Punto de venta</h5>
-                    <small>Venta lista para capturar productos.</small>
-                  </div>
-                  <div style="display:flex;gap:5px;">
-                    <span style="border:1px solid var(--line);border-radius:5px;padding:3px 6px;font-size:8px;color:var(--muted);font-weight:700;text-align:center;">Ticket<br><b style="color:var(--navy);font-size:11px;">1</b></span>
-                    <span style="border:1px solid var(--line);border-radius:5px;padding:3px 6px;font-size:8px;color:var(--muted);font-weight:700;text-align:center;">Piezas<br><b style="color:var(--navy);font-size:11px;">0</b></span>
-                    <span style="border:1px solid var(--line);border-radius:5px;padding:3px 6px;font-size:8px;color:var(--muted);font-weight:700;text-align:center;">Pago<br><b style="color:#16a34a;font-size:11px;">Efectivo</b></span>
-                  </div>
-                </div>
-                <div class="ui-search">
-                  <div class="x"></div>
-                  <div class="y">Agregar / Buscar</div>
-                </div>
-                <div style="display:grid;grid-template-columns:1.4fr 1fr;gap:8px;">
-                  <div style="border:1px solid var(--line);border-radius:6px;padding:8px;">
-                    <div style="font-size:10px;font-weight:800;color:var(--navy);margin-bottom:6px;">Venta actual</div>
-                    <div style="font-size:7.5px;color:var(--muted);text-transform:uppercase;letter-spacing:.05em;display:grid;grid-template-columns:1fr 22px 30px 30px;gap:4px;padding-bottom:3px;border-bottom:1px solid var(--line);font-weight:700;"><span>Producto</span><span>Cant.</span><span>Precio</span><span>Total</span></div>
-                    <div class="ui-rows" style="margin-top:2px;">
-                      <div class="r" style="grid-template-columns:1fr 22px 30px 30px;"><span class="n">Coca Cola 2.5 L</span><span class="q">2</span><span class="p">$40</span><span class="p" style="text-align:right;color:var(--navy);font-weight:700;">$80</span></div>
-                      <div class="r" style="grid-template-columns:1fr 22px 30px 30px;"><span class="n">Sabritas 45 g</span><span class="q">3</span><span class="p">$20</span><span class="p" style="text-align:right;color:var(--navy);font-weight:700;">$60</span></div>
-                      <div class="r" style="grid-template-columns:1fr 22px 30px 30px;"><span class="n">Huevo 1 Kg</span><span class="q">1</span><span class="p">$56</span><span class="p" style="text-align:right;color:var(--navy);font-weight:700;">$56</span></div>
-                      <div class="r" style="grid-template-columns:1fr 22px 30px 30px;"><span class="n">Pan Bimbo</span><span class="q">1</span><span class="p">$50</span><span class="p" style="text-align:right;color:var(--navy);font-weight:700;">$50</span></div>
-                    </div>
-                  </div>
-                  <div style="border:1px solid var(--line);border-radius:6px;padding:8px;">
-                    <div style="font-size:10px;font-weight:800;color:var(--navy);margin-bottom:6px;">Resultados</div>
-                    <div class="ui-rows">
-                      <div class="r" style="grid-template-columns:1fr 30px;"><span class="n">Galletas Oreo</span><span class="p" style="text-align:right;color:var(--blue);font-weight:700;">$24</span></div>
-                      <div class="r" style="grid-template-columns:1fr 30px;"><span class="n">Agua Ciel 1 L</span><span class="p" style="text-align:right;color:var(--blue);font-weight:700;">$12</span></div>
-                      <div class="r" style="grid-template-columns:1fr 30px;"><span class="n">Leche Lala</span><span class="p" style="text-align:right;color:var(--blue);font-weight:700;">$34</span></div>
-                    </div>
-                  </div>
-                </div>
-                <div class="ui-foot">
-                  <div class="t">$246.00</div>
-                  <div style="display:flex;gap:4px;">
-                    <span style="height:22px;padding:0 8px;border-radius:5px;background:#fff;border:1px solid var(--line);font-size:9px;font-weight:700;color:var(--ink-2);display:flex;align-items:center;">Cancelar</span>
-                    <span style="height:22px;padding:0 10px;border-radius:5px;background:var(--blue);color:#fff;font-size:9px;font-weight:700;display:flex;align-items:center;">$ Cobrar</span>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-          <div class="screen-body">
-            <span class="tag">// venta</span>
-            <h3>Punto de venta</h3>
-            <p>Cobra rápido con búsqueda por nombre, código de barras o SKU. Acepta efectivo, tarjeta y transferencia.</p>
-          </div>
-        </article>
-
-        <!-- Corte de caja -->
-        <article class="screen-card">
-          <div class="screen-frame">
-            <div class="corte">
-              <div class="corte-h">
-                <div>
-                  <h5>Corte de caja</h5>
-                  <small>Cierre del turno · efectivo y formas de pago</small>
-                </div>
-                <span class="date-pill">23 / 05 / 26</span>
-              </div>
-              <div class="corte-stats">
-                <div class="corte-stat">
-                  <div class="lbl">Total del día</div>
-                  <div class="val green">$4 286.50</div>
-                </div>
-                <div class="corte-stat">
-                  <div class="lbl">Tickets</div>
-                  <div class="val">38</div>
-                </div>
-              </div>
-              <div class="corte-breakdown">
-                <h6>Por forma de pago</h6>
-                <div class="br-row">
-                  <span class="pm"><i></i>Efectivo</span>
-                  <b>$2 940.00</b>
-                </div>
-                <div class="br-row">
-                  <span class="pm tarjeta"><i></i>Tarjeta</span>
-                  <b>$986.50</b>
-                </div>
-                <div class="br-row">
-                  <span class="pm transf"><i></i>Transferencia</span>
-                  <b>$360.00</b>
-                </div>
-              </div>
-              <div class="corte-cierre">
-                <div>
-                  <span>Caja al cerrar</span>
-                  <strong>$2 940.00</strong>
-                </div>
-                <div class="cob" style="padding:8px 14px;border-radius:7px;background:var(--blue);color:#fff;font-size:11px;font-weight:700;">
-                  Cerrar turno
-                </div>
-              </div>
-            </div>
-          </div>
-          <div class="screen-body">
-            <span class="tag">// cierre</span>
-            <h3>Corte de caja</h3>
-            <p>Cierra tu día en un clic. Mira cuánto entró por efectivo, tarjeta y transferencia, y deja la caja lista para mañana.</p>
-          </div>
-        </article>
-      </div>
-    </div>
-  </section>
-
-  <!-- ─── DOWNLOAD ─────────────────────────── -->
-  <section id="descargar" class="download-section">
-    <div class="container">
-      <div class="download-band">
-        <div>
-          <span class="eyebrow">descargar</span>
-          <h2>Empieza a vender mejor desde hoy.</h2>
-          <p>Descarga Swipy, instálalo en tu computadora y empieza a cobrar en minutos. Sin tarjeta, sin registro, sin letras chicas.</p>
-          <div class="download-actions">
-            <a class="btn btn-white btn-lg" id="download-swipy" href="https://github.com/DaeSa-Software/swipy-pages/releases/latest">
-              <svg class="icon" id="download-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
-                <path d="M12 3v12M7 10l5 5 5-5M5 21h14"/>
-              </svg>
-              <span id="download-label">Descargar Swipy</span>
+          <p class="eyebrow" id="hero-eyebrow">Punto de venta para Windows y macOS</p>
+          <h1>El centro operativo<br>de <em>tu tienda.</em></h1>
+          <p class="hero-lead">Vende, controla y decide desde un solo lugar. SWIPY reúne caja, inventario, clientes, tickets y reportes en una experiencia clara para trabajar todos los días.</p>
+          <div class="hero-actions">
+            <a class="button button-sand button-large" href="#descargar">
+              <svg viewBox="0 0 20 20" aria-hidden="true"><path d="M10 2.8v9.4m0 0 3.2-3.2M10 12.2 6.8 9M3.8 16.4h12.4" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              Descargar SWIPY Free
             </a>
-            <a id="download-alt" href="https://github.com/DaeSa-Software/swipy-pages/releases" style="color:rgba(255,255,255,.85);font-size:15px;font-weight:600;text-decoration:underline;text-underline-offset:4px;">Versiones anteriores</a>
+            <a class="button button-outline-light button-large" href="#planes">Ver SWIPY Premium</a>
+          </div>
+          <div class="hero-proof">
+            <span><b>✓</b> Funciona sin internet</span>
+            <span><b>✓</b> Datos en tu equipo</span>
+            <span><b>✓</b> Actualizaciones automáticas</span>
+          </div>
+        </div>
+
+        <div class="product-stage" aria-label="Vista previa del punto de venta SWIPY">
+          <div class="stage-orbit orbit-one"></div>
+          <div class="stage-orbit orbit-two"></div>
+          <div class="app-window">
+            <div class="window-bar">
+              <div class="window-dots"><i></i><i></i><i></i></div>
+              <strong>SWIPY Punto de Venta</strong>
+              <span>Caja 01</span>
+            </div>
+            <div class="app-body">
+              <aside class="app-sidebar">
+                <div class="app-logo">S</div>
+                <div class="app-nav active"><span>⌑</span> Venta</div>
+                <div class="app-nav"><span>≡</span> Catálogo</div>
+                <div class="app-nav"><span>▦</span> Categorías</div>
+                <div class="app-nav"><span>□</span> Inventario</div>
+                <div class="app-nav"><span>▤</span> Tickets</div>
+                <div class="app-nav"><span>○</span> Clientes</div>
+                <div class="app-premium">☆ Premium</div>
+              </aside>
+              <div class="app-content">
+                <div class="app-top">
+                  <div>
+                    <small>CAJA ACTIVA</small>
+                    <h3>Punto de venta</h3>
+                  </div>
+                  <div class="app-kpis">
+                    <span><small>Ticket</small><b>191213</b></span>
+                    <span><small>Piezas</small><b>4</b></span>
+                    <span><small>Pago</small><b class="green">Efectivo</b></span>
+                  </div>
+                </div>
+                <div class="search-strip">
+                  <span class="barcode">▥</span>
+                  <span>SKU, código de barras o descripción</span>
+                  <b>1</b>
+                  <button>Agregar / Buscar</button>
+                </div>
+                <div class="sale-grid">
+                  <div class="ticket-panel">
+                    <div class="panel-title"><strong>Venta actual</strong><span>Ticket en curso</span></div>
+                    <div class="ticket-head"><span>Producto</span><span>Cant.</span><span>Precio</span><span>Total</span></div>
+                    <div class="ticket-row"><span>Coca Cola 2.5L</span><span>2</span><span>$40</span><b>$80</b></div>
+                    <div class="ticket-row"><span>Pan Bimbo grande</span><span>1</span><span>$50</span><b>$50</b></div>
+                    <div class="ticket-row"><span>Sabritas original</span><span>3</span><span>$20</span><b>$60</b></div>
+                    <div class="ticket-row"><span>Leche Lala 1L</span><span>2</span><span>$35</span><b>$70</b></div>
+                  </div>
+                  <div class="results-panel">
+                    <div class="panel-title"><strong>Resultados</strong><span>Productos encontrados</span></div>
+                    <div class="result"><span><b>Galletas Oreo</b><small>SKU 13679</small></span><b>$24</b><i>+</i></div>
+                    <div class="result"><span><b>Agua Ciel 1L</b><small>SKU 22451</small></span><b>$12</b><i>+</i></div>
+                    <div class="result"><span><b>Leche Lala 1L</b><small>SKU 1017</small></span><b>$35</b><i>+</i></div>
+                    <div class="result"><span><b>Doritos Nacho</b><small>SKU 1020</small></span><b>$20</b><i>+</i></div>
+                  </div>
+                </div>
+                <div class="payment-bar">
+                  <div><small>TOTAL</small><strong>$260.00</strong></div>
+                  <span><small>Pago recibido</small><b>$300</b></span>
+                  <span class="change"><small>Cambio</small><b>$40.00</b></span>
+                  <button>Cobrar</button>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="receipt-card">
+            <span>SWIPY · COMPROBANTE</span>
+            <b>TICKET #191213</b>
+            <strong>$260.00</strong>
+            <small>Pago en efectivo</small>
+            <i></i>
+            <code>||||| || |||||| ||| ||||||</code>
+          </div>
+          <div class="status-card">
+            <i></i>
+            <span><small>Sistema listo</small><strong>Operación local activa</strong></span>
+          </div>
+        </div>
+      </div>
+      <div class="shell signal-strip" aria-label="Características principales">
+        <div><span>01</span><strong>Cobra rápido</strong><small>Una venta clara, sin pasos de más.</small></div>
+        <div><span>02</span><strong>Controla existencias</strong><small>Detecta faltantes antes de perder ventas.</small></div>
+        <div><span>03</span><strong>Conoce tu operación</strong><small>Tickets, clientes y reportes conectados.</small></div>
+      </div>
+    </section>
+
+    <section class="section intro-section" id="modulos">
+      <div class="shell">
+        <div class="section-heading">
+          <div>
+            <p class="eyebrow ocean">Una sola operación</p>
+            <h2>Cada módulo tiene una misión.<br>Todo trabaja conectado.</h2>
+          </div>
+          <p>La nueva experiencia de SWIPY organiza el día de tu tienda con pantallas reconocibles, información útil y acciones en el lugar correcto.</p>
+        </div>
+
+        <div class="module-grid">
+          <article class="module-card module-sale">
+            <div class="module-number">01</div>
+            <div class="module-visual">
+              <div class="mini-register">
+                <span class="scan-line"></span>
+                <div><b>$260.00</b><small>Venta lista para cobrar</small></div>
+                <button>Cobrar</button>
+              </div>
+            </div>
+            <div class="module-copy">
+              <span class="module-label">Caja activa</span>
+              <h3>Vender se siente inmediato.</h3>
+              <p>Búsqueda, ticket, cobro y cambio conviven en una sola mesa de trabajo.</p>
+            </div>
+          </article>
+
+          <article class="module-card module-stock">
+            <div class="module-number">02</div>
+            <div class="module-visual stock-radar">
+              <div class="radar-circle"><span></span><i></i></div>
+              <div class="stock-stat red"><small>Sin stock</small><b>43</b></div>
+              <div class="stock-stat amber"><small>Stock bajo</small><b>8</b></div>
+              <div class="stock-stat green"><small>Óptimo</small><b>3,525</b></div>
+            </div>
+            <div class="module-copy">
+              <span class="module-label">Radar de existencias</span>
+              <h3>El inventario avisa antes.</h3>
+              <p>Niveles, faltantes y proveedores se convierten en señales fáciles de entender.</p>
+            </div>
+          </article>
+
+          <article class="module-card module-ticket">
+            <div class="module-number">03</div>
+            <div class="module-visual archive-visual">
+              <div class="archive-list">
+                <span class="selected"><b>#191213</b><small>$260.00</small></span>
+                <span><b>#191212</b><small>$114.00</small></span>
+                <span><b>#191211</b><small>$82.00</small></span>
+              </div>
+              <div class="archive-receipt">
+                <small>COMPROBANTE</small><b>$260.00</b><i></i><code>|||| ||||| |||</code>
+              </div>
+            </div>
+            <div class="module-copy">
+              <span class="module-label">Archivo de tickets</span>
+              <h3>Cada venta deja evidencia.</h3>
+              <p>Consulta, imprime, devuelve y da seguimiento desde un comprobante ordenado.</p>
+            </div>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="section workflow-section">
+      <div class="shell workflow-grid">
+        <div class="workflow-copy">
+          <p class="eyebrow sand">Diseñado para el mostrador</p>
+          <h2>Menos administración.<br>Más control visible.</h2>
+          <p>SWIPY no se limita a registrar ventas. Convierte lo que pasa en la tienda en una operación que puedes seguir, revisar y mejorar.</p>
+          <ul class="check-list">
+            <li><span>✓</span><div><b>Clientes y crédito</b><small>Saldo, límite y movimientos en una ficha clara.</small></div></li>
+            <li><span>✓</span><div><b>Proveedores conectados</b><small>Compras, catálogo y cobertura comercial.</small></div></li>
+            <li><span>✓</span><div><b>Campañas con identidad</b><small>Promociones visibles como cupones reales.</small></div></li>
+            <li><span>✓</span><div><b>Soporte con seguimiento</b><small>Reporta y consulta cada caso desde SWIPY.</small></div></li>
+          </ul>
+        </div>
+        <div class="operations-board">
+          <div class="board-header">
+            <span><i></i> Operación de hoy</span>
+            <small>Actualizado ahora</small>
+          </div>
+          <div class="board-total">
+            <small>VENTAS PAGADAS</small>
+            <strong>$28,679.10</strong>
+            <span>746 tickets</span>
+          </div>
+          <div class="board-chart">
+            <div class="chart-grid"></div>
+            <svg viewBox="0 0 480 160" preserveAspectRatio="none" aria-hidden="true">
+              <defs><linearGradient id="chartFill" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#12a7cb" stop-opacity=".35"/><stop offset="1" stop-color="#12a7cb" stop-opacity="0"/></linearGradient></defs>
+              <path d="M0 135 C55 128,70 96,120 104 S190 128,224 82 S280 92,320 55 S390 75,480 24 L480 160 L0 160Z" fill="url(#chartFill)"/>
+              <path d="M0 135 C55 128,70 96,120 104 S190 128,224 82 S280 92,320 55 S390 75,480 24" fill="none" stroke="#12a7cb" stroke-width="4" stroke-linecap="round"/>
+            </svg>
+          </div>
+          <div class="board-stats">
+            <span><small>Ticket promedio</small><b>$38.44</b></span>
+            <span><small>Clientes con saldo</small><b>12</b></span>
+            <span><small>Alertas de stock</small><b>51</b></span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section plans-section" id="planes">
+      <div class="shell">
+        <div class="section-heading centered">
+          <p class="eyebrow ocean">Empieza a tu ritmo</p>
+          <h2>SWIPY Free para comenzar.<br>Premium cuando tu operación crezca.</h2>
+          <p>La versión gratuita sigue funcionando con tus datos locales. Premium amplía la administración sin cambiar tu forma de vender.</p>
+        </div>
+        <div class="plans-grid">
+          <article class="plan-card free-card">
+            <div class="plan-top">
+              <span class="plan-icon">S</span>
+              <div><small>PLAN ACTUAL DISPONIBLE</small><h3>SWIPY Free</h3></div>
+            </div>
+            <div class="price"><strong>$0</strong><span>para empezar</span></div>
+            <ul>
+              <li>Venta y cobro en mostrador</li>
+              <li>Catálogo, inventario y tickets</li>
+              <li>Ventas del día y reportes básicos</li>
+              <li>Base de datos local SQLite</li>
+              <li>Actualizaciones automáticas</li>
+            </ul>
+            <a class="button button-ocean button-full" href="#descargar">Descargar SWIPY Free</a>
+          </article>
+          <article class="plan-card premium-card">
+            <div class="premium-ribbon">PARA OPERACIONES QUE CRECEN</div>
+            <div class="plan-top">
+              <span class="plan-icon">☆</span>
+              <div><small>CONTROL AVANZADO</small><h3>SWIPY Premium</h3></div>
+            </div>
+            <div class="price"><strong>Más control</strong><span>mensual o anual</span></div>
+            <ul>
+              <li>Usuarios y permisos por módulo</li>
+              <li>Proveedores, clientes y crédito</li>
+              <li>Promociones y Papelería</li>
+              <li>Impresión y reglas de pago</li>
+              <li>SQL Server y herramientas avanzadas</li>
+            </ul>
+            <a class="button button-sand button-full" href="mailto:soporte@swipy.com?subject=Quiero%20SWIPY%20Premium">Conocer SWIPY Premium</a>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="section download-section" id="descargar">
+      <div class="shell download-grid">
+        <div class="download-copy">
+          <p class="eyebrow sand">Tu tienda puede empezar hoy</p>
+          <h2>Descarga SWIPY Free.<br>Tu operación se queda contigo.</h2>
+          <p>Instala el punto de venta, conserva tus datos en tu equipo y trabaja incluso cuando no hay internet.</p>
+          <div class="download-actions">
+            <a class="button button-sand button-large" id="download-swipy" href="https://github.com/DaeSa-Software/swipy-pages/releases/latest">
+              <svg class="download-icon" id="download-icon" viewBox="0 0 20 20" aria-hidden="true"><path d="M10 2.8v9.4m0 0 3.2-3.2M10 12.2 6.8 9M3.8 16.4h12.4" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              <span id="download-label">Descargar SWIPY</span>
+            </a>
+            <a class="release-link" id="download-alt" href="https://github.com/DaeSa-Software/swipy-pages/releases">Ver todas las versiones</a>
           </div>
 
           <details class="download-tip" id="tip-windows">
-            <summary>¿Windows bloquea el instalador? Solucionalo en 10 segundos</summary>
-            <div class="tip-body">
-              <p>Como Swipy es independiente y todavia no firmamos el ejecutable con certificado comercial, Windows lo marca como "editor desconocido" la primera vez. <strong>El archivo es seguro</strong>; solo hay que desbloquearlo:</p>
-              <p><strong>Opcion A — Mensaje "Windows protegio su PC"</strong></p>
+            <summary>¿Windows bloquea el instalador?</summary>
+            <div>
+              <p>Como SWIPY todavía no usa un certificado comercial, Windows puede mostrar “editor desconocido” la primera vez.</p>
               <ol>
-                <li>Click en <strong>"Mas informacion"</strong>.</li>
-                <li>Click en <strong>"Ejecutar de todas formas"</strong>.</li>
+                <li>Selecciona <strong>Más información</strong>.</li>
+                <li>Presiona <strong>Ejecutar de todas formas</strong>.</li>
               </ol>
-              <p><strong>Opcion B — Si el instalador no abre al darle doble click</strong></p>
-              <ol>
-                <li>En la carpeta de Descargas, <strong>click derecho</strong> sobre <code>swipy-setup-...exe</code>.</li>
-                <li><strong>Propiedades</strong> → pestana <strong>General</strong>.</li>
-                <li>Hasta abajo, marca el checkbox <strong>"Desbloquear"</strong> y dale <strong>Aplicar</strong>.</li>
-                <li>Doble click al instalador — ahora abre el asistente normal.</li>
-              </ol>
-              <p>Una vez instalado, las actualizaciones automaticas dentro de Swipy ya no pasan por este bloqueo.</p>
             </div>
           </details>
+          <details class="download-tip" id="tip-mac" hidden>
+            <summary>¿macOS bloquea SWIPY al abrir?</summary>
+            <div>
+              <p>La versión para Mac continúa como preview. Para abrirla por primera vez:</p>
+              <ol>
+                <li>Haz Control + clic sobre <strong>SWIPY.app</strong>.</li>
+                <li>Selecciona <strong>Abrir</strong> y confirma nuevamente.</li>
+              </ol>
+            </div>
+          </details>
+        </div>
 
-          <details class="download-tip" id="tip-mac" style="display:none;">
-            <summary>¿macOS bloquea SWIPY al abrir? Soluciónalo en 10 segundos</summary>
-            <div class="tip-body">
-              <p>La versión Mac de Swipy todavía no está firmada con un certificado Apple, así que Gatekeeper la marca como "no se puede verificar" la primera vez. <strong>El archivo es seguro</strong>; solo hay que desbloquearlo:</p>
-              <p><strong>Opción A — Mensaje "no se puede abrir porque Apple no la puede verificar"</strong></p>
-              <ol>
-                <li>Click derecho (o Control + click) sobre <code>SWIPY.app</code>.</li>
-                <li>Elegí <strong>Abrir</strong>.</li>
-                <li>En el diálogo nuevo, click <strong>Abrir</strong>.</li>
-              </ol>
-              <p><strong>Opción B — Si el botón "Abrir" no aparece</strong></p>
-              <ol>
-                <li>Abrí <strong>Terminal</strong>.</li>
-                <li>Pegá: <code>xattr -d com.apple.quarantine /Applications/SWIPY.app</code> (ajustá la ruta si la moviste).</li>
-                <li>Doble click a SWIPY.app — ya abre normalmente.</li>
-              </ol>
-              <p>Esta versión Mac es <strong>preview</strong> en migración a Avalonia. Lee y escribe los mismos datos que la versión Windows. Ya tiene auto-update integrado: las versiones nuevas llegan solas a la app.</p>
-            </div>
-          </details>
-        </div>
-        <div class="download-meta">
-          <div class="download-meta-row">
-            <span class="ico" id="download-platform-icon">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18"/></svg>
+        <div class="download-device">
+          <div class="device-top">
+            <span class="device-icon" id="download-platform-icon">
+              <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="4" width="18" height="16" rx="2" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M8 21h8M12 17v4" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
             </span>
-            <div><strong id="download-platform-label">Windows 10 u 11</strong><span id="download-version">Instalador Avalonia disponible para Windows</span></div>
+            <span><small>DESCARGA RECOMENDADA</small><strong id="download-platform-label">Windows 10 u 11</strong></span>
           </div>
-          <div class="download-meta-row">
-            <span class="ico">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 7 9 18l-5-5"/></svg>
-            </span>
-            <div><strong>Actualizaciones gratuitas</strong><span>Para siempre — sin sorpresas</span></div>
+          <div class="device-screen">
+            <img src="Swipy2.png" alt="" loading="lazy">
+            <div><b>SWIPY Free</b><span id="download-version">Instalador Avalonia disponible</span></div>
+            <i>✓</i>
           </div>
-          <div class="download-meta-row">
-            <span class="ico">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 8.8a15 15 0 0 1 20 0M5 12a10.5 10.5 0 0 1 14 0M8.5 15.5a5.2 5.2 0 0 1 7 0M3 3l18 18"/></svg>
-            </span>
-            <div><strong>Funciona sin internet</strong><span>Sincroniza después si lo necesitas</span></div>
+          <div class="device-features">
+            <span><b>✓</b> Sin registro</span>
+            <span><b>✓</b> Sin tarjeta</span>
+            <span><b>✓</b> Datos locales</span>
           </div>
         </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="shell footer-grid">
+      <div class="footer-brand">
+        <a class="brand" href="#top">
+          <span class="brand-symbol" aria-hidden="true">
+            <svg viewBox="0 0 28 28" fill="none"><rect x="3" y="4" width="22" height="20" rx="5" stroke="currentColor" stroke-width="2"/><path d="M8 9h12M8 14h8M8 19h5" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><circle cx="20" cy="18" r="2.5" fill="currentColor"/></svg>
+          </span>
+          <span><strong>SWIPY</strong><small>Punto de venta</small></span>
+        </a>
+        <p>El centro operativo para vender, controlar y decidir mejor.</p>
+      </div>
+      <div>
+        <h4>Producto</h4>
+        <a href="#modulos">Módulos</a>
+        <a href="#planes">Free y Premium</a>
+        <a href="demo.html">Demo</a>
+      </div>
+      <div>
+        <h4>Descargas</h4>
+        <a href="#descargar">Descargar SWIPY</a>
+        <a href="https://github.com/DaeSa-Software/swipy-pages/releases">Historial de versiones</a>
+      </div>
+      <div>
+        <h4>Soporte</h4>
+        <a href="mailto:soporte@swipy.com">soporte@swipy.com</a>
+        <span>Atención desde la aplicación</span>
       </div>
     </div>
-  </section>
-
-  <!-- ─── FOOTER ─────────────────────────── -->
-  <footer class="footer">
-    <div class="container">
-      <div class="footer-grid">
-        <div>
-          <a class="brand" href="#top">
-            <span class="brand-mark"><img src="Swipy2.png" alt=""></span>
-            <span class="brand-name">
-              <strong>swipy</strong>
-              <span>Punto de venta</span>
-            </span>
-          </a>
-          <p>El punto de venta hecho para tiendas de abarrotes y pequeños negocios.</p>
-        </div>
-        <div>
-          <h4>Producto</h4>
-          <ul>
-            <li><a href="#beneficios">Por qué Swipy</a></li>
-            <li><a href="#pantallas">Pantallas</a></li>
-            <li><a href="demo.html">Demo</a></li>
-            <li><a href="#descargar">Descargar</a></li>
-          </ul>
-        </div>
-        <div>
-          <h4>Recursos</h4>
-          <ul>
-            <li><a href="demo.html">Manual de usuario</a></li>
-            <li><a href="#beneficios">Preguntas frecuentes</a></li>
-            <li><a href="https://github.com/DaeSa-Software/swipy-pages/releases">Historial de versiones</a></li>
-          </ul>
-        </div>
-        <div>
-          <h4>Soporte</h4>
-          <ul>
-            <li>+52 000 000 0000</li>
-            <li><a href="mailto:soporte@swipy.com">soporte@swipy.com</a></li>
-            <li>Lunes a sábado · 9 – 19 h</li>
-          </ul>
-        </div>
-      </div>
-      <div class="footer-bottom">
-        <span>© 2026 Swipy Punto de Venta. Hecho con cariño para las tiendas.</span>
-        <span>Windows · instalador oficial</span>
-      </div>
+    <div class="shell footer-bottom">
+      <span>© 2026 SWIPY Punto de Venta.</span>
+      <span>Hecho para la operación real de las tiendas.</span>
     </div>
   </footer>
 
-  <script>
-    (function () {
-      var header = document.querySelector('.header');
-      if (header) {
-        addEventListener('scroll', function () {
-          header.classList.toggle('scrolled', scrollY > 6);
-        }, { passive: true });
-      }
-
-      // ── Detectar plataforma del visitante ──────────────────────────────
-      // userAgent + platform funciona en ~todos los navegadores. macOS
-      // marca platform como "MacIntel" o "MacPPC" historicamente, y
-      // "iPhone"/"iPad"/"iPod" para iOS (que tratamos aparte). Windows
-      // marca "Win32"/"Win64". Lo demas (Linux, Android, Chrome OS) cae
-      // al fallback Windows porque ese es nuestro instalador estable.
-      var ua = (navigator.userAgent || '').toLowerCase();
-      var platform = (navigator.platform || '').toLowerCase();
-      var isMac = /mac/.test(platform) || /macintosh|mac os x/.test(ua);
-      var isIos = /iphone|ipad|ipod/.test(ua) || (platform === 'iphone' || platform === 'ipad');
-      // iOS lo tratamos como "mobile fallback" — la app no corre ahi, asi
-      // que mantenemos el boton apuntando al instalador Windows para que
-      // el usuario lo descargue en su PC mas tarde.
-      if (isIos) isMac = false;
-
-      var btn      = document.getElementById('download-swipy');
-      var label    = document.getElementById('download-version');
-      var caption  = document.getElementById('download-label');
-      var iconEl   = document.getElementById('download-icon');
-      var platformIco   = document.getElementById('download-platform-icon');
-      var platformLabel = document.getElementById('download-platform-label');
-      var heroEyebrow   = document.getElementById('hero-eyebrow');
-      var tipWindows    = document.getElementById('tip-windows');
-      var tipMac        = document.getElementById('tip-mac');
-      var altLink       = document.getElementById('download-alt');
-
-      // ── Si es Mac, swap inicial del UI ────────────────────────────────
-      if (isMac && btn) {
-        // Si el API no responde, dejamos la pagina del release actual
-        // como fallback; asi nunca se ofrece un archivo de una version vieja.
-        btn.href = 'https://github.com/DaeSa-Software/swipy-pages/releases/latest';
-        if (caption) caption.textContent = 'Descargar Swipy (Mac · preview)';
-        if (heroEyebrow) heroEyebrow.textContent = 'macOS · preview Avalonia';
-        if (platformLabel) platformLabel.textContent = 'macOS 11 o superior (Apple Silicon)';
-        if (label) label.textContent = 'Preview Avalonia para Mac · v0.1.0';
-        if (tipWindows) tipWindows.style.display = 'none';
-        if (tipMac) tipMac.style.display = '';
-        // Icono Apple
-        if (iconEl) {
-          iconEl.outerHTML =
-            '<svg class="icon" id="download-icon" viewBox="0 0 24 24" fill="currentColor">' +
-            '<path d="M17.05 12.04c-.03-2.81 2.29-4.16 2.39-4.22-1.3-1.9-3.33-2.17-4.05-2.2-1.72-.18-3.36 1.02-4.23 1.02-.88 0-2.22-1-3.66-.97-1.88.03-3.62 1.1-4.59 2.78-1.96 3.4-.5 8.43 1.41 11.19.93 1.35 2.04 2.86 3.49 2.81 1.41-.06 1.94-.91 3.64-.91s2.18.91 3.66.88c1.51-.03 2.47-1.37 3.39-2.73 1.07-1.56 1.51-3.07 1.54-3.15-.03-.02-2.96-1.13-2.99-4.5zM14.29 4.13c.78-.94 1.31-2.25 1.16-3.55-1.13.05-2.49.75-3.3 1.69-.72.83-1.36 2.16-1.19 3.43 1.26.1 2.55-.64 3.33-1.57z"/>' +
-            '</svg>';
-        }
-        if (platformIco) {
-          platformIco.innerHTML =
-            '<svg viewBox="0 0 24 24" fill="currentColor" style="width:16px;height:16px;">' +
-            '<path d="M17.05 12.04c-.03-2.81 2.29-4.16 2.39-4.22-1.3-1.9-3.33-2.17-4.05-2.2-1.72-.18-3.36 1.02-4.23 1.02-.88 0-2.22-1-3.66-.97-1.88.03-3.62 1.1-4.59 2.78-1.96 3.4-.5 8.43 1.41 11.19.93 1.35 2.04 2.86 3.49 2.81 1.41-.06 1.94-.91 3.64-.91s2.18.91 3.66.88c1.51-.03 2.47-1.37 3.39-2.73 1.07-1.56 1.51-3.07 1.54-3.15-.03-.02-2.96-1.13-2.99-4.5zM14.29 4.13c.78-.94 1.31-2.25 1.16-3.55-1.13.05-2.49.75-3.3 1.69-.72.83-1.36 2.16-1.19 3.43 1.26.1 2.55-.64 3.33-1.57z"/>' +
-            '</svg>';
-        }
-      }
-
-      // ── Auto-link al ultimo release de GitHub (Windows + Mac) ─────────
-      // Sirve para que la landing nunca apunte a un asset 404 cuando
-      // subis una version nueva. Por OS detectado se prioriza un asset
-      // distinto: en Windows el instalador setup; en Mac el zip que
-      // contiene SWIPY.app. Si el fetch falla, el href estatico ya
-      // configurado arriba queda como fallback.
-      if (btn && typeof fetch === 'function') {
-        fetch('https://api.github.com/repos/DaeSa-Software/swipy-pages/releases/latest', {
-          headers: { 'Accept': 'application/vnd.github+json' }
-        })
-        .then(function (r) { return r.ok ? r.json() : null; })
-        .then(function (data) {
-          if (!data || !Array.isArray(data.assets)) return;
-
-          var asset = null;
-          if (isMac) {
-            // Buscar primero un asset Mac (arm64 preferido), luego un
-            // generico mac/.zip, luego nada (queda el href Windows).
-            asset =
-              data.assets.find(function (a) { return /(?:mac|osx).*\.pkg$/i.test(a.name); }) ||
-              data.assets.find(function (a) { return /(?:mac|osx)-arm64.*\.zip$/i.test(a.name); }) ||
-              data.assets.find(function (a) { return /(?:mac|osx).*\.zip$/i.test(a.name); }) ||
-              data.assets.find(function (a) { return /(?:mac|osx).*\.dmg$/i.test(a.name); });
-            if (asset && asset.browser_download_url) {
-              btn.href = asset.browser_download_url;
-              if (label) label.textContent = 'Preview Avalonia para Mac · ' + data.tag_name;
-            }
-            return;
-          }
-
-          // Default Windows: setup .exe primero, despues cualquier .exe,
-          // despues .zip, despues primer asset.
-          asset =
-            data.assets.find(function (a) { return /setup.*\.exe$/i.test(a.name); }) ||
-            data.assets.find(function (a) { return /\.exe$/i.test(a.name); }) ||
-            data.assets.find(function (a) { return /\.zip$/i.test(a.name); }) ||
-            data.assets[0];
-          if (asset && asset.browser_download_url) {
-            btn.href = asset.browser_download_url;
-          }
-          if (label && data.tag_name) {
-            var kind = asset && /\.exe$/i.test(asset.name) ? 'Instalador' : 'ZIP';
-            label.textContent = kind + ' listo para Windows · ' + data.tag_name;
-          }
-        })
-        .catch(function () { /* silencio: queda el href estatico */ });
-      }
-    }());
-  </script>
+  <script src="landing.js"></script>
 </body>
 </html>
